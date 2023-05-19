@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Switch",
+    "title": "Switch QoS API",
     "description": "A simple API to manage QoS queues on arbitrary OpenFlow switches. Does not support listing queues (GET) because this is already part of OpenFlow.",
     "version": "1.0.0"
   },

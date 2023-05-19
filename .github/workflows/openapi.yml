@@ -14,33 +14,33 @@ jobs:
       - name: Generate Swagger UI for CTMF
         uses: Legion2/swagger-ui-action@v1
         with:
-          output: swagger-ui/ctmf
+          output: pages/ctmf
           spec-file: openapi/ctmf.json
       - name: Generate Swagger UI for DSMF
         uses: Legion2/swagger-ui-action@v1
         with:
-          output: swagger-ui/dsmf
+          output: pages/dsmf
           spec-file: openapi/dsmf.json
       - name: Generate Swagger UI for DTMF
         uses: Legion2/swagger-ui-action@v1
         with:
-          output: swagger-ui/dtmf
+          output: pages/dtmf
           spec-file: openapi/dtmf.json
       - name: Generate Swagger UI for ESMF
         uses: Legion2/swagger-ui-action@v1
         with:
-          output: swagger-ui/esmf
+          output: pages/esmf
           spec-file: openapi/esmf.json
       - name: Generate Swagger UI for switch
         uses: Legion2/swagger-ui-action@v1
         with:
-          output: swagger-ui/switch
+          output: pages/switch
           spec-file: openapi/switch.json
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1.0.8
         with:
           name: "github-pages"
-          path: "swagger-ui"
+          path: "pages"
   # Deploy job
   deploy:
     # Add a dependency to the build job

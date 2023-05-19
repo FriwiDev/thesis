@@ -9,31 +9,33 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Generate Swagger UI for CTMF
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui/ctmf
-          spec-file: ${GITHUB_WORKSPACE}/openapi/ctmf.json
+          spec-file: $GITHUB_WORKSPACE/openapi/ctmf.json
       - name: Generate Swagger UI for DSMF
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui/dsmf
-          spec-file: ${GITHUB_WORKSPACE}/openapi/dsmf.json
+          spec-file: $GITHUB_WORKSPACE/openapi/dsmf.json
       - name: Generate Swagger UI for DTMF
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui/dtmf
-          spec-file: ${GITHUB_WORKSPACE}/openapi/dtmf.json
+          spec-file: $GITHUB_WORKSPACE/openapi/dtmf.json
       - name: Generate Swagger UI for ESMF
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui/esmf
-          spec-file: ${GITHUB_WORKSPACE}/openapi/esmf.json
+          spec-file: $GITHUB_WORKSPACE/openapi/esmf.json
       - name: Generate Swagger UI for switch
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui/switch
-          spec-file: ${GITHUB_WORKSPACE}/openapi/switch.json
+          spec-file: $GITHUB_WORKSPACE/openapi/switch.json
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

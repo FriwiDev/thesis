@@ -46,7 +46,13 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button aria-controls="esmf-tab-pane" aria-selected="true" class="nav-link active"
+                <button aria-controls="host-tab-pane" aria-selected="true" class="nav-link active"
+                        data-bs-target="#host-tab-pane"
+                        data-bs-toggle="tab" id="host-tab" role="tab" type="button">Host
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button aria-controls="esmf-tab-pane" aria-selected="false" class="nav-link"
                         data-bs-target="#esmf-tab-pane"
                         data-bs-toggle="tab" id="esmf-tab" role="tab" type="button">ESMF
                 </button>
@@ -75,15 +81,16 @@
                         data-bs-toggle="tab" id="switch-tab" role="tab" type="button">Switch
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button aria-controls="host-tab-pane" aria-selected="false" class="nav-link"
-                        data-bs-target="#host-tab-pane"
-                        data-bs-toggle="tab" id="host-tab" role="tab" type="button">Host
-                </button>
-            </li>
         </ul>
         <div class="tab-content" id="componentsTabContent" style="margin-left: 10%; width: 80%; padding-top: 10pt">
-            <div aria-labelledby="esmf-tab" class="tab-pane fade show active" id="esmf-tab-pane" role="tabpanel"
+            <div aria-labelledby="host-tab" class="tab-pane fade show active" id="host-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Host</b> wishes to maintain a connection to a host on another domain with
+                guaranteed quality of service (QoS) parameters via a secure and private channel.
+                It will only trust his own and the network of the recipient.
+                To be able to connect to the other host, the host will contact the ESMF of his domain to request a slice
+                through the network to the other host.
+            </div>
+            <div aria-labelledby="esmf-tab" class="tab-pane fade" id="esmf-tab-pane" role="tabpanel"
                  tabindex="0">The <b>Edge Slice Management Function (ESMF)</b> is used by hosts to register a
                 communication intention.
                 Once an intention with requirements is received, the ESMF performs a two-phase commit protocol with
@@ -108,13 +115,6 @@
             <div aria-labelledby="switch-tab" class="tab-pane fade" id="switch-tab-pane" role="tabpanel"
                  tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (via OpenFlow), as well
                 as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
-            </div>
-            <div aria-labelledby="host-tab" class="tab-pane fade" id="host-tab-pane" role="tabpanel"
-                 tabindex="0">The <b>Host</b> wishes to maintain a connection to a host on another domain with
-                guaranteed quality of service (QoS) parameters via a secure and private channel.
-                It will only trust his own and the network of the recipient.
-                To be able to connect to the other host, the host will contact the ESMF of his domain to request a slice
-                through the network to the other host.
             </div>
         </div>
 

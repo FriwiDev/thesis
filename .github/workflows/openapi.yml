@@ -36,6 +36,16 @@ jobs:
         with:
           output: pages/switch
           spec-file: openapi/switch.json
+      - name: Render .drawio files
+        uses: docker://ghcr.io/racklet/render-drawio-action:v1
+        with:
+          formats: 'svg'
+          sub-dirs: '.'
+          skip-dirs: '.git'
+          log-level: 'info'
+        id: render
+      - name: Copy the rendered files
+        run: 'mkdir -p pages/diagrams && cp ${{ steps.render.outputs.rendered-files }} pages/diagrams'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1.0.8
         with:

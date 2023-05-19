@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy:
-    needs: generate-openapi-spec
     runs-on: ubuntu-latest
     steps:
       - name: Generate Swagger UI for CTMF

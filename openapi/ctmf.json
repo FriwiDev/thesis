@@ -1,0 +1,295 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CTMF",
+    "description": "A simple API to interact with the Core Tunnel Management Function. Supports creating and removing tunnels on this domains. Is advised to allocate resources by external ESMFs. Please refer to the topology drawings for further information about the network structures.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "None"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "tunnel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The tunnel identifier"
+          },
+          "rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The transmission rate as bits/s"
+          },
+          "latency": {
+            "type": "integer",
+            "format": "int16",
+            "description": "The required maximum latency"
+          },
+          "from": {
+            "type": "string",
+            "description": "The name of the input domain or host"
+          },
+          "to": {
+            "type": "string",
+            "description": "The name of the output domain or host"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth": {
+      "summary": "Manages authentication towards this service",
+      "description": "Endpoint to manage authentication tokens",
+      "put": {
+        "tags": ["Authentication"],
+        "description": "Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "The authentication token as string",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong credentials were specified"
+          }
+        }
+      }
+    },
+    "/tunnel_reservation": {
+      "summary": "Manages tunnel reservations within the two-phase commit protocol between ESMFs and CTMFs",
+      "description": "Endpoint to reserve tunnel capacity on this domain",
+      "get": {
+        "tags": ["Tunnel Synchronization"],
+        "description": "Lists all current tunnel reservations issued by the requesting ESMF. Used for synchronization purposes.",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current list of tunnel reservations assigned to this ESMF.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/tunnel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tunnel Synchronization"],
+        "description": "Creates a new tunnel reservation on this domain",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tunnel",
+            "in": "query",
+            "description": "The tunnel to reserve or alter.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/tunnel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel has been reserved."
+          },
+          "403": {
+            "description": "Invalid or insufficient authentication provided"
+          },
+          "404": {
+            "description": "The input or output could not be found"
+          },
+          "409": {
+            "description": "A tunnel with this id already exists and source or target do not match"
+          },
+          "507": {
+            "description": "Insufficient resources by participating domain or requester"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tunnel Synchronization"],
+        "description": "Deletes a tunnel reservation",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The id of the tunnel reservation to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel reservation was successfully deleted."
+          },
+          "403": {
+            "description": "Invalid or insufficient authentication provided."
+          },
+          "404": {
+            "description": "The tunnel reservation could not be found."
+          }
+        }
+      }
+    },
+    "/tunnel_deployment": {
+      "summary": "Manages tunnel deployments within the two-phase commit protocol between ESMFs",
+      "description": "Endpoint to deploy tunnels on this domain",
+      "get": {
+        "tags": ["Tunnel Synchronization"],
+        "description": "Lists all current tunnels issued by the requesting ESMF. Used for synchronization purposes.",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current list of tunnels assigned to this ESMF.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/tunnel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tunnel Synchronization"],
+        "description": "Creates a new tunnel on this domain",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The id of the tunnel to be deployed.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel has been deployed or altered"
+          },
+          "403": {
+            "description": "Invalid or insufficient authentication provided"
+          },
+          "404": {
+            "description": "The tunnel reservation could not be found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tunnel Synchronization"],
+        "description": "Deletes a tunnel from this domain",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The id of the tunnel to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel was successfully deleted."
+          },
+          "403": {
+            "description": "Invalid or insufficient authentication provided."
+          },
+          "404": {
+            "description": "The tunnel could not be found."
+          }
+        }
+      }
+    }
+  }
+}

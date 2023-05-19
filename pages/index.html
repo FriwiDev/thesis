@@ -2,6 +2,9 @@
 <head>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
           integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <title></title>
 </head>
 <body>
@@ -19,8 +22,11 @@
         </ul>
     </header>
     <main>
-        <p class="lead mb-4">Hello, I am a short abstract website pitch that is still to be written. Please move along
-            :)</p>
+        <p class="lead mb-4">In networking today, decentralization plays a more important role every day. While the
+            trend in networking can be seen shifting towards edge-computing to reduce strain from major network hubs,
+            challenges to maintain connections and provide guarantees towards their stability can arise. Due to this we
+            propose a micro-segmentation approach of network resources across multiple domains that can provide the user
+            with a slice of guaranteed resources while maintaining the privacy of the user.</p>
 
         <hr/>
 
@@ -30,6 +36,76 @@
 
         <img src="diagrams/topology.svg" width="80%"/>
 
+        <ul class="nav nav-tabs" id="componentsTab" role="tablist"
+            style="margin-left: 10%; width: 80%; padding-top: 15pt">
+            <li class="nav-item" role="presentation">
+                <button aria-controls="disabled-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#disabled-tab-pane"
+                        data-bs-toggle="tab" disabled id="disabled-tab" role="tab" style="margin-right: 10pt"
+                        type="button"><b style="color: black">Meet the components:</b>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button aria-controls="esmf-tab-pane" aria-selected="true" class="nav-link active"
+                        data-bs-target="#esmf-tab-pane"
+                        data-bs-toggle="tab" id="esmf-tab" role="tab" type="button">ESMF
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button aria-controls="ctmf-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#ctmf-tab-pane"
+                        data-bs-toggle="tab" id="ctmf-tab" role="tab" type="button">CTMF
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button aria-controls="dsmf-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#dsmf-tab-pane"
+                        data-bs-toggle="tab" id="dsmf-tab" role="tab" type="button">DSMF
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button aria-controls="dtmf-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#dtmf-tab-pane"
+                        data-bs-toggle="tab" id="dtmf-tab" role="tab" type="button">DTMF
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button aria-controls="switch-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#switch-tab-pane"
+                        data-bs-toggle="tab" id="switch-tab" role="tab" type="button">Switch
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="componentsTabContent" style="margin-left: 10%; width: 80%; padding-top: 10pt">
+            <div aria-labelledby="esmf-tab" class="tab-pane fade show active" id="esmf-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Edge Slice Management Function (ESMF)</b> is used by hosts to register a
+                communication intention.
+                Once an intention with requirements is received, the ESMF performs a two-phase commit protocol with
+                other ESMFs and CTMFs to create the requested communication channel if it is able to.
+            </div>
+            <div aria-labelledby="ctmf-tab" class="tab-pane fade" id="ctmf-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Core Tunnel Management Function (CTMF)</b> is used by ESMFs to allocate resources
+                in a black network (a network that is not managed by us). The CTMF will not receive the details of the
+                slice but will rather see the sum of all the needed capacity. Due to this we can achieve more privacy
+                from our transit networks.
+            </div>
+            <div aria-labelledby="dsmf-tab" class="tab-pane fade" id="dsmf-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Domain Slice Management Function (DSMF)</b> is instructed by the ESMF to reserve
+                and create new slices in an edge network. It will instruct the domain switches to realise the slice
+                within the domain of the function.
+            </div>
+            <div aria-labelledby="dtmf-tab" class="tab-pane fade" id="dtmf-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Domain Tunnel Management Function (DTMF)</b> is instructed by the CTMF to reserve
+                and create new tunnel capacity in a black network. It will instruct the domain switches to realise the
+                tunnel capacity within the domain of the function.
+            </div>
+            <div aria-labelledby="switch-tab" class="tab-pane fade" id="switch-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (via OpenFlow), as well
+                as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
+            </div>
+        </div>
+
+
         <hr/>
 
         <h1 class="text-body-emphasis" id="API">REST API</h1>
@@ -37,10 +113,10 @@
             services.</p>
 
         <div class="mb-5">
+            <a class="btn btn-primary btn-lg px-4" href="esmf">ESMF</a>
             <a class="btn btn-primary btn-lg px-4" href="ctmf">CTMF</a>
             <a class="btn btn-primary btn-lg px-4" href="dsmf">DSMF</a>
             <a class="btn btn-primary btn-lg px-4" href="dtmf">DTMF</a>
-            <a class="btn btn-primary btn-lg px-4" href="esmf">ESMF</a>
             <a class="btn btn-primary btn-lg px-4" href="switch">Switch</a>
         </div>
 

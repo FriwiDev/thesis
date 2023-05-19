@@ -1,11 +1,65 @@
-<html>
-<h1>Quick links</h1>
-<h4>API reference</h4>
-<ul>
-    <li><a href="ctmf">Core Tunnel Management Function (CTMF)</a></li>
-    <li><a href="dsmf">Domain Slice Management Function (DSMF)</a></li>
-    <li><a href="dtmf">Domain Tunnel Management Function (DTMF)</a></li>
-    <li><a href="esmf">Edge Slice Management Function (ESMF)</a></li>
-    <li><a href="switch">Switch QoS API</a></li>
-</ul>
+<html lang="en_US">
+<head>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" rel="stylesheet">
+    <title></title>
+</head>
+<body>
+<div class="container text-center">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none" href="/">
+            <span class="fs-4">Distributed micro-segmentation in edge-computing domains</span>
+        </a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a aria-current="page" class="nav-link active" href="#">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#TOPO">Topology</a></li>
+            <li class="nav-item"><a class="nav-link" href="#API">REST API</a></li>
+            <li class="nav-item"><a class="nav-link" href="#Communication">Communication</a></li>
+        </ul>
+    </header>
+    <main>
+        <p class="lead mb-4">Hello, I am a short abstract website pitch that is still to be written. Please move along
+            :)</p>
+
+        <hr/>
+
+        <h1 class="text-body-emphasis" id="TOPO">Topology</h1>
+        <p class="lead mb-4">Below you can see an example topology with all relevant components. Host 1 (h1) wants to
+            communicate with Host 4 (h4).</p>
+
+        <img src="diagrams/topology.svg" width="80%"/>
+
+        <hr/>
+
+        <h1 class="text-body-emphasis" id="API">REST API</h1>
+        <p class="lead mb-4">Please follow the buttons below to get a reference for API endpoints on the respective
+            services.</p>
+
+        <div class="mb-5">
+            <a class="btn btn-primary btn-lg px-4" href="ctmf">CTMF</a>
+            <a class="btn btn-primary btn-lg px-4" href="dsmf">DSMF</a>
+            <a class="btn btn-primary btn-lg px-4" href="dtmf">DTMF</a>
+            <a class="btn btn-primary btn-lg px-4" href="esmf">ESMF</a>
+            <a class="btn btn-primary btn-lg px-4" href="switch">Switch</a>
+        </div>
+
+        <hr/>
+
+        <h1 class="text-body-emphasis" id="Communication">Communication</h1>
+        <p class="lead mb-4">Communication is performed via the REST API mentioned above. You can see some communication
+            flows to create a slice below.</p>
+
+        <img src="diagrams/slice_creation_esmf_and_ctmf.svg" style="padding: 3pt" width="80%"/>
+        <br/>
+        <img src="diagrams/slice_creation_esmf_to_dsmf.svg" style="padding: 3pt" width="80%"/>
+        <br/>
+        <img src="diagrams/slice_creation_ctmf_to_dtmf.svg" style="padding: 3pt" width="80%"/>
+
+        <hr/>
+
+        <p>Created by Fritz Windisch</p>
+    </main>
+</div>
+</body>
 </html>

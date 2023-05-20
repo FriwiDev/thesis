@@ -100,17 +100,18 @@
                  tabindex="0">The <b>Core Tunnel Management Function (CTMF)</b> is used by ESMFs to allocate resources
                 in a black network (a network that is not managed by us). The CTMF will not receive the details of the
                 slice but will rather see the sum of all the needed capacity. Due to this we can achieve more privacy
-                from our transit networks.
+                from our transit networks. The CTMF is a subset of the ESMF.
             </div>
             <div aria-labelledby="dsmf-tab" class="tab-pane fade" id="dsmf-tab-pane" role="tabpanel"
                  tabindex="0">The <b>Domain Slice Management Function (DSMF)</b> is instructed by the ESMF to reserve
                 and create new slices in an edge network. It will instruct the domain switches to realise the slice
-                within the domain of the function.
+                within the domain of the function. Additionally, it also provides the ability to create tunnels like the
+                DTMF.
             </div>
             <div aria-labelledby="dtmf-tab" class="tab-pane fade" id="dtmf-tab-pane" role="tabpanel"
                  tabindex="0">The <b>Domain Tunnel Management Function (DTMF)</b> is instructed by the CTMF to reserve
                 and create new tunnel capacity in a black network. It will instruct the domain switches to realise the
-                tunnel capacity within the domain of the function.
+                tunnel capacity within the domain of the function. The DTMF is a subset of the DSMF.
             </div>
             <div aria-labelledby="switch-tab" class="tab-pane fade" id="switch-tab-pane" role="tabpanel"
                  tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (via OpenFlow), as well

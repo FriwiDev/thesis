@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "CTMF",
-    "description": "A simple API to interact with the Core Tunnel Management Function. Supports creating and removing tunnels on this domains. Is advised to allocate resources by external ESMFs. Please refer to the topology drawings for further information about the network structures.",
+    "description": "A simple API to interact with the Core Tunnel Management Function. Supports creating and removing tunnels on this domains. Is advised to allocate resources by external ESMFs. The CTMF is a subset of the ESMF. Please refer to the topology drawings for further information about the network structures.",
     "version": "1.0.0"
   },
   "servers": [

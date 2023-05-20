@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "DTMF",
-    "description": "A simple API to interact with the Domain Tunnel Management Function. Supports reserving, creating and removing tunnels from one external domain to another external domain. This service does not create tunnel endpoints, but reserves resources instead in the current domain instead. Please refer to the topology drawings for further information about the network structures.",
+    "description": "A simple API to interact with the Domain Tunnel Management Function. Supports reserving, creating and removing tunnels from one external domain to another external domain. This service does not create tunnel endpoints, but reserves resources instead in the current domain instead. The DTMF is a subset of the DSMF. Please refer to the topology drawings for further information about the network structures.",
     "version": "1.0.0"
   },
   "servers": [
@@ -68,7 +68,7 @@
         }
       }
     },
-    "/reservation": {
+    "/tunnel_reservation": {
       "summary": "Manages tunnel reservations on the current domain",
       "description": "Endpoint to manage tunnel reservations",
       "get": {
@@ -182,7 +182,7 @@
         }
       }
     },
-    "/tunnel": {
+    "/tunnel_deployment": {
       "summary": "Manages tunnels on the current domain",
       "description": "Endpoint to manage tunnels",
       "get": {

@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "DSMF",
-    "description": "A simple API to interact with the Domain Slice Management Function. Supports reserving, creating and removing slices from one external domain to another external domain or host. Please refer to the topology drawings for further information about the network structures.",
+    "description": "A simple API to interact with the Domain Slice Management Function. Supports reserving, creating and removing slices and tunnels from one external domain to another external domain or host. Please refer to the topology drawings for further information about the network structures.",
     "version": "1.0.0"
   },
   "servers": [
@@ -19,6 +19,34 @@
             "type": "integer",
             "format": "int32",
             "description": "The slice identifier"
+          },
+          "rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The transmission rate as bits/s"
+          },
+          "latency": {
+            "type": "integer",
+            "format": "int16",
+            "description": "The required maximum latency"
+          },
+          "from": {
+            "type": "string",
+            "description": "The name of the input domain or host"
+          },
+          "to": {
+            "type": "string",
+            "description": "The name of the output domain or host"
+          }
+        }
+      },
+      "tunnel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The tunnel identifier"
           },
           "rate": {
             "type": "integer",
@@ -68,7 +96,7 @@
         }
       }
     },
-    "/reservation": {
+    "/slice_reservation": {
       "summary": "Manages slice reservations on the current domain",
       "description": "Endpoint to manage slice reservations",
       "get": {
@@ -182,7 +210,7 @@
         }
       }
     },
-    "/slice": {
+    "/slice_deployment": {
       "summary": "Manages slices on the current domain",
       "description": "Endpoint to manage slices",
       "get": {
@@ -290,6 +318,232 @@
           },
           "404": {
             "description": "The slice could not be found."
+          }
+        }
+      }
+    },
+    "/tunnel_reservation": {
+      "summary": "Manages tunnel reservations on the current domain",
+      "description": "Endpoint to manage tunnel reservations",
+      "get": {
+        "tags": ["Tunnel Reservation"],
+        "description": "Lists all current tunnel reservations",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current list of tunnel reservations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/tunnel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tunnel Reservation"],
+        "description": "Creates a new tunnel reservation or stages changes to an existing deployed tunnel, as long as source and target of the tunnel match.",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tunnel",
+            "in": "query",
+            "description": "The tunnel to reserve. Will check for issues.",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/tunnel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel has been reserved"
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          },
+          "404": {
+            "description": "The input or output could not be found"
+          },
+          "409": {
+            "description": "A tunnel with this id is already known and does not match current source and target"
+          },
+          "507": {
+            "description": "Insufficient resources"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tunnel Reservation"],
+        "description": "Deletes a tunnel reservation",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The id of the tunnel reservation to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel reservation was successfully deleted."
+          },
+          "403": {
+            "description": "Invalid authentication provided."
+          },
+          "404": {
+            "description": "The tunnel reservation could not be found."
+          }
+        }
+      }
+    },
+    "/tunnel_deployment": {
+      "summary": "Manages tunnels on the current domain",
+      "description": "Endpoint to manage tunnels",
+      "get": {
+        "tags": ["Tunnel Management"],
+        "description": "Lists all current tunnels",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current list of tunnels",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/tunnel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tunnel Management"],
+        "description": "Creates a new tunnel or modifies a tunnel from a reservation",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The tunnel to create from the corresponding reservation id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel has been created"
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          },
+          "404": {
+            "description": "The tunnel reservation could not be found."
+          },
+          "500": {
+            "description": "The deployment to the network failed"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tunnel Management"],
+        "description": "Deletes a tunnel",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The id of the tunnel to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel was successfully deleted."
+          },
+          "403": {
+            "description": "Invalid authentication provided."
+          },
+          "404": {
+            "description": "The tunnel could not be found."
           }
         }
       }

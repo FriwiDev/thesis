@@ -46,11 +46,18 @@ jobs:
         id: render
       - name: Copy the rendered files
         run: 'mkdir -p pages/diagrams && cp ${{ steps.render.outputs.rendered-files }} pages/diagrams'
-      - name: Upload artifact
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1.0.8
         with:
           name: "github-pages"
           path: "pages"
+      - name: Generate python clients and servers for api definitions
+        run: './openapi/generator/generate_definitions.sh'
+      - name: Upload code artifact
+        uses: actions/upload-pages-artifact@v1.0.8
+        with:
+          name: "generated-code"
+          path: "openapi/generator/gen"
   # Deploy job
   deploy:
     # Add a dependency to the build job

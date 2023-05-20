@@ -7,9 +7,9 @@ cd "$(dirname "$0")" || exit 1
 generate_component () {
   rm -rf "gen/$1"
   mkdir -p "gen/$1/client"
-  _JAVA_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED" ./openapi-generator-cli.sh generate -i "../$1.json" -g python -o "gen/$1/client"
+  _JAVA_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED" ./openapi-generator-cli.sh generate -i "../$1.json" -g python -o "gen/$1/client" --additional-properties=packageName="$1_client"
   mkdir -p "gen/$1/server"
-  ./openapi-generator-cli.sh generate -i "../$1.json" -g python-aiohttp -o "gen/$1/server"
+  ./openapi-generator-cli.sh generate -i "../$1.json" -g python-aiohttp -o "gen/$1/server" --additional-properties=packageName="$1_server" --additional-properties=serverPort="$2"
 }
 
 # Fetch script
@@ -17,8 +17,8 @@ curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin
 chmod +x openapi-generator-cli.sh
 
 # Perform the generation for every openapi definition
-generate_component "ctmf"
-generate_component "dsmf"
-generate_component "dtmf"
-generate_component "esmf"
-generate_component "switch"
+generate_component "ctmf" "8080"
+generate_component "dsmf" "8081"
+generate_component "dtmf" "8081"
+generate_component "esmf" "8080"
+generate_component "switch" "8082"

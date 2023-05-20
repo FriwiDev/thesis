@@ -5,11 +5,6 @@
     "description": "A simple API to interact with the Domain Tunnel Management Function. Supports reserving, creating and removing tunnels from one external domain to another external domain. This service does not create tunnel endpoints, but reserves resources instead in the current domain instead. Please refer to the topology drawings for further information about the network structures.",
     "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "None"
-    }
-  ],
   "components": {
     "schemas": {
       "tunnel": {

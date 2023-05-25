@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  description: A simple API to manage QoS queues on arbitrary OpenFlow switches. Does
+    not support listing queues (GET) because this is already part of OpenFlow.
+  title: Switch QoS API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082
+paths:
+  /auth:
+    description: Endpoint to manage authentication tokens
+    put:
+      description: "Issues a new authentication token in exchange for credentials.\
+        \ Currently requires no credentials, this is up to future implementations."
+      operationId: auth_put
+      parameters: [ ]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: The authentication token as string
+        "403":
+          description: Wrong credentials were specified
+      tags:
+        - Authentication
+      x-openapi-router-controller: switch_server.controllers.authentication_controller
+    summary: Manages authentication towards this service
+  /queue:
+    delete:
+      description: Deletes a queue
+      operationId: queue_delete
+      parameters:
+        - description: The authentication token issued by prior login
+          explode: true
+          in: query
+          name: auth
+          required: true
+          schema:
+            type: string
+          style: form
+        - description: The id of the queue to be deleted.
+          explode: true
+          in: query
+          name: id
+          required: true
+          schema:
+            format: int32
+            type: integer
+          style: form
+        - description: The switch port of the queue to be deleted.
+          explode: true
+          in: query
+          name: port
+          required: true
+          schema:
+            type: string
+          style: form
+      responses:
+        "200":
+          description: The queue was successfully deleted.
+        "403":
+          description: Invalid authentication provided.
+        "404":
+          description: The queue could not be found.
+      tags:
+        - Queue Management
+      x-openapi-router-controller: switch_server.controllers.queue_management_controller
+    description: Endpoint to manage queues
+    put:
+      description: Creates a new queue
+      operationId: queue_put
+      parameters:
+        - description: The authentication token issued by prior login
+          explode: true
+          in: query
+          name: auth
+          required: true
+          schema:
+            type: string
+          style: form
+        - description: The queue to create. The id will be set by the service.
+          explode: true
+          in: query
+          name: queue
+          required: true
+          schema:
+            $ref: '#/components/schemas/queue'
+          style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/queue'
+          description: The queue object
+        "403":
+          description: Invalid authentication provided.
+        "404":
+          description: The switch port could not be found
+        "507":
+          description: Already too many queues in use
+      tags:
+        - Queue Management
+      x-openapi-router-controller: switch_server.controllers.queue_management_controller
+    summary: Manages queues on the OpenFlow switch
+components:
+  schemas:
+    queue:
+      example:
+        rate: 6
+        port: port
+        id: 0
+      properties:
+        id:
+          description: The queue identifier used by OpenFlow
+          format: int32
+          title: id
+          type: integer
+        rate:
+          description: The queue rate as bits/s
+          format: int64
+          title: rate
+          type: integer
+        port:
+          description: The name of the output port on the switch
+          title: port
+          type: string
+      title: queue
+      type: object

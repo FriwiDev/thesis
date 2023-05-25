@@ -51,7 +51,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_deployment_delete: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -126,7 +125,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **tunnel_deployment_get**
-
 <a id="tunnel_deployment_get"></a>
 > [Tunnel] tunnel_deployment_get(auth)
 
@@ -164,7 +162,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_deployment_get: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
@@ -236,7 +233,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **tunnel_deployment_put**
-
 <a id="tunnel_deployment_put"></a>
 > tunnel_deployment_put(authid)
 
@@ -273,7 +269,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_deployment_put: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -348,7 +343,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **tunnel_reservation_delete**
-
 <a id="tunnel_reservation_delete"></a>
 > tunnel_reservation_delete(authid)
 
@@ -385,7 +379,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_reservation_delete: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -460,7 +453,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **tunnel_reservation_get**
-
 <a id="tunnel_reservation_get"></a>
 > [Tunnel] tunnel_reservation_get(auth)
 
@@ -498,7 +490,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_reservation_get: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
@@ -570,7 +561,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **tunnel_reservation_put**
-
 <a id="tunnel_reservation_put"></a>
 > tunnel_reservation_put(authtunnel)
 
@@ -614,7 +604,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_reservation_put: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              

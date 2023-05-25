@@ -27,7 +27,7 @@ from urllib3._collections import HTTPHeaderDict
 AuthSchema = schemas.StrSchema
 
 
-class SliceSchema(
+class SlicesSchema(
     schemas.ListSchema
 ):
     class MetaOapg:
@@ -40,7 +40,7 @@ class SliceSchema(
             cls,
             _arg: typing.Union[typing.Tuple['Slice'], typing.List['Slice']],
             _configuration: typing.Optional[schemas.Configuration] = None,
-    ) -> 'SliceSchema':
+    ) -> 'SlicesSchema':
         return super().__new__(
             cls,
             _arg,
@@ -49,13 +49,11 @@ class SliceSchema(
 
     def __getitem__(self, i: int) -> 'Slice':
         return super().__getitem__(i)
-
-
 RequestRequiredQueryParams = typing_extensions.TypedDict(
     'RequestRequiredQueryParams',
     {
         'auth': typing.Union[AuthSchema, str,],
-        'slice': typing.Union[SliceSchema, list, tuple,],
+        'slices': typing.Union[SlicesSchema, list, tuple,],
     }
 )
 RequestOptionalQueryParams = typing_extensions.TypedDict(
@@ -77,10 +75,10 @@ request_query_auth = api_client.QueryParameter(
     required=True,
     explode=True,
 )
-request_query_slice = api_client.QueryParameter(
-    name="slice",
+request_query_slices = api_client.QueryParameter(
+    name="slices",
     style=api_client.ParameterStyle.FORM,
-    schema=SliceSchema,
+    schema=SlicesSchema,
     required=True,
     explode=True,
 )
@@ -214,7 +212,7 @@ class BaseApi(api_client.Api):
         prefix_separator_iterator = None
         for parameter in (
                 request_query_auth,
-                request_query_slice,
+                request_query_slices,
         ):
             parameter_data = query_params.get(parameter.name, schemas.unset)
             if parameter_data is schemas.unset:

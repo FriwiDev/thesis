@@ -42,9 +42,7 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling AuthenticationApi->auth_put: %s\n" % e)
 ```
-
 ### Parameters
-
 This endpoint does not need any parameter.
 
 ### Return Types, Responses

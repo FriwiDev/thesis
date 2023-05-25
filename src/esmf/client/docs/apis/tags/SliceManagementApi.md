@@ -13,7 +13,7 @@ All URIs are relative to *http://localhost:8080*
 # **slice_delete**
 
 <a id="slice_delete"></a>
-> slice_delete(authid)
+> slice_delete(authids)
 
 
 
@@ -39,7 +39,7 @@ with esmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'id': [
+        'ids': [
         1
     ],
     }
@@ -50,7 +50,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceManagementApi->slice_delete: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -67,7 +66,7 @@ with esmf_client.ApiClient(configuration) as api_client:
  Name | Type       | Description | Notes 
 ------|------------|-------------|-------
  auth | AuthSchema |             |
- id   | IdSchema   |             |
+ ids  | IdsSchema  |             |
 
 # AuthSchema
 
@@ -77,7 +76,7 @@ with esmf_client.ApiClient(configuration) as api_client:
 ------------|---------------|-------------|-------
  str,       | str,          |             |
 
-# IdSchema
+# IdsSchema
 
 ## Model Type Info
 
@@ -140,7 +139,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_get**
-
 <a id="slice_get"></a>
 > [Slice] slice_get(auth)
 
@@ -178,7 +176,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceManagementApi->slice_get: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
@@ -250,9 +247,8 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_put**
-
 <a id="slice_put"></a>
-> Slice slice_put(authslice)
+> Slice slice_put(authslices)
 
 
 
@@ -279,7 +275,7 @@ with esmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'slice': [
+        'slices': [
         Slice(
             id=1,
             rate=1,
@@ -297,7 +293,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceManagementApi->slice_put: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
@@ -312,10 +307,10 @@ with esmf_client.ApiClient(configuration) as api_client:
 
 #### RequestQueryParams
 
- Name  | Type        | Description | Notes 
--------|-------------|-------------|-------
- auth  | AuthSchema  |             |
- slice | SliceSchema |             |
+ Name   | Type         | Description | Notes 
+--------|--------------|-------------|-------
+ auth   | AuthSchema   |             |
+ slices | SlicesSchema |             |
 
 # AuthSchema
 
@@ -325,7 +320,7 @@ with esmf_client.ApiClient(configuration) as api_client:
 ------------|---------------|-------------|-------
  str,       | str,          |             |
 
-# SliceSchema
+# SlicesSchema
 
 ## Model Type Info
 

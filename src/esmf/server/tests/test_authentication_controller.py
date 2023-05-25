@@ -15,3 +15,4 @@ async def test_auth_put(client):
         headers=headers,
     )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
+

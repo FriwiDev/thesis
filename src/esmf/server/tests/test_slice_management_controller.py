@@ -7,7 +7,7 @@ async def test_slice_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-              ('id', [56])]
+              ('ids', [56])]
     headers = {
     }
     response = await client.request(
@@ -43,7 +43,7 @@ async def test_slice_put(client):
     
     """
     params = [('auth', 'auth_example'),
-              ('slice', [esmf_server.Slice()])]
+              ('slices', [esmf_server.Slice()])]
     headers = {
         'Accept': 'application/json',
     }

@@ -45,7 +45,7 @@ paths:
         - description: The ids of the slices to be deleted.
           explode: true
           in: query
-          name: id
+          name: ids
           required: true
           schema:
             items:
@@ -108,7 +108,7 @@ paths:
         - description: The slices to reserve. The service will set the slice ids.
           explode: true
           in: query
-          name: slice
+          name: slices
           required: true
           schema:
             items:

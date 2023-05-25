@@ -5,15 +5,15 @@ from aiohttp import web
 from esmf_server.models.slice import Slice
 
 
-async def slice_delete(request: web.Request, auth, id) -> web.Response:
+async def slice_delete(request: web.Request, auth, ids) -> web.Response:
     """slice_delete
 
     Deletes one or multiple slices
 
     :param auth: The authentication token issued by prior login
     :type auth: str
-    :param id: The ids of the slices to be deleted.
-    :type id: List[int]
+    :param ids: The ids of the slices to be deleted.
+    :type ids: List[int]
 
     """
     return web.Response(status=200)
@@ -31,16 +31,16 @@ async def slice_get(request: web.Request, auth) -> web.Response:
     return web.Response(status=200)
 
 
-async def slice_put(request: web.Request, auth, slice) -> web.Response:
+async def slice_put(request: web.Request, auth, slices) -> web.Response:
     """slice_put
 
     Creates one or multiple new slices from one host to another. Will either create all slices if feasible or none at all.
 
     :param auth: The authentication token issued by prior login
     :type auth: str
-    :param slice: The slices to reserve. The service will set the slice ids.
-    :type slice: list | bytes
+    :param slices: The slices to reserve. The service will set the slice ids.
+    :type slices: list | bytes
 
     """
-    slice = [Slice.from_dict(d) for d in slice]
+    slices = [Slice.from_dict(d) for d in slices]
     return web.Response(status=200)

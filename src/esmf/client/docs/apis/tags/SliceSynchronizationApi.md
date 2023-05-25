@@ -51,7 +51,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceSynchronizationApi->slice_deployment_delete: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -126,7 +125,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_deployment_get**
-
 <a id="slice_deployment_get"></a>
 > [Slice] slice_deployment_get(auth)
 
@@ -164,7 +162,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceSynchronizationApi->slice_deployment_get: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
@@ -236,7 +233,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_deployment_put**
-
 <a id="slice_deployment_put"></a>
 > slice_deployment_put(authid)
 
@@ -273,7 +269,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceSynchronizationApi->slice_deployment_put: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -348,7 +343,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_reservation_delete**
-
 <a id="slice_reservation_delete"></a>
 > slice_reservation_delete(authid)
 
@@ -385,7 +379,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceSynchronizationApi->slice_reservation_delete: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
@@ -460,7 +453,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_reservation_get**
-
 <a id="slice_reservation_get"></a>
 > [Slice] slice_reservation_get(auth)
 
@@ -498,7 +490,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceSynchronizationApi->slice_reservation_get: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
@@ -570,7 +561,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **slice_reservation_put**
-
 <a id="slice_reservation_put"></a>
 > slice_reservation_put(authslice)
 
@@ -614,7 +604,6 @@ with esmf_client.ApiClient(configuration) as api_client:
     except esmf_client.ApiException as e:
         print("Exception when calling SliceSynchronizationApi->slice_reservation_put: %s\n" % e)
 ```
-
 ### Parameters
 
  Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              

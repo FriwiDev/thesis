@@ -1,5 +1,4 @@
 # esmf-client
-
 A simple API to interact with the Edge Slice Management Function. Supports creating and removing slices across domains.
 Synchronises itself with other ESMFs to achieve a common goal. Please refer to the topology drawings for further
 information about the network structures.
@@ -17,7 +16,6 @@ Python &gt;&#x3D;3.7
 ## Migration from other generators like python and python-legacy
 
 ### Changes
-
 1. This generator uses spec case for all (object) property names and parameter names.
     - So if the spec has a property name like camelCase, it will use camelCase rather than camel_case
     - So you will need to update how you input and read properties to use spec case
@@ -70,7 +68,6 @@ Python &gt;&#x3D;3.7
     - So you will need to update your import paths to the api classes
 
 ### Why are Oapg and _oapg used in class and method names?
-
 Classes can have arbitrarily named properties set on them
 Endpoints can have arbitrary operationId method names set
 For those reasons, I use the prefix Oapg and _oapg to greatly reduce the likelihood of collisions
@@ -78,7 +75,6 @@ on protected + public classes/methods.
 oapg stands for OpenApi Python Generator.
 
 ### Object property spec case
-
 This was done because when payloads are ingested, they can be validated against N number of schemas.
 If the input signature used a different property name then that has mutated the payload.
 So SchemaA and SchemaB must both see the camelCase spec named variable.
@@ -86,9 +82,7 @@ Also it is possible to send in two properties, named camelCase and camel_case in
 That use case should be support so spec case is used.
 
 ### Parameter spec case
-
 Parameters can be included in different locations including:
-
 - query
 - path
 - header
@@ -97,7 +91,6 @@ Parameters can be included in different locations including:
 Any of those parameters could use the same parameter names, so if every parameter
 was included as an endpoint parameter in a function signature, they would collide.
 For that reason, each of those inputs have been separated out into separate typed dictionaries:
-
 - query_params
 - path_params
 - header_params
@@ -107,7 +100,6 @@ So when updating your code, you will need to pass endpoint parameters in using t
 dictionaries.
 
 ### Endpoint responses
-
 Endpoint responses have been enriched to now include more information.
 Any response reom an endpoint will now include the following properties:
 response: urllib3.HTTPResponse
@@ -116,7 +108,6 @@ headers: typing.Union[Unset, TODO]
 Note: response header deserialization has not yet been added
 
 ## Installation & Usage
-
 ### pip install
 
 If the python package is hosted on a repository, you can install directly using:
@@ -124,11 +115,9 @@ If the python package is hosted on a repository, you can install directly using:
 ```sh
 pip install git+https://github.com/GIT_USER_ID/GIT_REPO_ID.git
 ```
-
 (you may need to run `pip` with root permission: `sudo pip install git+https://github.com/GIT_USER_ID/GIT_REPO_ID.git`)
 
 Then import the package:
-
 ```python
 import esmf_client
 ```
@@ -140,11 +129,9 @@ Install via [Setuptools](http://pypi.python.org/pypi/setuptools).
 ```sh
 python setup.py install --user
 ```
-
 (or `sudo python setup.py install` to install the package for all users)
 
 Then import the package:
-
 ```python
 import esmf_client
 ```
@@ -225,7 +212,6 @@ Use specific imports for apis and models like:
 
 Solution 1:
 Before importing the package, adjust the maximum recursion limit as shown below:
-
 ```
 import sys
 sys.setrecursionlimit(1500)

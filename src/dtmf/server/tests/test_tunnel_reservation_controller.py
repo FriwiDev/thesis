@@ -13,12 +13,12 @@ async def test_tunnel_reservation_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56)]
+                    ('tunnel_id', 56)]
     headers = { 
     }
     response = await client.request(
         method='DELETE',
-        path='/tunnel_reservation',
+        path='/v1/tunnel_reservation',
         headers=headers,
         params=params,
         )
@@ -36,7 +36,7 @@ async def test_tunnel_reservation_get(client):
     }
     response = await client.request(
         method='GET',
-        path='/tunnel_reservation',
+        path='/v1/tunnel_reservation',
         headers=headers,
         params=params,
         )
@@ -48,14 +48,16 @@ async def test_tunnel_reservation_put(client):
 
     
     """
-    params = [('auth', 'auth_example'),
-                    ('tunnel', {'key': dtmf_server.Tunnel()})]
+    body = dtmf_server.Tunnel()
+    params = [('auth', 'auth_example')]
     headers = { 
+        'Content-Type': 'application/json',
     }
     response = await client.request(
         method='PUT',
-        path='/tunnel_reservation',
+        path='/v1/tunnel_reservation',
         headers=headers,
+        json=body,
         params=params,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')

@@ -13,12 +13,12 @@ async def test_tunnel_deployment_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56)]
+                    ('tunnel_id', 56)]
     headers = { 
     }
     response = await client.request(
         method='DELETE',
-        path='/tunnel_deployment',
+        path='/v1/tunnel_deployment',
         headers=headers,
         params=params,
         )
@@ -36,7 +36,7 @@ async def test_tunnel_deployment_get(client):
     }
     response = await client.request(
         method='GET',
-        path='/tunnel_deployment',
+        path='/v1/tunnel_deployment',
         headers=headers,
         params=params,
         )
@@ -49,12 +49,12 @@ async def test_tunnel_deployment_put(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56)]
+                    ('tunnel_id', 56)]
     headers = { 
     }
     response = await client.request(
         method='PUT',
-        path='/tunnel_deployment',
+        path='/v1/tunnel_deployment',
         headers=headers,
         params=params,
         )

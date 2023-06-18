@@ -14,13 +14,14 @@ class Queue(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, port: str=None):
+    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, priority: int=None, port: str=None):
         """Queue - a model defined in OpenAPI
 
         :param id: The id of this Queue.
         :param min_rate: The min_rate of this Queue.
         :param max_rate: The max_rate of this Queue.
         :param burst_rate: The burst_rate of this Queue.
+        :param priority: The priority of this Queue.
         :param port: The port of this Queue.
         """
         self.openapi_types = {
@@ -28,6 +29,7 @@ class Queue(Model):
             'min_rate': int,
             'max_rate': int,
             'burst_rate': int,
+            'priority': int,
             'port': str
         }
 
@@ -36,6 +38,7 @@ class Queue(Model):
             'min_rate': 'min_rate',
             'max_rate': 'max_rate',
             'burst_rate': 'burst_rate',
+            'priority': 'priority',
             'port': 'port'
         }
 
@@ -43,6 +46,7 @@ class Queue(Model):
         self._min_rate = min_rate
         self._max_rate = max_rate
         self._burst_rate = burst_rate
+        self._priority = priority
         self._port = port
 
     @classmethod
@@ -145,6 +149,29 @@ class Queue(Model):
         """
 
         self._burst_rate = burst_rate
+
+    @property
+    def priority(self):
+        """Gets the priority of this Queue.
+
+        The queue priority
+
+        :return: The priority of this Queue.
+        :rtype: int
+        """
+        return self._priority
+
+    @priority.setter
+    def priority(self, priority):
+        """Sets the priority of this Queue.
+
+        The queue priority
+
+        :param priority: The priority of this Queue.
+        :type priority: int
+        """
+
+        self._priority = priority
 
     @property
     def port(self):

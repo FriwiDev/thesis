@@ -13,12 +13,12 @@ async def test_slice_deployment_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56)]
+                    ('slice_id', 56)]
     headers = { 
     }
     response = await client.request(
         method='DELETE',
-        path='/slice_deployment',
+        path='/v1/slice_deployment',
         headers=headers,
         params=params,
         )
@@ -36,7 +36,7 @@ async def test_slice_deployment_get(client):
     }
     response = await client.request(
         method='GET',
-        path='/slice_deployment',
+        path='/v1/slice_deployment',
         headers=headers,
         params=params,
         )
@@ -49,12 +49,12 @@ async def test_slice_deployment_put(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56)]
+                    ('slice_id', 56)]
     headers = { 
     }
     response = await client.request(
         method='PUT',
-        path='/slice_deployment',
+        path='/v1/slice_deployment',
         headers=headers,
         params=params,
         )
@@ -67,12 +67,12 @@ async def test_slice_reservation_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56)]
+                    ('slice_id', 56)]
     headers = { 
     }
     response = await client.request(
         method='DELETE',
-        path='/slice_reservation',
+        path='/v1/slice_reservation',
         headers=headers,
         params=params,
         )
@@ -90,7 +90,7 @@ async def test_slice_reservation_get(client):
     }
     response = await client.request(
         method='GET',
-        path='/slice_reservation',
+        path='/v1/slice_reservation',
         headers=headers,
         params=params,
         )
@@ -102,14 +102,16 @@ async def test_slice_reservation_put(client):
 
     
     """
-    params = [('auth', 'auth_example'),
-                    ('slice', {'key': esmf_server.Slice()})]
+    body = esmf_server.Slice()
+    params = [('auth', 'auth_example')]
     headers = { 
+        'Content-Type': 'application/json',
     }
     response = await client.request(
         method='PUT',
-        path='/slice_reservation',
+        path='/v1/slice_reservation',
         headers=headers,
+        json=body,
         params=params,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')

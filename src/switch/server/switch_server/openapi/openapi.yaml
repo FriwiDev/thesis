@@ -5,11 +5,16 @@ info:
   title: Switch QoS API
   version: 1.0.0
 servers:
-- url: "{apiRoot}"
+- url: "{protocol}://{apiRoot}/v1"
   variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
     apiRoot:
-      default: http://localhost:8082
-      description: The server endpoint to use
+      default: localhost:8082
+      description: The server to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -100,7 +105,7 @@ paths:
       - description: The id of the queue to be deleted.
         explode: true
         in: query
-        name: id
+        name: queue_id
         required: true
         schema:
           format: int32
@@ -137,14 +142,13 @@ paths:
         schema:
           type: string
         style: form
-      - description: The queue to create. The id will be set by the service.
-        explode: true
-        in: query
-        name: queue
-        required: true
-        schema:
-          $ref: '#/components/schemas/queue'
-        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/queue'
+        description: The queue to create. The id will be set by the service.
+        x-body-name: body
       responses:
         "200":
           content:
@@ -152,6 +156,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/queue'
           description: The queue object
+        "400":
+          description: No body provided.
         "403":
           description: Invalid authentication provided.
         "404":
@@ -163,6 +169,7 @@ paths:
       tags:
       - Queue Management
       x-openapi-router-controller: switch_server.controllers.queue_management_controller
+      x-codegen-request-body-name: body
     summary: Manages queues on the OpenFlow switch
 components:
   schemas:
@@ -172,6 +179,7 @@ components:
         burst_rate: 5
         max_rate: 1
         id: 0
+        priority: 5
         min_rate: 6
       properties:
         id:
@@ -193,6 +201,11 @@ components:
           description: The burst queue rate in Bits/s
           format: int64
           title: burst_rate
+          type: integer
+        priority:
+          description: The queue priority
+          format: int64
+          title: priority
           type: integer
         port:
           description: The name of the output port on the switch

@@ -7,11 +7,15 @@
   },
   "servers": [
     {
-      "url": "{apiRoot}",
+      "url": "{protocol}://{apiRoot}/v1",
       "variables": {
+        "protocol": {
+          "enum": ["http", "https"],
+          "default": "http"
+        },
         "apiRoot": {
-          "default": "http://localhost:8081",
-          "description": "The server endpoint to use"
+          "default": "localhost:8081",
+          "description": "The server to use"
         }
       }
     }
@@ -150,17 +154,18 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "slice",
-            "in": "query",
-            "description": "The slice to reserve. Will check for issues.",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/slice"
-            }
           }
         ],
+        "requestBody": {
+          "description": "The slice to reserve. Will check for issues.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/slice"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "The slice has been reserved"
@@ -193,7 +198,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "slice_id",
             "in": "query",
             "description": "The id of the slice reservation to be deleted.",
             "required": true,
@@ -266,7 +271,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "slice_id",
             "in": "query",
             "description": "The slice to create from the corresponding reservation id",
             "required": true,
@@ -305,7 +310,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "slice_id",
             "in": "query",
             "description": "The id of the slice to be deleted.",
             "required": true,
@@ -376,17 +381,18 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "tunnel",
-            "in": "query",
-            "description": "The tunnel to reserve. Will check for issues.",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/tunnel"
-            }
           }
         ],
+        "requestBody": {
+          "description": "The tunnel to reserve. Will check for issues.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tunnel"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "The tunnel has been reserved"
@@ -419,7 +425,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "tunnel_id",
             "in": "query",
             "description": "The id of the tunnel reservation to be deleted.",
             "required": true,
@@ -492,7 +498,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "tunnel_id",
             "in": "query",
             "description": "The tunnel to create from the corresponding reservation id",
             "required": true,
@@ -531,7 +537,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "tunnel_id",
             "in": "query",
             "description": "The id of the tunnel to be deleted.",
             "required": true,

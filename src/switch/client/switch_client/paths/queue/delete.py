@@ -28,13 +28,13 @@ from . import path
 
 # Query params
 AuthSchema = schemas.StrSchema
-IdSchema = schemas.Int32Schema
+QueueIdSchema = schemas.Int32Schema
 PortSchema = schemas.StrSchema
 RequestRequiredQueryParams = typing_extensions.TypedDict(
     'RequestRequiredQueryParams',
     {
         'auth': typing.Union[AuthSchema, str, ],
-        'id': typing.Union[IdSchema, decimal.Decimal, int, ],
+        'queue_id': typing.Union[QueueIdSchema, decimal.Decimal, int, ],
         'port': typing.Union[PortSchema, str, ],
     }
 )
@@ -57,10 +57,10 @@ request_query_auth = api_client.QueryParameter(
     required=True,
     explode=True,
 )
-request_query_id = api_client.QueryParameter(
-    name="id",
+request_query_queue_id = api_client.QueryParameter(
+    name="queue_id",
     style=api_client.ParameterStyle.FORM,
-    schema=IdSchema,
+    schema=QueueIdSchema,
     required=True,
     explode=True,
 )
@@ -165,7 +165,7 @@ class BaseApi(api_client.Api):
         prefix_separator_iterator = None
         for parameter in (
             request_query_auth,
-            request_query_id,
+            request_query_queue_id,
             request_query_port,
         ):
             parameter_data = query_params.get(parameter.name, schemas.unset)

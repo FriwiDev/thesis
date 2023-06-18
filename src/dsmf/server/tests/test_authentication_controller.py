@@ -16,7 +16,7 @@ async def test_auth_put(client):
     }
     response = await client.request(
         method='PUT',
-        path='/auth',
+        path='/v1/auth',
         headers=headers,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')

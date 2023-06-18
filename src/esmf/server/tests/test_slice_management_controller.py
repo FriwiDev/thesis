@@ -18,7 +18,7 @@ async def test_slice_delete(client):
     }
     response = await client.request(
         method='DELETE',
-        path='/slice',
+        path='/v1/slice',
         headers=headers,
         params=params,
         )
@@ -36,7 +36,7 @@ async def test_slice_get(client):
     }
     response = await client.request(
         method='GET',
-        path='/slice',
+        path='/v1/slice',
         headers=headers,
         params=params,
         )
@@ -55,7 +55,7 @@ async def test_slice_put(client):
     }
     response = await client.request(
         method='PUT',
-        path='/slice',
+        path='/v1/slice',
         headers=headers,
         params=params,
         )

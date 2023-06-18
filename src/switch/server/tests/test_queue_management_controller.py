@@ -13,13 +13,13 @@ async def test_queue_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('id', 56),
+                    ('queue_id', 56),
                     ('port', 'port_example')]
     headers = { 
     }
     response = await client.request(
         method='DELETE',
-        path='/queue',
+        path='/v1/queue',
         headers=headers,
         params=params,
         )
@@ -31,15 +31,17 @@ async def test_queue_put(client):
 
     
     """
-    params = [('auth', 'auth_example'),
-                    ('queue', {'key': switch_server.Queue()})]
+    body = switch_server.Queue()
+    params = [('auth', 'auth_example')]
     headers = { 
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
     }
     response = await client.request(
         method='PUT',
-        path='/queue',
+        path='/v1/queue',
         headers=headers,
+        json=body,
         params=params,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')

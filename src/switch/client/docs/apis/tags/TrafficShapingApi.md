@@ -1,7 +1,7 @@
 <a id="__pageTop"></a>
 # switch_client.apis.tags.traffic_shaping_api.TrafficShapingApi
 
-All URIs are relative to *http://localhost:8082*
+All URIs are relative to *http://localhost:8082/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -21,10 +21,10 @@ Sets the policies on the specified port
 import switch_client
 from switch_client.apis.tags import traffic_shaping_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8082
+# Defining the host is optional and defaults to http://localhost:8082/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = switch_client.Configuration(
-    host = "http://localhost:8082"
+    host = "http://localhost:8082/v1"
 )
 
 # Enter a context with an instance of the API client

@@ -19,7 +19,7 @@ async def test_policy_put(client):
     }
     response = await client.request(
         method='PUT',
-        path='/policy',
+        path='/v1/policy',
         headers=headers,
         params=params,
         )

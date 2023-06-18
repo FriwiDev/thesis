@@ -7,11 +7,15 @@
   },
   "servers": [
     {
-      "url": "{apiRoot}",
+      "url": "{protocol}://{apiRoot}/v1",
       "variables": {
+        "protocol": {
+          "enum": ["http", "https"],
+          "default": "http"
+        },
         "apiRoot": {
-          "default": "http://localhost:8082",
-          "description": "The server endpoint to use"
+          "default": "localhost:8082",
+          "description": "The server to use"
         }
       }
     }
@@ -40,6 +44,11 @@
             "type": "integer",
             "format": "int64",
             "description": "The burst queue rate in Bits/s"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The queue priority"
           },
           "port": {
             "type": "string",
@@ -92,17 +101,18 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "queue",
-            "in": "query",
-            "description": "The queue to create. The id will be set by the service.",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/queue"
-            }
           }
         ],
+        "requestBody": {
+          "description": "The queue to create. The id will be set by the service.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queue"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "The queue object",
@@ -113,6 +123,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "No body provided."
           },
           "403": {
             "description": "Invalid authentication provided."
@@ -144,7 +157,7 @@
             }
           },
           {
-            "name": "id",
+            "name": "queue_id",
             "in": "query",
             "description": "The id of the queue to be deleted.",
             "required": true,

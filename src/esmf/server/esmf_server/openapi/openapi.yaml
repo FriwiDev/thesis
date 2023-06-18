@@ -7,11 +7,16 @@ info:
   title: ESMF
   version: 1.0.0
 servers:
-- url: "{apiRoot}"
+- url: "{protocol}://{apiRoot}/v1"
   variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
     apiRoot:
-      default: http://localhost:8080
-      description: The server endpoint to use
+      default: localhost:8080
+      description: The server to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -156,7 +161,7 @@ paths:
       - description: The id of the slice to be deleted.
         explode: true
         in: query
-        name: id
+        name: slice_id
         required: true
         schema:
           format: int32
@@ -215,7 +220,7 @@ paths:
       - description: The id of the slice to be deployed.
         explode: true
         in: query
-        name: id
+        name: slice_id
         required: true
         schema:
           format: int32
@@ -249,7 +254,7 @@ paths:
       - description: The id of the slice reservation to be deleted.
         explode: true
         in: query
-        name: id
+        name: slice_id
         required: true
         schema:
           format: int32
@@ -305,14 +310,13 @@ paths:
         schema:
           type: string
         style: form
-      - description: The slice to reserve.
-        explode: true
-        in: query
-        name: slice
-        required: true
-        schema:
-          $ref: '#/components/schemas/slice'
-        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/slice'
+        description: The slice to reserve.
+        x-body-name: body
       responses:
         "200":
           description: The slice has been reserved.
@@ -327,6 +331,7 @@ paths:
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
+      x-codegen-request-body-name: body
     summary: Manages slice reservations within the two-phase commit protocol between
       ESMFs
   /tunnel_deployment:
@@ -345,7 +350,7 @@ paths:
       - description: The id of the tunnel to be deleted.
         explode: true
         in: query
-        name: id
+        name: tunnel_id
         required: true
         schema:
           format: int32
@@ -404,7 +409,7 @@ paths:
       - description: The id of the tunnel to be deployed.
         explode: true
         in: query
-        name: id
+        name: tunnel_id
         required: true
         schema:
           format: int32
@@ -438,7 +443,7 @@ paths:
       - description: The id of the tunnel reservation to be deleted.
         explode: true
         in: query
-        name: id
+        name: tunnel_id
         required: true
         schema:
           format: int32
@@ -494,14 +499,13 @@ paths:
         schema:
           type: string
         style: form
-      - description: The tunnel to reserve or alter.
-        explode: true
-        in: query
-        name: tunnel
-        required: true
-        schema:
-          $ref: '#/components/schemas/tunnel'
-        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tunnel'
+        description: The tunnel to reserve or alter.
+        x-body-name: body
       responses:
         "200":
           description: The tunnel has been reserved.
@@ -517,6 +521,7 @@ paths:
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
+      x-codegen-request-body-name: body
     summary: Manages tunnel reservations within the two-phase commit protocol between
       ESMFs and CTMFs
 components:

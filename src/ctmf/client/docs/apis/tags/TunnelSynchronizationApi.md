@@ -1,7 +1,7 @@
 <a id="__pageTop"></a>
 # ctmf_client.apis.tags.tunnel_synchronization_api.TunnelSynchronizationApi
 
-All URIs are relative to *http://localhost:8081*
+All URIs are relative to *http://localhost:8080/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 # **tunnel_deployment_delete**
 <a id="tunnel_deployment_delete"></a>
-> tunnel_deployment_delete(authid)
+> tunnel_deployment_delete(authtunnel_id)
 
 
 
@@ -26,10 +26,10 @@ Deletes a tunnel from this domain
 import ctmf_client
 from ctmf_client.apis.tags import tunnel_synchronization_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -40,7 +40,7 @@ with ctmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'id': 1,
+        'tunnel_id': 1,
     }
     try:
         api_response = api_instance.tunnel_deployment_delete(
@@ -64,7 +64,7 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-id | IdSchema | | 
+tunnel_id | TunnelIdSchema | | 
 
 
 # AuthSchema
@@ -74,7 +74,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-# IdSchema
+# TunnelIdSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -132,10 +132,10 @@ import ctmf_client
 from ctmf_client.apis.tags import tunnel_synchronization_api
 from ctmf_client.model.tunnel import Tunnel
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -222,7 +222,7 @@ No authorization required
 
 # **tunnel_deployment_put**
 <a id="tunnel_deployment_put"></a>
-> tunnel_deployment_put(authid)
+> tunnel_deployment_put(authtunnel_id)
 
 
 
@@ -234,10 +234,10 @@ Creates a new tunnel on this domain
 import ctmf_client
 from ctmf_client.apis.tags import tunnel_synchronization_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -248,7 +248,7 @@ with ctmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'id': 1,
+        'tunnel_id': 1,
     }
     try:
         api_response = api_instance.tunnel_deployment_put(
@@ -272,7 +272,7 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-id | IdSchema | | 
+tunnel_id | TunnelIdSchema | | 
 
 
 # AuthSchema
@@ -282,7 +282,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-# IdSchema
+# TunnelIdSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -327,7 +327,7 @@ No authorization required
 
 # **tunnel_reservation_delete**
 <a id="tunnel_reservation_delete"></a>
-> tunnel_reservation_delete(authid)
+> tunnel_reservation_delete(authtunnel_id)
 
 
 
@@ -339,10 +339,10 @@ Deletes a tunnel reservation
 import ctmf_client
 from ctmf_client.apis.tags import tunnel_synchronization_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -353,7 +353,7 @@ with ctmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'id': 1,
+        'tunnel_id': 1,
     }
     try:
         api_response = api_instance.tunnel_reservation_delete(
@@ -377,7 +377,7 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-id | IdSchema | | 
+tunnel_id | TunnelIdSchema | | 
 
 
 # AuthSchema
@@ -387,7 +387,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-# IdSchema
+# TunnelIdSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -445,10 +445,10 @@ import ctmf_client
 from ctmf_client.apis.tags import tunnel_synchronization_api
 from ctmf_client.model.tunnel import Tunnel
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -535,7 +535,7 @@ No authorization required
 
 # **tunnel_reservation_put**
 <a id="tunnel_reservation_put"></a>
-> tunnel_reservation_put(authtunnel)
+> tunnel_reservation_put(auth)
 
 
 
@@ -548,10 +548,10 @@ import ctmf_client
 from ctmf_client.apis.tags import tunnel_synchronization_api
 from ctmf_client.model.tunnel import Tunnel
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -562,17 +562,29 @@ with ctmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'tunnel': Tunnel(
+    }
+    try:
+        api_response = api_instance.tunnel_reservation_put(
+            query_params=query_params,
+        )
+    except ctmf_client.ApiException as e:
+        print("Exception when calling TunnelSynchronizationApi->tunnel_reservation_put: %s\n" % e)
+
+    # example passing only optional values
+    query_params = {
+        'auth': "auth_example",
+    }
+    body = Tunnel(
         id=1,
         rate=1,
         latency=1,
         _from="_from_example",
         to="to_example",
-    ),
-    }
+    )
     try:
         api_response = api_instance.tunnel_reservation_put(
             query_params=query_params,
+            body=body,
         )
     except ctmf_client.ApiException as e:
         print("Exception when calling TunnelSynchronizationApi->tunnel_reservation_put: %s\n" % e)
@@ -581,10 +593,20 @@ with ctmf_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+body | typing.Union[SchemaForRequestBodyApplicationJson, Unset] | optional, default is unset |
 query_params | RequestQueryParams | |
+content_type | str | optional, default is 'application/json' | Selects the schema and serialization of the request body
 stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
 timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
 skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
+
+### body
+
+# SchemaForRequestBodyApplicationJson
+Type | Description  | Notes
+------------- | ------------- | -------------
+[**Tunnel**](../../models/Tunnel.md) |  | 
+
 
 ### query_params
 #### RequestQueryParams
@@ -592,7 +614,6 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-tunnel | TunnelSchema | | 
 
 
 # AuthSchema
@@ -601,12 +622,6 @@ tunnel | TunnelSchema | |
 Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
-
-# TunnelSchema
-Type | Description  | Notes
-------------- | ------------- | -------------
-[**Tunnel**](../../models/Tunnel.md) |  | 
-
 
 ### Return Types, Responses
 

@@ -9,11 +9,16 @@ info:
   title: DTMF
   version: 1.0.0
 servers:
-- url: "{apiRoot}"
+- url: "{protocol}://{apiRoot}/v1"
   variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
     apiRoot:
-      default: http://localhost:8080
-      description: The server endpoint to use
+      default: localhost:8081
+      description: The server to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -51,7 +56,7 @@ paths:
       - description: The id of the tunnel to be deleted.
         explode: true
         in: query
-        name: id
+        name: tunnel_id
         required: true
         schema:
           format: int32
@@ -109,7 +114,7 @@ paths:
       - description: The tunnel to create from the corresponding reservation id
         explode: true
         in: query
-        name: id
+        name: tunnel_id
         required: true
         schema:
           format: int32
@@ -144,7 +149,7 @@ paths:
       - description: The id of the tunnel reservation to be deleted.
         explode: true
         in: query
-        name: id
+        name: tunnel_id
         required: true
         schema:
           format: int32
@@ -200,14 +205,13 @@ paths:
         schema:
           type: string
         style: form
-      - description: The tunnel to reserve. Will check for issues.
-        explode: true
-        in: query
-        name: tunnel
-        required: true
-        schema:
-          $ref: '#/components/schemas/tunnel'
-        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tunnel'
+        description: The tunnel to reserve. Will check for issues.
+        x-body-name: body
       responses:
         "200":
           description: The tunnel has been reserved
@@ -223,6 +227,7 @@ paths:
       tags:
       - Tunnel Reservation
       x-openapi-router-controller: dtmf_server.controllers.tunnel_reservation_controller
+      x-codegen-request-body-name: body
     summary: Manages tunnel reservations on the current domain
 components:
   schemas:

@@ -21,13 +21,13 @@ python3 -m dtmf_server
 and open your browser to here:
 
 ```
-http://localhost:8081/ui/
+http://localhost:8081/v1/ui/
 ```
 
 Your OpenAPI definition lives here:
 
 ```
-http://localhost:8081/openapi.json
+http://localhost:8081/v1/openapi.json
 ```
 
 To launch the integration tests, use pytest:

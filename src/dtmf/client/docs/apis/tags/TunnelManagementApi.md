@@ -1,7 +1,7 @@
 <a id="__pageTop"></a>
 # dtmf_client.apis.tags.tunnel_management_api.TunnelManagementApi
 
-All URIs are relative to *http://localhost:8080*
+All URIs are relative to *http://localhost:8081/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 # **tunnel_deployment_delete**
 <a id="tunnel_deployment_delete"></a>
-> tunnel_deployment_delete(authid)
+> tunnel_deployment_delete(authtunnel_id)
 
 
 
@@ -23,10 +23,10 @@ Deletes a tunnel
 import dtmf_client
 from dtmf_client.apis.tags import tunnel_management_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8080
+# Defining the host is optional and defaults to http://localhost:8081/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = dtmf_client.Configuration(
-    host = "http://localhost:8080"
+    host = "http://localhost:8081/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -37,7 +37,7 @@ with dtmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'id': 1,
+        'tunnel_id': 1,
     }
     try:
         api_response = api_instance.tunnel_deployment_delete(
@@ -61,7 +61,7 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-id | IdSchema | | 
+tunnel_id | TunnelIdSchema | | 
 
 
 # AuthSchema
@@ -71,7 +71,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-# IdSchema
+# TunnelIdSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -129,10 +129,10 @@ import dtmf_client
 from dtmf_client.apis.tags import tunnel_management_api
 from dtmf_client.model.tunnel import Tunnel
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8080
+# Defining the host is optional and defaults to http://localhost:8081/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = dtmf_client.Configuration(
-    host = "http://localhost:8080"
+    host = "http://localhost:8081/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -219,7 +219,7 @@ No authorization required
 
 # **tunnel_deployment_put**
 <a id="tunnel_deployment_put"></a>
-> tunnel_deployment_put(authid)
+> tunnel_deployment_put(authtunnel_id)
 
 
 
@@ -231,10 +231,10 @@ Creates a new tunnel or modifies a tunnel from a reservation
 import dtmf_client
 from dtmf_client.apis.tags import tunnel_management_api
 from pprint import pprint
-# Defining the host is optional and defaults to http://localhost:8080
+# Defining the host is optional and defaults to http://localhost:8081/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = dtmf_client.Configuration(
-    host = "http://localhost:8080"
+    host = "http://localhost:8081/v1"
 )
 
 # Enter a context with an instance of the API client
@@ -245,7 +245,7 @@ with dtmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'id': 1,
+        'tunnel_id': 1,
     }
     try:
         api_response = api_instance.tunnel_deployment_put(
@@ -269,7 +269,7 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-id | IdSchema | | 
+tunnel_id | TunnelIdSchema | | 
 
 
 # AuthSchema
@@ -279,7 +279,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-# IdSchema
+# TunnelIdSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes

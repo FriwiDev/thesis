@@ -26,12 +26,12 @@ from esmf_client import schemas  # noqa: F401
 
 # Query params
 AuthSchema = schemas.StrSchema
-IdSchema = schemas.Int32Schema
+SliceIdSchema = schemas.Int32Schema
 RequestRequiredQueryParams = typing_extensions.TypedDict(
     'RequestRequiredQueryParams',
     {
         'auth': typing.Union[AuthSchema, str, ],
-        'id': typing.Union[IdSchema, decimal.Decimal, int, ],
+        'slice_id': typing.Union[SliceIdSchema, decimal.Decimal, int, ],
     }
 )
 RequestOptionalQueryParams = typing_extensions.TypedDict(
@@ -53,10 +53,10 @@ request_query_auth = api_client.QueryParameter(
     required=True,
     explode=True,
 )
-request_query_id = api_client.QueryParameter(
-    name="id",
+request_query_slice_id = api_client.QueryParameter(
+    name="slice_id",
     style=api_client.ParameterStyle.FORM,
-    schema=IdSchema,
+    schema=SliceIdSchema,
     required=True,
     explode=True,
 )
@@ -149,7 +149,7 @@ class BaseApi(api_client.Api):
         prefix_separator_iterator = None
         for parameter in (
             request_query_auth,
-            request_query_id,
+            request_query_slice_id,
         ):
             parameter_data = query_params.get(parameter.name, schemas.unset)
             if parameter_data is schemas.unset:

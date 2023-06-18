@@ -141,10 +141,10 @@ import time
 import switch_client
 from pprint import pprint
 from switch_client.apis.tags import authentication_api
-# Defining the host is optional and defaults to http://localhost:8082
+# Defining the host is optional and defaults to http://localhost:8082/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = switch_client.Configuration(
-    host = "http://localhost:8082"
+    host = "http://localhost:8082/v1"
 )
 
 
@@ -162,7 +162,7 @@ with switch_client.ApiClient(configuration) as api_client:
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost:8082*
+All URIs are relative to *http://localhost:8082/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

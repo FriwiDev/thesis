@@ -40,12 +40,14 @@ class Queue(
             min_rate = schemas.Int64Schema
             max_rate = schemas.Int64Schema
             burst_rate = schemas.Int64Schema
+            priority = schemas.Int64Schema
             port = schemas.StrSchema
             __annotations__ = {
                 "id": id,
                 "min_rate": min_rate,
                 "max_rate": max_rate,
                 "burst_rate": burst_rate,
+                "priority": priority,
                 "port": port,
             }
     
@@ -62,12 +64,15 @@ class Queue(
     def __getitem__(self, name: typing_extensions.Literal["burst_rate"]) -> MetaOapg.properties.burst_rate: ...
     
     @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["priority"]) -> MetaOapg.properties.priority: ...
+    
+    @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["port"]) -> MetaOapg.properties.port: ...
     
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "port", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "priority", "port", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
@@ -85,12 +90,15 @@ class Queue(
     def get_item_oapg(self, name: typing_extensions.Literal["burst_rate"]) -> typing.Union[MetaOapg.properties.burst_rate, schemas.Unset]: ...
     
     @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["priority"]) -> typing.Union[MetaOapg.properties.priority, schemas.Unset]: ...
+    
+    @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["port"]) -> typing.Union[MetaOapg.properties.port, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "port", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "priority", "port", ], str]):
         return super().get_item_oapg(name)
     
 
@@ -101,6 +109,7 @@ class Queue(
         min_rate: typing.Union[MetaOapg.properties.min_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         max_rate: typing.Union[MetaOapg.properties.max_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         burst_rate: typing.Union[MetaOapg.properties.burst_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        priority: typing.Union[MetaOapg.properties.priority, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         port: typing.Union[MetaOapg.properties.port, str, schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
         **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
@@ -112,6 +121,7 @@ class Queue(
             min_rate=min_rate,
             max_rate=max_rate,
             burst_rate=burst_rate,
+            priority=priority,
             port=port,
             _configuration=_configuration,
             **kwargs,

@@ -141,10 +141,10 @@ import time
 import ctmf_client
 from pprint import pprint
 from ctmf_client.apis.tags import authentication_api
-# Defining the host is optional and defaults to http://localhost:8081
+# Defining the host is optional and defaults to http://localhost:8080/v1
 # See configuration.py for a list of all supported configuration parameters.
 configuration = ctmf_client.Configuration(
-    host = "http://localhost:8081"
+    host = "http://localhost:8080/v1"
 )
 
 
@@ -162,7 +162,7 @@ with ctmf_client.ApiClient(configuration) as api_client:
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost:8081*
+All URIs are relative to *http://localhost:8080/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

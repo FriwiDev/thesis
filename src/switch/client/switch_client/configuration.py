@@ -92,7 +92,7 @@ class Configuration(object):
     ):
         """Constructor
         """
-        self._base_path = "http://localhost:8082" if host is None else host
+        self._base_path = "http://localhost:8082/v1" if host is None else host
         """Default Base url
         """
         self.server_index = 0 if server_index is None and host is None else server_index
@@ -370,12 +370,20 @@ class Configuration(object):
         """
         return [
             {
-                'url': "{apiRoot}",
+                'url': "{protocol}://{apiRoot}/v1",
                 'description': "No description provided",
                 'variables': {
+                    'protocol': {
+                        'description': "No description provided",
+                        'default_value': "http",
+                        'enum_values': [
+                            "http",
+                            "https"
+                        ]
+                        },
                     'apiRoot': {
-                        'description': "The server endpoint to use",
-                        'default_value': "http://localhost:8082",
+                        'description': "The server to use",
+                        'default_value': "localhost:8082",
                         }
                     }
             }

@@ -1,7 +1,11 @@
 # coding: utf-8
 
-from switch_server import util
+from datetime import date, datetime
+
+from typing import List, Dict, Type
+
 from switch_server.models.base_model_ import Model
+from switch_server import util
 
 
 class Queue(Model):
@@ -10,27 +14,35 @@ class Queue(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int = None, rate: int = None, port: str = None):
+    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, port: str=None):
         """Queue - a model defined in OpenAPI
 
         :param id: The id of this Queue.
-        :param rate: The rate of this Queue.
+        :param min_rate: The min_rate of this Queue.
+        :param max_rate: The max_rate of this Queue.
+        :param burst_rate: The burst_rate of this Queue.
         :param port: The port of this Queue.
         """
         self.openapi_types = {
             'id': int,
-            'rate': int,
+            'min_rate': int,
+            'max_rate': int,
+            'burst_rate': int,
             'port': str
         }
 
         self.attribute_map = {
             'id': 'id',
-            'rate': 'rate',
+            'min_rate': 'min_rate',
+            'max_rate': 'max_rate',
+            'burst_rate': 'burst_rate',
             'port': 'port'
         }
 
         self._id = id
-        self._rate = rate
+        self._min_rate = min_rate
+        self._max_rate = max_rate
+        self._burst_rate = burst_rate
         self._port = port
 
     @classmethod
@@ -66,27 +78,73 @@ class Queue(Model):
         self._id = id
 
     @property
-    def rate(self):
-        """Gets the rate of this Queue.
+    def min_rate(self):
+        """Gets the min_rate of this Queue.
 
-        The queue rate as bits/s
+        The minimum queue rate in Bits/s
 
-        :return: The rate of this Queue.
+        :return: The min_rate of this Queue.
         :rtype: int
         """
-        return self._rate
+        return self._min_rate
 
-    @rate.setter
-    def rate(self, rate):
-        """Sets the rate of this Queue.
+    @min_rate.setter
+    def min_rate(self, min_rate):
+        """Sets the min_rate of this Queue.
 
-        The queue rate as bits/s
+        The minimum queue rate in Bits/s
 
-        :param rate: The rate of this Queue.
-        :type rate: int
+        :param min_rate: The min_rate of this Queue.
+        :type min_rate: int
         """
 
-        self._rate = rate
+        self._min_rate = min_rate
+
+    @property
+    def max_rate(self):
+        """Gets the max_rate of this Queue.
+
+        The maximum queue rate in Bits/s
+
+        :return: The max_rate of this Queue.
+        :rtype: int
+        """
+        return self._max_rate
+
+    @max_rate.setter
+    def max_rate(self, max_rate):
+        """Sets the max_rate of this Queue.
+
+        The maximum queue rate in Bits/s
+
+        :param max_rate: The max_rate of this Queue.
+        :type max_rate: int
+        """
+
+        self._max_rate = max_rate
+
+    @property
+    def burst_rate(self):
+        """Gets the burst_rate of this Queue.
+
+        The burst queue rate in Bits/s
+
+        :return: The burst_rate of this Queue.
+        :rtype: int
+        """
+        return self._burst_rate
+
+    @burst_rate.setter
+    def burst_rate(self, burst_rate):
+        """Sets the burst_rate of this Queue.
+
+        The burst queue rate in Bits/s
+
+        :param burst_rate: The burst_rate of this Queue.
+        :type burst_rate: int
+        """
+
+        self._burst_rate = burst_rate
 
     @property
     def port(self):

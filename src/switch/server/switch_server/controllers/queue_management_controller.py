@@ -1,4 +1,8 @@
+from typing import List, Dict
 from aiohttp import web
+
+from switch_server.models.queue import Queue
+from switch_server import util
 
 
 async def queue_delete(request: web.Request, auth, id, port) -> web.Response:
@@ -28,5 +32,5 @@ async def queue_put(request: web.Request, auth, queue) -> web.Response:
     :type queue: dict | bytes
 
     """
-    queue =.from_dict(queue)
+    queue = .from_dict(queue)
     return web.Response(status=200)

@@ -8,3 +8,4 @@ import enum
 class PathValues(str, enum.Enum):
     AUTH = "/auth"
     QUEUE = "/queue"
+    POLICY = "/policy"

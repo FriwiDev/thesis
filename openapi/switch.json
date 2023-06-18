@@ -7,7 +7,13 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8082"
+      "url": "{apiRoot}",
+      "variables": {
+        "apiRoot": {
+          "default": "http://localhost:8082",
+          "description": "The server endpoint to use"
+        }
+      }
     }
   ],
   "components": {
@@ -20,10 +26,20 @@
             "format": "int32",
             "description": "The queue identifier used by OpenFlow"
           },
-          "rate": {
+          "min_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The queue rate as bits/s"
+            "description": "The minimum queue rate in Bits/s"
+          },
+          "max_rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The maximum queue rate in Bits/s"
+          },
+          "burst_rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The burst queue rate in Bits/s"
           },
           "port": {
             "type": "string",
@@ -63,7 +79,9 @@
       "summary": "Manages queues on the OpenFlow switch",
       "description": "Endpoint to manage queues",
       "put": {
-        "tags": ["Queue Management"],
+        "tags": [
+          "Queue Management"
+        ],
         "description": "Creates a new queue",
         "parameters": [
           {
@@ -102,13 +120,18 @@
           "404": {
             "description": "The switch port could not be found"
           },
+          "406": {
+            "description": "A value exceeds the allowed range"
+          },
           "507": {
             "description": "Already too many queues in use"
           }
         }
       },
       "delete": {
-        "tags": ["Queue Management"],
+        "tags": [
+          "Queue Management"
+        ],
         "description": "Deletes a queue",
         "parameters": [
           {
@@ -149,6 +172,68 @@
           },
           "404": {
             "description": "The queue could not be found."
+          }
+        }
+      }
+    },
+    "/policy": {
+      "summary": "Manages traffic policies on the OpenFlow switch",
+      "description": "Endpoint to manage traffic policies",
+      "put": {
+        "tags": ["Traffic shaping"],
+        "description": "Sets the policies on the specified port",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "port",
+            "in": "query",
+            "description": "The switch port name to modify.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ingress_policing_rate",
+            "in": "query",
+            "description": "The ingress policing rate to use in Bits/s. Set to 0 to reset/delete.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "ingress_policing_burst",
+            "in": "query",
+            "description": "The ingress policing burst to use in Bits/s. Set to 0 to reset/delete.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Traffic policy updated"
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          },
+          "404": {
+            "description": "The switch port could not be found"
+          },
+          "406": {
+            "description": "A value exceeds the allowed range"
           }
         }
       }

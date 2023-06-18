@@ -11,3 +11,4 @@
 # import sys
 # sys.setrecursionlimit(n)
 
+from switch_client.model.queue import Queue

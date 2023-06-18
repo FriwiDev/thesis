@@ -11,6 +11,8 @@
 
 import unittest
 
+import dsmf_client
+from dsmf_client.model.slice import Slice
 from dsmf_client import configuration
 
 

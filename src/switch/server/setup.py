@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import sys
 from setuptools import setup, find_packages
 
 NAME = "switch_server"
@@ -35,3 +36,4 @@ setup(
     A simple API to manage QoS queues on arbitrary OpenFlow switches. Does not support listing queues (GET) because this is already part of OpenFlow.
     """
 )
+

@@ -11,12 +11,15 @@
 
 import logging
 import ssl
+from urllib.parse import urlencode
 import typing
 
 import certifi
 import urllib3
-from ctmf_client.exceptions import ApiException, ApiValueError
 from urllib3._collections import HTTPHeaderDict
+
+from ctmf_client.exceptions import ApiException, ApiValueError
+
 
 logger = logging.getLogger(__name__)
 
@@ -87,14 +90,14 @@ class RESTClientObject(object):
             )
 
     def request(
-            self,
-            method: str,
-            url: str,
-            headers: typing.Optional[HTTPHeaderDict] = None,
-            fields: typing.Optional[typing.Tuple[typing.Tuple[str, typing.Any], ...]] = None,
-            body: typing.Optional[typing.Union[str, bytes]] = None,
-            stream: bool = False,
-            timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
+        self,
+        method: str,
+        url: str,
+        headers: typing.Optional[HTTPHeaderDict] = None,
+        fields: typing.Optional[typing.Tuple[typing.Tuple[str, typing.Any], ...]] = None,
+        body: typing.Optional[typing.Union[str, bytes]] = None,
+        stream: bool = False,
+        timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
     ) -> urllib3.HTTPResponse:
         """Perform requests.
 

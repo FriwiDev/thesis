@@ -1,4 +1,8 @@
+from typing import List, Dict
 from aiohttp import web
+
+from dsmf_server.models.slice import Slice
+from dsmf_server import util
 
 
 async def slice_reservation_delete(request: web.Request, auth, id) -> web.Response:
@@ -38,5 +42,5 @@ async def slice_reservation_put(request: web.Request, auth, slice) -> web.Respon
     :type slice: dict | bytes
 
     """
-    slice =.from_dict(slice)
+    slice = .from_dict(slice)
     return web.Response(status=200)

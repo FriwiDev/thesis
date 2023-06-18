@@ -7,7 +7,11 @@ info:
   title: ESMF
   version: 1.0.0
 servers:
-  - url: http://localhost:8080
+- url: "{apiRoot}"
+  variables:
+    apiRoot:
+      default: http://localhost:8080
+      description: The server endpoint to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -15,7 +19,7 @@ paths:
       description: "Issues a new authentication token in exchange for credentials.\
         \ Currently requires no credentials, this is up to future implementations."
       operationId: auth_put
-      parameters: [ ]
+      parameters: []
       responses:
         "200":
           content:
@@ -26,7 +30,7 @@ paths:
         "403":
           description: Wrong credentials were specified
       tags:
-        - Authentication
+      - Authentication
       x-openapi-router-controller: esmf_server.controllers.authentication_controller
     summary: Manages authentication towards this service
   /slice:
@@ -34,25 +38,25 @@ paths:
       description: Deletes one or multiple slices
       operationId: slice_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The ids of the slices to be deleted.
-          explode: true
-          in: query
-          name: ids
-          required: true
-          schema:
-            items:
-              format: int32
-              type: integer
-            type: array
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The ids of the slices to be deleted.
+        explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            format: int32
+            type: integer
+          type: array
+        style: form
       responses:
         "200":
           description: The slices were successfully deleted.
@@ -63,21 +67,21 @@ paths:
         "417":
           description: No slice ids were provided.
       tags:
-        - Slice Management
+      - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
     description: Endpoint to manage slices by requesters
     get:
       description: Lists all current slices by this requester
       operationId: slice_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -90,31 +94,31 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Slice Management
+      - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
     put:
       description: Creates one or multiple new slices from one host to another. Will
         either create all slices if feasible or none at all.
       operationId: slice_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The slices to reserve. The service will set the slice ids.
-          explode: true
-          in: query
-          name: slices
-          required: true
-          schema:
-            items:
-              $ref: '#/components/schemas/slice'
-            type: array
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The slices to reserve. The service will set the slice ids.
+        explode: true
+        in: query
+        name: slices
+        required: true
+        schema:
+          items:
+            $ref: '#/components/schemas/slice'
+          type: array
+        style: form
       responses:
         "200":
           content:
@@ -133,7 +137,7 @@ paths:
         "507":
           description: Insufficient resources by participating domain or requester
       tags:
-        - Slice Management
+      - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
     summary: Manages slices for requesters
   /slice_deployment:
@@ -141,23 +145,23 @@ paths:
       description: Deletes a slice from this domain
       operationId: slice_deployment_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the slice to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the slice to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The slice was successfully deleted.
@@ -166,7 +170,7 @@ paths:
         "404":
           description: The slice could not be found.
       tags:
-        - Slice Synchronization
+      - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     description: Endpoint to deploy slices on this domain
     get:
@@ -174,14 +178,14 @@ paths:
         synchronization purposes.
       operationId: slice_deployment_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -194,29 +198,29 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Slice Synchronization
+      - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     put:
       description: Creates a new slice on this domain
       operationId: slice_deployment_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the slice to be deployed.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the slice to be deployed.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The slice has been deployed
@@ -225,7 +229,7 @@ paths:
         "404":
           description: The slice reservation could not be found
       tags:
-        - Slice Synchronization
+      - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     summary: Manages slice deployments within the two-phase commit protocol between
       ESMFs
@@ -234,23 +238,23 @@ paths:
       description: Deletes a slice reservation
       operationId: slice_reservation_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the slice reservation to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the slice reservation to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The slice reservation was successfully deleted.
@@ -259,7 +263,7 @@ paths:
         "404":
           description: The slice reservation could not be found.
       tags:
-        - Slice Synchronization
+      - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     description: Endpoint to reserve slice capacity on this domain
     get:
@@ -267,14 +271,14 @@ paths:
         Used for synchronization purposes.
       operationId: slice_reservation_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -287,28 +291,28 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Slice Synchronization
+      - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     put:
       description: Creates a new slice reservation on this domain
       operationId: slice_reservation_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The slice to reserve.
-          explode: true
-          in: query
-          name: slice
-          required: true
-          schema:
-            $ref: '#/components/schemas/slice'
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The slice to reserve.
+        explode: true
+        in: query
+        name: slice
+        required: true
+        schema:
+          $ref: '#/components/schemas/slice'
+        style: form
       responses:
         "200":
           description: The slice has been reserved.
@@ -321,7 +325,7 @@ paths:
         "507":
           description: Insufficient resources by participating domain or requester
       tags:
-        - Slice Synchronization
+      - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     summary: Manages slice reservations within the two-phase commit protocol between
       ESMFs
@@ -330,23 +334,23 @@ paths:
       description: Deletes a tunnel from this domain
       operationId: tunnel_deployment_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel was successfully deleted.
@@ -355,7 +359,7 @@ paths:
         "404":
           description: The tunnel could not be found.
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     description: Endpoint to deploy tunnels on this domain
     get:
@@ -363,14 +367,14 @@ paths:
         synchronization purposes.
       operationId: tunnel_deployment_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -383,29 +387,29 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     put:
       description: Creates a new tunnel on this domain
       operationId: tunnel_deployment_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel to be deployed.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel to be deployed.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel has been deployed or altered
@@ -414,7 +418,7 @@ paths:
         "404":
           description: The tunnel reservation could not be found
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     summary: Manages tunnel deployments within the two-phase commit protocol between
       ESMFs
@@ -423,23 +427,23 @@ paths:
       description: Deletes a tunnel reservation
       operationId: tunnel_reservation_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel reservation to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel reservation to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel reservation was successfully deleted.
@@ -448,7 +452,7 @@ paths:
         "404":
           description: The tunnel reservation could not be found.
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     description: Endpoint to reserve tunnel capacity on this domain
     get:
@@ -456,14 +460,14 @@ paths:
         ESMF. Used for synchronization purposes.
       operationId: tunnel_reservation_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -476,28 +480,28 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     put:
       description: Creates a new tunnel reservation on this domain
       operationId: tunnel_reservation_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The tunnel to reserve or alter.
-          explode: true
-          in: query
-          name: tunnel
-          required: true
-          schema:
-            $ref: '#/components/schemas/tunnel'
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The tunnel to reserve or alter.
+        explode: true
+        in: query
+        name: tunnel
+        required: true
+        schema:
+          $ref: '#/components/schemas/tunnel'
+        style: form
       responses:
         "200":
           description: The tunnel has been reserved.
@@ -511,7 +515,7 @@ paths:
         "507":
           description: Insufficient resources by participating domain or requester
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     summary: Manages tunnel reservations within the two-phase commit protocol between
       ESMFs and CTMFs

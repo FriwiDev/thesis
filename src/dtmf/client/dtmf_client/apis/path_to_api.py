@@ -1,8 +1,9 @@
 import typing_extensions
-from dtmf_client.apis.paths.auth import Auth
-from dtmf_client.apis.paths.tunnel_deployment import TunnelDeployment
-from dtmf_client.apis.paths.tunnel_reservation import TunnelReservation
+
 from dtmf_client.paths import PathValues
+from dtmf_client.apis.paths.auth import Auth
+from dtmf_client.apis.paths.tunnel_reservation import TunnelReservation
+from dtmf_client.apis.paths.tunnel_deployment import TunnelDeployment
 
 PathToApi = typing_extensions.TypedDict(
     'PathToApi',

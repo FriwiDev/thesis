@@ -11,3 +11,4 @@
 # import sys
 # sys.setrecursionlimit(n)
 
+from ctmf_client.model.tunnel import Tunnel

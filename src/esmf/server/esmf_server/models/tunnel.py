@@ -1,7 +1,11 @@
 # coding: utf-8
 
-from esmf_server import util
+from datetime import date, datetime
+
+from typing import List, Dict, Type
+
 from esmf_server.models.base_model_ import Model
+from esmf_server import util
 
 
 class Tunnel(Model):
@@ -10,7 +14,7 @@ class Tunnel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int = None, rate: int = None, latency: int = None, _from: str = None, to: str = None):
+    def __init__(self, id: int=None, rate: int=None, latency: int=None, _from: str=None, to: str=None):
         """Tunnel - a model defined in OpenAPI
 
         :param id: The id of this Tunnel.

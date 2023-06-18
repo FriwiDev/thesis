@@ -7,7 +7,11 @@ info:
   title: CTMF
   version: 1.0.0
 servers:
-  - url: http://localhost:8081
+- url: "{apiRoot}"
+  variables:
+    apiRoot:
+      default: http://localhost:8081
+      description: The server endpoint to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -15,7 +19,7 @@ paths:
       description: "Issues a new authentication token in exchange for credentials.\
         \ Currently requires no credentials, this is up to future implementations."
       operationId: auth_put
-      parameters: [ ]
+      parameters: []
       responses:
         "200":
           content:
@@ -26,7 +30,7 @@ paths:
         "403":
           description: Wrong credentials were specified
       tags:
-        - Authentication
+      - Authentication
       x-openapi-router-controller: ctmf_server.controllers.authentication_controller
     summary: Manages authentication towards this service
   /tunnel_deployment:
@@ -34,23 +38,23 @@ paths:
       description: Deletes a tunnel from this domain
       operationId: tunnel_deployment_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel was successfully deleted.
@@ -59,7 +63,7 @@ paths:
         "404":
           description: The tunnel could not be found.
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: ctmf_server.controllers.tunnel_synchronization_controller
     description: Endpoint to deploy tunnels on this domain
     get:
@@ -67,14 +71,14 @@ paths:
         synchronization purposes.
       operationId: tunnel_deployment_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -87,29 +91,29 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: ctmf_server.controllers.tunnel_synchronization_controller
     put:
       description: Creates a new tunnel on this domain
       operationId: tunnel_deployment_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel to be deployed.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel to be deployed.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel has been deployed or altered
@@ -118,7 +122,7 @@ paths:
         "404":
           description: The tunnel reservation could not be found
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: ctmf_server.controllers.tunnel_synchronization_controller
     summary: Manages tunnel deployments within the two-phase commit protocol between
       ESMFs
@@ -127,23 +131,23 @@ paths:
       description: Deletes a tunnel reservation
       operationId: tunnel_reservation_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel reservation to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel reservation to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel reservation was successfully deleted.
@@ -152,7 +156,7 @@ paths:
         "404":
           description: The tunnel reservation could not be found.
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: ctmf_server.controllers.tunnel_synchronization_controller
     description: Endpoint to reserve tunnel capacity on this domain
     get:
@@ -160,14 +164,14 @@ paths:
         ESMF. Used for synchronization purposes.
       operationId: tunnel_reservation_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -180,28 +184,28 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: ctmf_server.controllers.tunnel_synchronization_controller
     put:
       description: Creates a new tunnel reservation on this domain
       operationId: tunnel_reservation_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The tunnel to reserve or alter.
-          explode: true
-          in: query
-          name: tunnel
-          required: true
-          schema:
-            $ref: '#/components/schemas/tunnel'
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The tunnel to reserve or alter.
+        explode: true
+        in: query
+        name: tunnel
+        required: true
+        schema:
+          $ref: '#/components/schemas/tunnel'
+        style: form
       responses:
         "200":
           description: The tunnel has been reserved.
@@ -215,7 +219,7 @@ paths:
         "507":
           description: Insufficient resources by participating domain or requester
       tags:
-        - Tunnel Synchronization
+      - Tunnel Synchronization
       x-openapi-router-controller: ctmf_server.controllers.tunnel_synchronization_controller
     summary: Manages tunnel reservations within the two-phase commit protocol between
       ESMFs and CTMFs

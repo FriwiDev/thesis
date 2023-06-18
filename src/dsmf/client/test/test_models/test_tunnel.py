@@ -11,6 +11,8 @@
 
 import unittest
 
+import dsmf_client
+from dsmf_client.model.tunnel import Tunnel
 from dsmf_client import configuration
 
 

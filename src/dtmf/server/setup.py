@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import sys
 from setuptools import setup, find_packages
 
 NAME = "dtmf_server"
@@ -35,3 +36,4 @@ setup(
     A simple API to interact with the Domain Tunnel Management Function. Supports reserving, creating and removing tunnels from one external domain to another external domain. This service does not create tunnel endpoints, but reserves resources instead in the current domain instead. The DTMF is a subset of the DSMF. Please refer to the topology drawings for further information about the network structures.
     """
 )
+

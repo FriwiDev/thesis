@@ -7,9 +7,13 @@
 """
 
 import unittest
+from unittest.mock import patch
 
-from dtmf_client import configuration, api_client
+import urllib3
+
+import dtmf_client
 from dtmf_client.paths.tunnel_deployment import delete  # noqa: E501
+from dtmf_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
 

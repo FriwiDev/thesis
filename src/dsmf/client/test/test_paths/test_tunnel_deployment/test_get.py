@@ -7,9 +7,13 @@
 """
 
 import unittest
+from unittest.mock import patch
 
-from dsmf_client import configuration, api_client
+import urllib3
+
+import dsmf_client
 from dsmf_client.paths.tunnel_deployment import get  # noqa: E501
+from dsmf_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
 
@@ -28,6 +32,8 @@ class TestTunnelDeployment(ApiTestMixin, unittest.TestCase):
         pass
 
     response_status = 200
+
+
 
 
 if __name__ == '__main__':

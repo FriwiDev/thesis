@@ -14,7 +14,15 @@
 __version__ = "1.0.0"
 
 # import ApiClient
+from dtmf_client.api_client import ApiClient
 
 # import Configuration
+from dtmf_client.configuration import Configuration
 
 # import exceptions
+from dtmf_client.exceptions import OpenApiException
+from dtmf_client.exceptions import ApiAttributeError
+from dtmf_client.exceptions import ApiTypeError
+from dtmf_client.exceptions import ApiValueError
+from dtmf_client.exceptions import ApiKeyError
+from dtmf_client.exceptions import ApiException

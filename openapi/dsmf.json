@@ -7,7 +7,13 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8081"
+      "url": "{apiRoot}",
+      "variables": {
+        "apiRoot": {
+          "default": "http://localhost:8081",
+          "description": "The server endpoint to use"
+        }
+      }
     }
   ],
   "components": {

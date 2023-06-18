@@ -11,14 +11,14 @@ class ApiTestMixin:
 
     @classmethod
     def assert_pool_manager_request_called_with(
-            cls,
-            mock_request,
-            url: str,
-            method: str = 'POST',
-            body: typing.Optional[bytes] = None,
-            content_type: typing.Optional[str] = None,
-            accept_content_type: typing.Optional[str] = None,
-            stream: bool = False,
+        cls,
+        mock_request,
+        url: str,
+        method: str = 'POST',
+        body: typing.Optional[bytes] = None,
+        content_type: typing.Optional[str] = None,
+        accept_content_type: typing.Optional[str] = None,
+        stream: bool = False,
     ):
         headers = {
             'User-Agent': cls.user_agent
@@ -46,12 +46,12 @@ class ApiTestMixin:
 
     @classmethod
     def response(
-            cls,
-            body: typing.Union[str, bytes],
-            status: int = 200,
-            content_type: str = json_content_type,
-            headers: typing.Optional[typing.Dict[str, str]] = None,
-            preload_content: bool = True
+        cls,
+        body: typing.Union[str, bytes],
+        status: int = 200,
+        content_type: str = json_content_type,
+        headers: typing.Optional[typing.Dict[str, str]] = None,
+        preload_content: bool = True
     ) -> urllib3.HTTPResponse:
         if headers is None:
             headers = {}

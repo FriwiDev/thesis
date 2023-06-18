@@ -11,6 +11,8 @@
 
 import unittest
 
+import esmf_client
+from esmf_client.model.tunnel import Tunnel
 from esmf_client import configuration
 
 

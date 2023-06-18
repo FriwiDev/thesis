@@ -5,7 +5,11 @@ info:
   title: Switch QoS API
   version: 1.0.0
 servers:
-  - url: http://localhost:8082
+- url: "{apiRoot}"
+  variables:
+    apiRoot:
+      default: http://localhost:8082
+      description: The server endpoint to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -13,7 +17,7 @@ paths:
       description: "Issues a new authentication token in exchange for credentials.\
         \ Currently requires no credentials, this is up to future implementations."
       operationId: auth_put
-      parameters: [ ]
+      parameters: []
       responses:
         "200":
           content:
@@ -24,39 +28,92 @@ paths:
         "403":
           description: Wrong credentials were specified
       tags:
-        - Authentication
+      - Authentication
       x-openapi-router-controller: switch_server.controllers.authentication_controller
     summary: Manages authentication towards this service
+  /policy:
+    description: Endpoint to manage traffic policies
+    put:
+      description: Sets the policies on the specified port
+      operationId: policy_put
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The switch port name to modify.
+        explode: true
+        in: query
+        name: port
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The ingress policing rate to use in Bits/s. Set to 0 to reset/delete.
+        explode: true
+        in: query
+        name: ingress_policing_rate
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: The ingress policing burst to use in Bits/s. Set to 0 to reset/delete.
+        explode: true
+        in: query
+        name: ingress_policing_burst
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: Traffic policy updated
+        "403":
+          description: Invalid authentication provided
+        "404":
+          description: The switch port could not be found
+        "406":
+          description: A value exceeds the allowed range
+      tags:
+      - Traffic shaping
+      x-openapi-router-controller: switch_server.controllers.traffic_shaping_controller
+    summary: Manages traffic policies on the OpenFlow switch
   /queue:
     delete:
       description: Deletes a queue
       operationId: queue_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the queue to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
-        - description: The switch port of the queue to be deleted.
-          explode: true
-          in: query
-          name: port
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the queue to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: The switch port of the queue to be deleted.
+        explode: true
+        in: query
+        name: port
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           description: The queue was successfully deleted.
@@ -65,29 +122,29 @@ paths:
         "404":
           description: The queue could not be found.
       tags:
-        - Queue Management
+      - Queue Management
       x-openapi-router-controller: switch_server.controllers.queue_management_controller
     description: Endpoint to manage queues
     put:
       description: Creates a new queue
       operationId: queue_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The queue to create. The id will be set by the service.
-          explode: true
-          in: query
-          name: queue
-          required: true
-          schema:
-            $ref: '#/components/schemas/queue'
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The queue to create. The id will be set by the service.
+        explode: true
+        in: query
+        name: queue
+        required: true
+        schema:
+          $ref: '#/components/schemas/queue'
+        style: form
       responses:
         "200":
           content:
@@ -99,29 +156,43 @@ paths:
           description: Invalid authentication provided.
         "404":
           description: The switch port could not be found
+        "406":
+          description: A value exceeds the allowed range
         "507":
           description: Already too many queues in use
       tags:
-        - Queue Management
+      - Queue Management
       x-openapi-router-controller: switch_server.controllers.queue_management_controller
     summary: Manages queues on the OpenFlow switch
 components:
   schemas:
     queue:
       example:
-        rate: 6
         port: port
+        burst_rate: 5
+        max_rate: 1
         id: 0
+        min_rate: 6
       properties:
         id:
           description: The queue identifier used by OpenFlow
           format: int32
           title: id
           type: integer
-        rate:
-          description: The queue rate as bits/s
+        min_rate:
+          description: The minimum queue rate in Bits/s
           format: int64
-          title: rate
+          title: min_rate
+          type: integer
+        max_rate:
+          description: The maximum queue rate in Bits/s
+          format: int64
+          title: max_rate
+          type: integer
+        burst_rate:
+          description: The burst queue rate in Bits/s
+          format: int64
+          title: burst_rate
           type: integer
         port:
           description: The name of the output port on the switch

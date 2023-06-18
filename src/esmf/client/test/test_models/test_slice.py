@@ -11,6 +11,8 @@
 
 import unittest
 
+import esmf_client
+from esmf_client.model.slice import Slice
 from esmf_client import configuration
 
 

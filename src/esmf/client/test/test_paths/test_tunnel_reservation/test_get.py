@@ -7,9 +7,13 @@
 """
 
 import unittest
+from unittest.mock import patch
 
-from esmf_client import configuration, api_client
+import urllib3
+
+import esmf_client
 from esmf_client.paths.tunnel_reservation import get  # noqa: E501
+from esmf_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
 
@@ -28,6 +32,8 @@ class TestTunnelReservation(ApiTestMixin, unittest.TestCase):
         pass
 
     response_status = 200
+
+
 
 
 if __name__ == '__main__':

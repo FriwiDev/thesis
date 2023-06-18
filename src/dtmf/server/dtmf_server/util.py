@@ -1,15 +1,14 @@
 import datetime
+
 import typing
 from typing import Union
-
 from dtmf_server import typing_utils
 
 T = typing.TypeVar('T')
 Class = typing.Type[T]
 
 
-def _deserialize(data: Union[dict, list, str], klass: Union[Class, str]) -> Union[
-    dict, list, Class, int, float, str, bool, datetime.date, datetime.datetime]:
+def _deserialize(data: Union[dict, list, str], klass: Union[Class, str]) -> Union[dict, list, Class, int, float, str, bool, datetime.date, datetime.datetime]:
     """Deserializes dict, list, str into an object.
 
     :param data: dict, list or str.

@@ -11,3 +11,5 @@
 # import sys
 # sys.setrecursionlimit(n)
 
+from dsmf_client.model.slice import Slice
+from dsmf_client.model.tunnel import Tunnel

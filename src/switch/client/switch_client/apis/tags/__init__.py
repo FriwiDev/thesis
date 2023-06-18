@@ -8,3 +8,4 @@ import enum
 class TagValues(str, enum.Enum):
     AUTHENTICATION = "Authentication"
     QUEUE_MANAGEMENT = "Queue Management"
+    TRAFFIC_SHAPING = "Traffic shaping"

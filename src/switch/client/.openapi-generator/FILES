@@ -5,6 +5,7 @@
 README.md
 docs/apis/tags/AuthenticationApi.md
 docs/apis/tags/QueueManagementApi.md
+docs/apis/tags/TrafficShapingApi.md
 docs/models/Queue.md
 git_push.sh
 requirements.txt
@@ -15,6 +16,7 @@ switch_client/api_client.py
 switch_client/apis/__init__.py
 switch_client/apis/tags/authentication_api.py
 switch_client/apis/tags/queue_management_api.py
+switch_client/apis/tags/traffic_shaping_api.py
 switch_client/configuration.py
 switch_client/exceptions.py
 switch_client/model/__init__.py

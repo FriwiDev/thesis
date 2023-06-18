@@ -1,4 +1,8 @@
+from typing import List, Dict
 from aiohttp import web
+
+from dtmf_server.models.tunnel import Tunnel
+from dtmf_server import util
 
 
 async def tunnel_deployment_delete(request: web.Request, auth, id) -> web.Response:

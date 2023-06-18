@@ -11,6 +11,8 @@
 
 import unittest
 
+import dtmf_client
+from dtmf_client.model.tunnel import Tunnel
 from dtmf_client import configuration
 
 

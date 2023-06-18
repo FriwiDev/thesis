@@ -11,6 +11,8 @@
 
 import unittest
 
+import ctmf_client
+from ctmf_client.model.tunnel import Tunnel
 from ctmf_client import configuration
 
 

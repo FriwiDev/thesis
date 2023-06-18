@@ -1,5 +1,11 @@
 # coding: utf-8
 
+import pytest
+import json
+from aiohttp import web
+
+from esmf_server.models.slice import Slice
+
 
 async def test_slice_delete(client):
     """Test case for slice_delete
@@ -7,15 +13,15 @@ async def test_slice_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-              ('ids', [56])]
-    headers = {
+                    ('ids', [56])]
+    headers = { 
     }
     response = await client.request(
         method='DELETE',
         path='/slice',
         headers=headers,
         params=params,
-    )
+        )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
 
 
@@ -25,7 +31,7 @@ async def test_slice_get(client):
     
     """
     params = [('auth', 'auth_example')]
-    headers = {
+    headers = { 
         'Accept': 'application/json',
     }
     response = await client.request(
@@ -33,7 +39,7 @@ async def test_slice_get(client):
         path='/slice',
         headers=headers,
         params=params,
-    )
+        )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
 
 
@@ -43,8 +49,8 @@ async def test_slice_put(client):
     
     """
     params = [('auth', 'auth_example'),
-              ('slices', [esmf_server.Slice()])]
-    headers = {
+                    ('slices', [esmf_server.Slice()])]
+    headers = { 
         'Accept': 'application/json',
     }
     response = await client.request(
@@ -52,5 +58,6 @@ async def test_slice_put(client):
         path='/slice',
         headers=headers,
         params=params,
-    )
+        )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
+

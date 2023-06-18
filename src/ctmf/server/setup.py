@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import sys
 from setuptools import setup, find_packages
 
 NAME = "ctmf_server"
@@ -35,3 +36,4 @@ setup(
     A simple API to interact with the Core Tunnel Management Function. Supports creating and removing tunnels on this domains. Is advised to allocate resources by external ESMFs. The CTMF is a subset of the ESMF. Please refer to the topology drawings for further information about the network structures.
     """
 )
+

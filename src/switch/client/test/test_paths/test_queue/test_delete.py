@@ -7,9 +7,13 @@
 """
 
 import unittest
+from unittest.mock import patch
 
-from switch_client import configuration, api_client
+import urllib3
+
+import switch_client
 from switch_client.paths.queue import delete  # noqa: E501
+from switch_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
 

@@ -9,7 +9,11 @@ info:
   title: DTMF
   version: 1.0.0
 servers:
-  - url: http://localhost:8080
+- url: "{apiRoot}"
+  variables:
+    apiRoot:
+      default: http://localhost:8080
+      description: The server endpoint to use
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
@@ -17,7 +21,7 @@ paths:
       description: "Issues a new authentication token in exchange for credentials.\
         \ Currently requires no credentials, this is up to future implementations."
       operationId: auth_put
-      parameters: [ ]
+      parameters: []
       responses:
         "200":
           content:
@@ -28,7 +32,7 @@ paths:
         "403":
           description: Wrong credentials were specified
       tags:
-        - Authentication
+      - Authentication
       x-openapi-router-controller: dtmf_server.controllers.authentication_controller
     summary: Manages authentication towards this service
   /tunnel_deployment:
@@ -36,23 +40,23 @@ paths:
       description: Deletes a tunnel
       operationId: tunnel_deployment_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel was successfully deleted.
@@ -61,21 +65,21 @@ paths:
         "404":
           description: The tunnel could not be found.
       tags:
-        - Tunnel Management
+      - Tunnel Management
       x-openapi-router-controller: dtmf_server.controllers.tunnel_management_controller
     description: Endpoint to manage tunnels
     get:
       description: Lists all current tunnels
       operationId: tunnel_deployment_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -88,29 +92,29 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Tunnel Management
+      - Tunnel Management
       x-openapi-router-controller: dtmf_server.controllers.tunnel_management_controller
     put:
       description: Creates a new tunnel or modifies a tunnel from a reservation
       operationId: tunnel_deployment_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The tunnel to create from the corresponding reservation id
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The tunnel to create from the corresponding reservation id
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel has been created
@@ -121,7 +125,7 @@ paths:
         "500":
           description: The deployment to the network failed
       tags:
-        - Tunnel Management
+      - Tunnel Management
       x-openapi-router-controller: dtmf_server.controllers.tunnel_management_controller
     summary: Manages tunnels on the current domain
   /tunnel_reservation:
@@ -129,23 +133,23 @@ paths:
       description: Deletes a tunnel reservation
       operationId: tunnel_reservation_delete
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The id of the tunnel reservation to be deleted.
-          explode: true
-          in: query
-          name: id
-          required: true
-          schema:
-            format: int32
-            type: integer
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel reservation to be deleted.
+        explode: true
+        in: query
+        name: id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
       responses:
         "200":
           description: The tunnel reservation was successfully deleted.
@@ -154,21 +158,21 @@ paths:
         "404":
           description: The tunnel reservation could not be found.
       tags:
-        - Tunnel Reservation
+      - Tunnel Reservation
       x-openapi-router-controller: dtmf_server.controllers.tunnel_reservation_controller
     description: Endpoint to manage tunnel reservations
     get:
       description: Lists all current tunnel reservations
       operationId: tunnel_reservation_get
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -181,29 +185,29 @@ paths:
         "403":
           description: Invalid authentication provided
       tags:
-        - Tunnel Reservation
+      - Tunnel Reservation
       x-openapi-router-controller: dtmf_server.controllers.tunnel_reservation_controller
     put:
       description: "Creates a new tunnel reservation or stages changes to an existing\
         \ deployed tunnel, as long as source and target of the tunnel match."
       operationId: tunnel_reservation_put
       parameters:
-        - description: The authentication token issued by prior login
-          explode: true
-          in: query
-          name: auth
-          required: true
-          schema:
-            type: string
-          style: form
-        - description: The tunnel to reserve. Will check for issues.
-          explode: true
-          in: query
-          name: tunnel
-          required: true
-          schema:
-            $ref: '#/components/schemas/tunnel'
-          style: form
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The tunnel to reserve. Will check for issues.
+        explode: true
+        in: query
+        name: tunnel
+        required: true
+        schema:
+          $ref: '#/components/schemas/tunnel'
+        style: form
       responses:
         "200":
           description: The tunnel has been reserved
@@ -217,7 +221,7 @@ paths:
         "507":
           description: Insufficient resources
       tags:
-        - Tunnel Reservation
+      - Tunnel Reservation
       x-openapi-router-controller: dtmf_server.controllers.tunnel_reservation_controller
     summary: Manages tunnel reservations on the current domain
 components:

@@ -1,16 +1,14 @@
 <a id="__pageTop"></a>
-
 # switch_client.apis.tags.queue_management_api.QueueManagementApi
 
 All URIs are relative to *http://localhost:8082*
 
- Method                            | HTTP request      | Description 
------------------------------------|-------------------|-------------
- [**queue_delete**](#queue_delete) | **delete** /queue |
- [**queue_put**](#queue_put)       | **put** /queue    |
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**queue_delete**](#queue_delete) | **delete** /queue | 
+[**queue_put**](#queue_put) | **put** /queue | 
 
 # **queue_delete**
-
 <a id="queue_delete"></a>
 > queue_delete(authidport)
 
@@ -48,82 +46,75 @@ with switch_client.ApiClient(configuration) as api_client:
     except switch_client.ApiException as e:
         print("Exception when calling QueueManagementApi->queue_delete: %s\n" % e)
 ```
-
 ### Parameters
 
- Name                 | Type                                             | Description      | Notes                                                                                                                                                                                              
-----------------------|--------------------------------------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- query_params         | RequestQueryParams                               |                  |
- stream               | bool                                             | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file 
- timeout              | typing.Optional[typing.Union[int, typing.Tuple]] | default is None  | the timeout used by the rest client                                                                                                                                                                
- skip_deserialization | bool                                             | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned                                                                         
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+query_params | RequestQueryParams | |
+stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
+timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
+skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
 
 ### query_params
-
 #### RequestQueryParams
 
- Name | Type       | Description | Notes 
-------|------------|-------------|-------
- auth | AuthSchema |             |
- id   | IdSchema   |             |
- port | PortSchema |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+auth | AuthSchema | | 
+id | IdSchema | | 
+port | PortSchema | | 
+
 
 # AuthSchema
 
 ## Model Type Info
-
- Input Type | Accessed Type | Description | Notes 
-------------|---------------|-------------|-------
- str,       | str,          |             |
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+str,  | str,  |  | 
 
 # IdSchema
 
 ## Model Type Info
-
- Input Type            | Accessed Type    | Description | Notes                          
------------------------|------------------|-------------|--------------------------------
- decimal.Decimal, int, | decimal.Decimal, |             | value must be a 32 bit integer 
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+decimal.Decimal, int,  | decimal.Decimal,  |  | value must be a 32 bit integer
 
 # PortSchema
 
 ## Model Type Info
-
- Input Type | Accessed Type | Description | Notes 
-------------|---------------|-------------|-------
- str,       | str,          |             |
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+str,  | str,  |  | 
 
 ### Return Types, Responses
 
- Code | Class                                                | Description                                                 
-------|------------------------------------------------------|-------------------------------------------------------------
- n/a  | api_client.ApiResponseWithoutDeserialization         | When skip_deserialization is True this response is returned 
- 200  | [ApiResponseFor200](#queue_delete.ApiResponseFor200) | The queue was successfully deleted.                         
- 403  | [ApiResponseFor403](#queue_delete.ApiResponseFor403) | Invalid authentication provided.                            
- 404  | [ApiResponseFor404](#queue_delete.ApiResponseFor404) | The queue could not be found.                               
+Code | Class | Description
+------------- | ------------- | -------------
+n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
+200 | [ApiResponseFor200](#queue_delete.ApiResponseFor200) | The queue was successfully deleted.
+403 | [ApiResponseFor403](#queue_delete.ApiResponseFor403) | Invalid authentication provided.
+404 | [ApiResponseFor404](#queue_delete.ApiResponseFor404) | The queue could not be found.
 
 #### queue_delete.ApiResponseFor200
-
- Name     | Type                 | Description              | Notes 
-----------|----------------------|--------------------------|-------
- response | urllib3.HTTPResponse | Raw response             |
- body     | Unset                | body was not defined     |
- headers  | Unset                | headers were not defined |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
 #### queue_delete.ApiResponseFor403
-
- Name     | Type                 | Description              | Notes 
-----------|----------------------|--------------------------|-------
- response | urllib3.HTTPResponse | Raw response             |
- body     | Unset                | body was not defined     |
- headers  | Unset                | headers were not defined |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
 #### queue_delete.ApiResponseFor404
-
- Name     | Type                 | Description              | Notes 
-----------|----------------------|--------------------------|-------
- response | urllib3.HTTPResponse | Raw response             |
- body     | Unset                | body was not defined     |
- headers  | Unset                | headers were not defined |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
 ### Authorization
 
@@ -132,7 +123,6 @@ No authorization required
 [[Back to top]](#__pageTop) [[Back to API list]](../../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../../README.md#documentation-for-models) [[Back to README]](../../../README.md)
 
 # **queue_put**
-
 <a id="queue_put"></a>
 > Queue queue_put(authqueue)
 
@@ -163,7 +153,9 @@ with switch_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
         'queue': Queue(
         id=1,
-        rate=1,
+        min_rate=1,
+        max_rate=1,
+        burst_rate=1,
         port="port_example",
     ),
     }
@@ -175,87 +167,89 @@ with switch_client.ApiClient(configuration) as api_client:
     except switch_client.ApiException as e:
         print("Exception when calling QueueManagementApi->queue_put: %s\n" % e)
 ```
-
 ### Parameters
 
- Name                 | Type                                             | Description                       | Notes                                                                                                                                                                                              
-----------------------|--------------------------------------------------|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- query_params         | RequestQueryParams                               |                                   |
- accept_content_types | typing.Tuple[str]                                | default is ('application/json', ) | Tells the server the content type(s) that are accepted by the client                                                                                                                               
- stream               | bool                                             | default is False                  | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file 
- timeout              | typing.Optional[typing.Union[int, typing.Tuple]] | default is None                   | the timeout used by the rest client                                                                                                                                                                
- skip_deserialization | bool                                             | default is False                  | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned                                                                         
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+query_params | RequestQueryParams | |
+accept_content_types | typing.Tuple[str] | default is ('application/json', ) | Tells the server the content type(s) that are accepted by the client
+stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
+timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
+skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
 
 ### query_params
-
 #### RequestQueryParams
 
- Name  | Type        | Description | Notes 
--------|-------------|-------------|-------
- auth  | AuthSchema  |             |
- queue | QueueSchema |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+auth | AuthSchema | | 
+queue | QueueSchema | | 
+
 
 # AuthSchema
 
 ## Model Type Info
-
- Input Type | Accessed Type | Description | Notes 
-------------|---------------|-------------|-------
- str,       | str,          |             |
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+str,  | str,  |  | 
 
 # QueueSchema
+Type | Description  | Notes
+------------- | ------------- | -------------
+[**Queue**](../../models/Queue.md) |  | 
 
- Type                               | Description | Notes 
-------------------------------------|-------------|-------
- [**Queue**](../../models/Queue.md) |             |
 
 ### Return Types, Responses
 
- Code | Class                                             | Description                                                 
-------|---------------------------------------------------|-------------------------------------------------------------
- n/a  | api_client.ApiResponseWithoutDeserialization      | When skip_deserialization is True this response is returned 
- 200  | [ApiResponseFor200](#queue_put.ApiResponseFor200) | The queue object                                            
- 403  | [ApiResponseFor403](#queue_put.ApiResponseFor403) | Invalid authentication provided.                            
- 404  | [ApiResponseFor404](#queue_put.ApiResponseFor404) | The switch port could not be found                          
- 507  | [ApiResponseFor507](#queue_put.ApiResponseFor507) | Already too many queues in use                              
+Code | Class | Description
+------------- | ------------- | -------------
+n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
+200 | [ApiResponseFor200](#queue_put.ApiResponseFor200) | The queue object
+403 | [ApiResponseFor403](#queue_put.ApiResponseFor403) | Invalid authentication provided.
+404 | [ApiResponseFor404](#queue_put.ApiResponseFor404) | The switch port could not be found
+406 | [ApiResponseFor406](#queue_put.ApiResponseFor406) | A value exceeds the allowed range
+507 | [ApiResponseFor507](#queue_put.ApiResponseFor507) | Already too many queues in use
 
 #### queue_put.ApiResponseFor200
-
- Name     | Type                                                    | Description              | Notes 
-----------|---------------------------------------------------------|--------------------------|-------
- response | urllib3.HTTPResponse                                    | Raw response             |
- body     | typing.Union[SchemaFor200ResponseBodyApplicationJson, ] |                          |
- headers  | Unset                                                   | headers were not defined |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | typing.Union[SchemaFor200ResponseBodyApplicationJson, ] |  |
+headers | Unset | headers were not defined |
 
 # SchemaFor200ResponseBodyApplicationJson
+Type | Description  | Notes
+------------- | ------------- | -------------
+[**Queue**](../../models/Queue.md) |  | 
 
- Type                               | Description | Notes 
-------------------------------------|-------------|-------
- [**Queue**](../../models/Queue.md) |             |
 
 #### queue_put.ApiResponseFor403
-
- Name     | Type                 | Description              | Notes 
-----------|----------------------|--------------------------|-------
- response | urllib3.HTTPResponse | Raw response             |
- body     | Unset                | body was not defined     |
- headers  | Unset                | headers were not defined |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
 #### queue_put.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
- Name     | Type                 | Description              | Notes 
-----------|----------------------|--------------------------|-------
- response | urllib3.HTTPResponse | Raw response             |
- body     | Unset                | body was not defined     |
- headers  | Unset                | headers were not defined |
+#### queue_put.ApiResponseFor406
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
 #### queue_put.ApiResponseFor507
-
- Name     | Type                 | Description              | Notes 
-----------|----------------------|--------------------------|-------
- response | urllib3.HTTPResponse | Raw response             |
- body     | Unset                | body was not defined     |
- headers  | Unset                | headers were not defined |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
 
 ### Authorization
 

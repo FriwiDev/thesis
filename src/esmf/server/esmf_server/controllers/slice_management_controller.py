@@ -1,8 +1,8 @@
-from typing import List
-
+from typing import List, Dict
 from aiohttp import web
 
 from esmf_server.models.slice import Slice
+from esmf_server import util
 
 
 async def slice_delete(request: web.Request, auth, ids) -> web.Response:

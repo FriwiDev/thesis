@@ -7,9 +7,13 @@
 """
 
 import unittest
+from unittest.mock import patch
 
-from esmf_client import configuration, api_client
+import urllib3
+
+import esmf_client
 from esmf_client.paths.slice_deployment import delete  # noqa: E501
+from esmf_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
 

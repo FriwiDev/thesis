@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import sys
 from setuptools import setup, find_packages
 
 NAME = "dsmf_server"
@@ -35,3 +36,4 @@ setup(
     A simple API to interact with the Domain Slice Management Function. Supports reserving, creating and removing slices and tunnels from one external domain to another external domain or host. Please refer to the topology drawings for further information about the network structures.
     """
 )
+

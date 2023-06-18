@@ -1,5 +1,11 @@
 # coding: utf-8
 
+import pytest
+import json
+from aiohttp import web
+
+from switch_server.models.queue import Queue
+
 
 async def test_queue_delete(client):
     """Test case for queue_delete
@@ -7,16 +13,16 @@ async def test_queue_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-              ('id', 56),
-              ('port', 'port_example')]
-    headers = {
+                    ('id', 56),
+                    ('port', 'port_example')]
+    headers = { 
     }
     response = await client.request(
         method='DELETE',
         path='/queue',
         headers=headers,
         params=params,
-    )
+        )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
 
 
@@ -26,8 +32,8 @@ async def test_queue_put(client):
     
     """
     params = [('auth', 'auth_example'),
-              ('queue', {'key': switch_server.Queue()})]
-    headers = {
+                    ('queue', {'key': switch_server.Queue()})]
+    headers = { 
         'Accept': 'application/json',
     }
     response = await client.request(
@@ -35,5 +41,6 @@ async def test_queue_put(client):
         path='/queue',
         headers=headers,
         params=params,
-    )
+        )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
+

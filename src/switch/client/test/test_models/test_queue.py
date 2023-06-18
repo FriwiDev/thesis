@@ -11,6 +11,8 @@
 
 import unittest
 
+import switch_client
+from switch_client.model.queue import Queue
 from switch_client import configuration
 
 

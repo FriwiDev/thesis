@@ -1,4 +1,8 @@
+from typing import List, Dict
 from aiohttp import web
+
+from ctmf_server.models.tunnel import Tunnel
+from ctmf_server import util
 
 
 async def tunnel_deployment_delete(request: web.Request, auth, id) -> web.Response:
@@ -78,5 +82,5 @@ async def tunnel_reservation_put(request: web.Request, auth, tunnel) -> web.Resp
     :type tunnel: dict | bytes
 
     """
-    tunnel =.from_dict(tunnel)
+    tunnel = .from_dict(tunnel)
     return web.Response(status=200)

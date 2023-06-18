@@ -14,7 +14,15 @@
 __version__ = "1.0.0"
 
 # import ApiClient
+from switch_client.api_client import ApiClient
 
 # import Configuration
+from switch_client.configuration import Configuration
 
 # import exceptions
+from switch_client.exceptions import OpenApiException
+from switch_client.exceptions import ApiAttributeError
+from switch_client.exceptions import ApiTypeError
+from switch_client.exceptions import ApiValueError
+from switch_client.exceptions import ApiKeyError
+from switch_client.exceptions import ApiException

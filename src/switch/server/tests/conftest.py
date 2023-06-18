@@ -1,8 +1,8 @@
 import logging
+import pytest
 import os
 
 import connexion
-import pytest
 
 
 @pytest.fixture
@@ -10,7 +10,7 @@ def client(loop, aiohttp_client):
     logging.getLogger('connexion.operation').setLevel('ERROR')
     options = {
         "swagger_ui": True
-    }
+        }
     specification_dir = os.path.join(os.path.dirname(__file__), '..',
                                      'switch_server',
                                      'openapi')

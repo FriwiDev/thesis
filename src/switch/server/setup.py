@@ -33,7 +33,7 @@ setup(
     entry_points={
         'console_scripts': ['switch_server=switch_server.__main__:main']},
     long_description="""\
-    A simple API to manage QoS queues on arbitrary OpenFlow switches. Does not support listing queues (GET) because this is already part of OpenFlow.
+    A simple API to manage QoS queues and traffic shaping on arbitrary OpenFlow switches. Does not support listing queues (GET) because this is already part of OpenFlow.
     """
 )
 

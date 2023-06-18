@@ -47,7 +47,7 @@
           },
           "priority": {
             "type": "integer",
-            "format": "int64",
+            "format": "int32",
             "description": "The queue priority"
           },
           "port": {

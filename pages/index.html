@@ -31,8 +31,9 @@
         <hr/>
 
         <h1 class="text-body-emphasis" id="TOPO">Topology</h1>
-        <p class="lead mb-4">Below you can see an example topology with all relevant components. Host 1 (h1) wants to
-            communicate with Host 4 (h4).</p>
+        <p class="lead mb-4">Below you can see an example topology with all relevant components.
+            Host 1 (h1) wants to communicate with Host 4 (h4).<br/>
+            This is just an example topology of many possible variations that can be created.</p>
 
         <img src="diagrams/topology.svg" width="80%"/>
 
@@ -125,8 +126,10 @@
                 as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
             </div>
             <div aria-labelledby="jump-host-tab" class="tab-pane fade" id="jump-host-tab-pane" role="tabpanel"
-                 tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (via OpenFlow), as well
-                as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
+                 tabindex="0">The <b>Jump Host</b> provides the ability to create and remove tunnel entries.
+                These tunnel entries are used to encrypt data before it enters the first black network.
+                The black networks then only know that some data is transferred using a specific tunnel,
+                but not what the data contains or which slice it belongs to.
             </div>
         </div>
 

@@ -6,3 +6,4 @@ bash build_dtmf.sh
 bash build_esmf.sh
 bash build_host.sh
 bash build_ovs_switch.sh
+bash build_jump_host.sh

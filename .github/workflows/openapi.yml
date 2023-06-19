@@ -36,6 +36,11 @@ jobs:
         with:
           output: pages/switch
           spec-file: openapi/switch.json
+      - name: Generate Swagger UI for jump host
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: pages/jump_host
+          spec-file: openapi/jump_host.json
       - name: Render .drawio files
         uses: docker://ghcr.io/racklet/render-drawio-action:v1
         with:

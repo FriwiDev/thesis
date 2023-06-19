@@ -233,21 +233,33 @@ components:
   schemas:
     tunnel:
       example:
-        rate: 6
-        latency: 1
+        burst_rate: 5
+        latency: 5
+        max_rate: 1
         from: from
         id: 0
         to: to
+        min_rate: 6
       properties:
         id:
           description: The tunnel identifier
           format: int32
           title: id
           type: integer
-        rate:
-          description: The transmission rate as bits/s
+        min_rate:
+          description: The minimum transmission rate as bits/s
           format: int64
-          title: rate
+          title: min_rate
+          type: integer
+        max_rate:
+          description: The maximum transmission rate as bits/s
+          format: int64
+          title: max_rate
+          type: integer
+        burst_rate:
+          description: The burst transmission rate as bits/s
+          format: int64
+          title: burst_rate
           type: integer
         latency:
           description: The required maximum latency

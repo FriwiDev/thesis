@@ -576,7 +576,9 @@ with esmf_client.ApiClient(configuration) as api_client:
     }
     body = Slice(
         id=1,
-        rate=1,
+        min_rate=1,
+        max_rate=1,
+        burst_rate=1,
         latency=1,
         _from="_from_example",
         to="to_example",

@@ -1,0 +1,224 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Jump Host API",
+    "description": "A simple API to manage tunnel entries and exits on a dedicated jump host.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{protocol}://{apiRoot}/v1",
+      "variables": {
+        "protocol": {
+          "enum": ["http", "https"],
+          "default": "http"
+        },
+        "apiRoot": {
+          "default": "localhost:8083",
+          "description": "The server to use"
+        }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "tunnel_entry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The tunnel identifier"
+          },
+          "inner_intf": {
+            "type": "string",
+            "description": "The name of the network interface that faces towards the edge network"
+          },
+          "outer_intf": {
+            "type": "string",
+            "description": "The name of the network interface that faces towards the first black network"
+          },
+          "inner_subnet": {
+            "type": "string",
+            "description": "The subnet to route towards the inner interface (aka. the edge network/device)"
+          },
+          "outer_subnet": {
+            "type": "string",
+            "description": "The subnet to route towards the tunnel (aka. the other edge network/device)"
+          },
+          "local_port": {
+            "type": "integer",
+            "format": "uint16",
+            "description": "The local port to use to bind the tunnel"
+          },
+          "remote_end": {
+            "type": "string",
+            "description": "The remote address to contact as the other side of the tunnel"
+          },
+          "private_key": {
+            "type": "string",
+            "description": "The private key to use for authentication of the tunnel to the other side"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The public key to use for authentication of the tunnel from the other side"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth": {
+      "summary": "Manages authentication towards this service",
+      "description": "Endpoint to manage authentication tokens",
+      "put": {
+        "tags": ["Authentication"],
+        "description": "Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "description": "The authentication token as string",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong credentials were specified"
+          }
+        }
+      }
+    },
+    "/tunnel_entry": {
+      "summary": "Manages tunnel entries on the jump host",
+      "description": "Endpoint to manage tunnel entries",
+      "get": {
+        "tags": [
+          "Tunnel Entry Management"
+        ],
+        "description": "Lists all current tunnel entries",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current list of tunnel entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/tunnel_entry"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tunnel Entry Management"
+        ],
+        "description": "Creates a new tunnel entry",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The tunnel entry to create. The id will be checked for conflicts and inherited from the request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tunnel_entry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The tunnel entry has been created"
+          },
+          "400": {
+            "description": "No body provided."
+          },
+          "403": {
+            "description": "Invalid authentication provided."
+          },
+          "404": {
+            "description": "A specified interface could not be found"
+          },
+          "406": {
+            "description": "A value exceeds the allowed range"
+          },
+          "409": {
+            "description": "Tunnel entry id or specified ports already in use"
+          },
+          "507": {
+            "description": "Already too many tunnel entries in use"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tunnel Entry Management"
+        ],
+        "description": "Deletes a tunnel entry",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tunnel_entry_id",
+            "in": "query",
+            "description": "The id of the tunnel entry to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tunnel entry was successfully deleted."
+          },
+          "403": {
+            "description": "Invalid authentication provided."
+          },
+          "404": {
+            "description": "The tunnel entry could not be found."
+          }
+        }
+      }
+    }
+  }
+}

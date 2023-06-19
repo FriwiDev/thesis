@@ -30,10 +30,20 @@
             "format": "int32",
             "description": "The tunnel identifier"
           },
-          "rate": {
+          "min_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The transmission rate as bits/s"
+            "description": "The minimum transmission rate as bits/s"
+          },
+          "max_rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The maximum transmission rate as bits/s"
+          },
+          "burst_rate": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The burst transmission rate as bits/s"
           },
           "latency": {
             "type": "integer",

@@ -1,0 +1,197 @@
+openapi: 3.0.3
+info:
+  description: A simple API to manage tunnel entries and exits on a dedicated jump
+    host.
+  title: Jump Host API
+  version: 1.0.0
+servers:
+- url: "{protocol}://{apiRoot}/v1"
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    apiRoot:
+      default: localhost:8083
+      description: The server to use
+paths:
+  /auth:
+    description: Endpoint to manage authentication tokens
+    put:
+      description: "Issues a new authentication token in exchange for credentials.\
+        \ Currently requires no credentials, this is up to future implementations."
+      operationId: auth_put
+      parameters: []
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: The authentication token as string
+        "403":
+          description: Wrong credentials were specified
+      tags:
+      - Authentication
+      x-openapi-router-controller: jump_host_server.controllers.authentication_controller
+    summary: Manages authentication towards this service
+  /tunnel_entry:
+    delete:
+      description: Deletes a tunnel entry
+      operationId: tunnel_entry_delete
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The id of the tunnel entry to be deleted.
+        explode: true
+        in: query
+        name: tunnel_entry_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: The tunnel entry was successfully deleted.
+        "403":
+          description: Invalid authentication provided.
+        "404":
+          description: The tunnel entry could not be found.
+      tags:
+      - Tunnel Entry Management
+      x-openapi-router-controller: jump_host_server.controllers.tunnel_entry_management_controller
+    description: Endpoint to manage tunnel entries
+    get:
+      description: Lists all current tunnel entries
+      operationId: tunnel_entry_get
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/tunnel_entry'
+                type: array
+          description: The current list of tunnel entries
+        "403":
+          description: Invalid authentication provided
+      tags:
+      - Tunnel Entry Management
+      x-openapi-router-controller: jump_host_server.controllers.tunnel_entry_management_controller
+    put:
+      description: Creates a new tunnel entry
+      operationId: tunnel_entry_put
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tunnel_entry'
+        description: The tunnel entry to create. The id will be checked for conflicts
+          and inherited from the request.
+        x-body-name: body
+      responses:
+        "200":
+          description: The tunnel entry has been created
+        "400":
+          description: No body provided.
+        "403":
+          description: Invalid authentication provided.
+        "404":
+          description: A specified interface could not be found
+        "406":
+          description: A value exceeds the allowed range
+        "409":
+          description: Tunnel entry id or specified ports already in use
+        "507":
+          description: Already too many tunnel entries in use
+      tags:
+      - Tunnel Entry Management
+      x-openapi-router-controller: jump_host_server.controllers.tunnel_entry_management_controller
+      x-codegen-request-body-name: body
+    summary: Manages tunnel entries on the jump host
+components:
+  schemas:
+    tunnel_entry:
+      example:
+        public_key: public_key
+        inner_intf: inner_intf
+        inner_subnet: inner_subnet
+        outer_subnet: outer_subnet
+        remote_end: remote_end
+        local_port: 6
+        outer_intf: outer_intf
+        private_key: private_key
+        id: 0
+      properties:
+        id:
+          description: The tunnel identifier
+          format: int32
+          title: id
+          type: integer
+        inner_intf:
+          description: The name of the network interface that faces towards the edge
+            network
+          title: inner_intf
+          type: string
+        outer_intf:
+          description: The name of the network interface that faces towards the first
+            black network
+          title: outer_intf
+          type: string
+        inner_subnet:
+          description: The subnet to route towards the inner interface (aka. the edge
+            network/device)
+          title: inner_subnet
+          type: string
+        outer_subnet:
+          description: The subnet to route towards the tunnel (aka. the other edge
+            network/device)
+          title: outer_subnet
+          type: string
+        local_port:
+          description: The local port to use to bind the tunnel
+          format: uint16
+          title: local_port
+          type: integer
+        remote_end:
+          description: The remote address to contact as the other side of the tunnel
+          title: remote_end
+          type: string
+        private_key:
+          description: The private key to use for authentication of the tunnel to
+            the other side
+          title: private_key
+          type: string
+        public_key:
+          description: The public key to use for authentication of the tunnel from
+            the other side
+          title: public_key
+          type: string
+      title: tunnel_entry
+      type: object

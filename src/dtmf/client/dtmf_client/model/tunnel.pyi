@@ -37,13 +37,17 @@ class Tunnel(
         
         class properties:
             id = schemas.Int32Schema
-            rate = schemas.Int64Schema
+            min_rate = schemas.Int64Schema
+            max_rate = schemas.Int64Schema
+            burst_rate = schemas.Int64Schema
             latency = schemas.IntSchema
             _from = schemas.StrSchema
             to = schemas.StrSchema
             __annotations__ = {
                 "id": id,
-                "rate": rate,
+                "min_rate": min_rate,
+                "max_rate": max_rate,
+                "burst_rate": burst_rate,
                 "latency": latency,
                 "from": _from,
                 "to": to,
@@ -53,7 +57,13 @@ class Tunnel(
     def __getitem__(self, name: typing_extensions.Literal["id"]) -> MetaOapg.properties.id: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["rate"]) -> MetaOapg.properties.rate: ...
+    def __getitem__(self, name: typing_extensions.Literal["min_rate"]) -> MetaOapg.properties.min_rate: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["max_rate"]) -> MetaOapg.properties.max_rate: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["burst_rate"]) -> MetaOapg.properties.burst_rate: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["latency"]) -> MetaOapg.properties.latency: ...
@@ -67,7 +77,7 @@ class Tunnel(
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "rate", "latency", "from", "to", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "latency", "from", "to", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
@@ -76,7 +86,13 @@ class Tunnel(
     def get_item_oapg(self, name: typing_extensions.Literal["id"]) -> typing.Union[MetaOapg.properties.id, schemas.Unset]: ...
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["rate"]) -> typing.Union[MetaOapg.properties.rate, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["min_rate"]) -> typing.Union[MetaOapg.properties.min_rate, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["max_rate"]) -> typing.Union[MetaOapg.properties.max_rate, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["burst_rate"]) -> typing.Union[MetaOapg.properties.burst_rate, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["latency"]) -> typing.Union[MetaOapg.properties.latency, schemas.Unset]: ...
@@ -90,7 +106,7 @@ class Tunnel(
     @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "rate", "latency", "from", "to", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "latency", "from", "to", ], str]):
         return super().get_item_oapg(name)
     
 
@@ -98,7 +114,9 @@ class Tunnel(
         cls,
         *_args: typing.Union[dict, frozendict.frozendict, ],
         id: typing.Union[MetaOapg.properties.id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
-        rate: typing.Union[MetaOapg.properties.rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        min_rate: typing.Union[MetaOapg.properties.min_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        max_rate: typing.Union[MetaOapg.properties.max_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        burst_rate: typing.Union[MetaOapg.properties.burst_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         latency: typing.Union[MetaOapg.properties.latency, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         to: typing.Union[MetaOapg.properties.to, str, schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
@@ -108,7 +126,9 @@ class Tunnel(
             cls,
             *_args,
             id=id,
-            rate=rate,
+            min_rate=min_rate,
+            max_rate=max_rate,
+            burst_rate=burst_rate,
             latency=latency,
             to=to,
             _configuration=_configuration,

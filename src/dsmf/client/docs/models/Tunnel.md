@@ -9,7 +9,9 @@ dict, frozendict.frozendict,  | frozendict.frozendict,  |  |
 Key | Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | ------------- | -------------
 **id** | decimal.Decimal, int,  | decimal.Decimal,  | The tunnel identifier | [optional] value must be a 32 bit integer
-**rate** | decimal.Decimal, int,  | decimal.Decimal,  | The transmission rate as bits/s | [optional] value must be a 64 bit integer
+**min_rate** | decimal.Decimal, int,  | decimal.Decimal,  | The minimum transmission rate as bits/s | [optional] value must be a 64 bit integer
+**max_rate** | decimal.Decimal, int,  | decimal.Decimal,  | The maximum transmission rate as bits/s | [optional] value must be a 64 bit integer
+**burst_rate** | decimal.Decimal, int,  | decimal.Decimal,  | The burst transmission rate as bits/s | [optional] value must be a 64 bit integer
 **latency** | decimal.Decimal, int,  | decimal.Decimal,  | The required maximum latency | [optional] 
 **from** | str,  | str,  | The name of the input domain or host | [optional] 
 **to** | str,  | str,  | The name of the output domain or host | [optional] 

@@ -14,18 +14,22 @@ class Slice(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, rate: int=None, latency: int=None, _from: str=None, to: str=None):
+    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, _from: str=None, to: str=None):
         """Slice - a model defined in OpenAPI
 
         :param id: The id of this Slice.
-        :param rate: The rate of this Slice.
+        :param min_rate: The min_rate of this Slice.
+        :param max_rate: The max_rate of this Slice.
+        :param burst_rate: The burst_rate of this Slice.
         :param latency: The latency of this Slice.
         :param _from: The _from of this Slice.
         :param to: The to of this Slice.
         """
         self.openapi_types = {
             'id': int,
-            'rate': int,
+            'min_rate': int,
+            'max_rate': int,
+            'burst_rate': int,
             'latency': int,
             '_from': str,
             'to': str
@@ -33,14 +37,18 @@ class Slice(Model):
 
         self.attribute_map = {
             'id': 'id',
-            'rate': 'rate',
+            'min_rate': 'min_rate',
+            'max_rate': 'max_rate',
+            'burst_rate': 'burst_rate',
             'latency': 'latency',
             '_from': 'from',
             'to': 'to'
         }
 
         self._id = id
-        self._rate = rate
+        self._min_rate = min_rate
+        self._max_rate = max_rate
+        self._burst_rate = burst_rate
         self._latency = latency
         self.__from = _from
         self._to = to
@@ -78,27 +86,73 @@ class Slice(Model):
         self._id = id
 
     @property
-    def rate(self):
-        """Gets the rate of this Slice.
+    def min_rate(self):
+        """Gets the min_rate of this Slice.
 
-        The transmission rate as bits/s
+        The minimum transmission rate as bits/s
 
-        :return: The rate of this Slice.
+        :return: The min_rate of this Slice.
         :rtype: int
         """
-        return self._rate
+        return self._min_rate
 
-    @rate.setter
-    def rate(self, rate):
-        """Sets the rate of this Slice.
+    @min_rate.setter
+    def min_rate(self, min_rate):
+        """Sets the min_rate of this Slice.
 
-        The transmission rate as bits/s
+        The minimum transmission rate as bits/s
 
-        :param rate: The rate of this Slice.
-        :type rate: int
+        :param min_rate: The min_rate of this Slice.
+        :type min_rate: int
         """
 
-        self._rate = rate
+        self._min_rate = min_rate
+
+    @property
+    def max_rate(self):
+        """Gets the max_rate of this Slice.
+
+        The maximum transmission rate as bits/s
+
+        :return: The max_rate of this Slice.
+        :rtype: int
+        """
+        return self._max_rate
+
+    @max_rate.setter
+    def max_rate(self, max_rate):
+        """Sets the max_rate of this Slice.
+
+        The maximum transmission rate as bits/s
+
+        :param max_rate: The max_rate of this Slice.
+        :type max_rate: int
+        """
+
+        self._max_rate = max_rate
+
+    @property
+    def burst_rate(self):
+        """Gets the burst_rate of this Slice.
+
+        The burst transmission rate as bits/s
+
+        :return: The burst_rate of this Slice.
+        :rtype: int
+        """
+        return self._burst_rate
+
+    @burst_rate.setter
+    def burst_rate(self, burst_rate):
+        """Sets the burst_rate of this Slice.
+
+        The burst transmission rate as bits/s
+
+        :param burst_rate: The burst_rate of this Slice.
+        :type burst_rate: int
+        """
+
+        self._burst_rate = burst_rate
 
     @property
     def latency(self):

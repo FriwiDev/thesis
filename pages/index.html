@@ -83,9 +83,9 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button aria-controls="jump-host-tab-pane" aria-selected="false" class="nav-link"
-                        data-bs-target="#jump-host-tab-pane"
-                        data-bs-toggle="tab" id="jump-host-tab" role="tab" type="button">Jump Host
+                <button aria-controls="vpn-gateway-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#vpn-gateway-tab-pane"
+                        data-bs-toggle="tab" id="vpn-gateway-tab" role="tab" type="button">VPN Gateway
                 </button>
             </li>
         </ul>
@@ -113,7 +113,7 @@
                  tabindex="0">The <b>Domain Slice Management Function (DSMF)</b> is instructed by the ESMF to reserve
                 and create new slices in an edge network. It will instruct the domain switches to realise the slice
                 within the domain of the function. Additionally, it also provides the ability to create tunnels like the
-                DTMF. Upon tunnel creation it will also (optionally) set up a tunnel entry on a jump host of the edge
+                DTMF. Upon tunnel creation it will also (optionally) set up a tunnel entry on a vpn gateway of the edge
                 to safely encrypt the transferred data before it enters the first black network.
             </div>
             <div aria-labelledby="dtmf-tab" class="tab-pane fade" id="dtmf-tab-pane" role="tabpanel"
@@ -125,8 +125,8 @@
                  tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (via OpenFlow), as well
                 as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
             </div>
-            <div aria-labelledby="jump-host-tab" class="tab-pane fade" id="jump-host-tab-pane" role="tabpanel"
-                 tabindex="0">The <b>Jump Host</b> provides the ability to create and remove tunnel entries.
+            <div aria-labelledby="vpn-gateway-tab" class="tab-pane fade" id="vpn-gateway-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>VPN Gateway</b> provides the ability to create and remove tunnel entries.
                 These tunnel entries are used to encrypt data before it enters the first black network.
                 The black networks then only know that some data is transferred using a specific tunnel,
                 but not what the data contains or which slice it belongs to.
@@ -146,7 +146,7 @@
             <a class="btn btn-primary btn-lg px-4" href="dsmf" target="_blank">DSMF</a>
             <a class="btn btn-primary btn-lg px-4" href="dtmf" target="_blank">DTMF</a>
             <a class="btn btn-primary btn-lg px-4" href="switch" target="_blank">Switch</a>
-            <a class="btn btn-primary btn-lg px-4" href="jump_host" target="_blank">Jump Host</a>
+            <a class="btn btn-primary btn-lg px-4" href="vpn_gateway" target="_blank">VPN Gateway</a>
         </div>
 
         <hr/>
@@ -159,7 +159,7 @@
         <br/>
         <img src="diagrams/slice_creation_esmf_to_dsmf_to_switch.svg" style="padding: 3pt" width="80%"/>
         <br/>
-        <img src="diagrams/slice_creation_esmf_to_dsmf_to_jump_host.svg" style="padding: 3pt" width="80%"/>
+        <img src="diagrams/slice_creation_esmf_to_dsmf_to_vpn_gateway.svg" style="padding: 3pt" width="80%"/>
         <br/>
         <img src="diagrams/slice_creation_ctmf_to_dtmf.svg" style="padding: 3pt" width="80%"/>
 

@@ -71,7 +71,7 @@
     "/auth": {
       "summary": "Manages authentication towards this service",
       "description": "Endpoint to manage authentication tokens",
-      "put": {
+      "post": {
         "tags": ["Authentication"],
         "description": "Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.",
         "parameters": [
@@ -175,6 +175,9 @@
           },
           "409": {
             "description": "Tunnel entry id or specified ports already in use"
+          },
+          "412": {
+            "description": "A value does not match the schema"
           },
           "507": {
             "description": "Already too many tunnel entries in use"

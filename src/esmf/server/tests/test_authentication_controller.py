@@ -6,8 +6,8 @@ from aiohttp import web
 
 
 
-async def test_auth_put(client):
-    """Test case for auth_put
+async def test_auth_post(client):
+    """Test case for auth_post
 
     
     """
@@ -15,7 +15,7 @@ async def test_auth_put(client):
         'Accept': 'application/json',
     }
     response = await client.request(
-        method='PUT',
+        method='POST',
         path='/v1/auth',
         headers=headers,
         )

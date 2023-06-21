@@ -37,4 +37,4 @@ async def policy_put(request: web.Request, auth, port, ingress_policing_rate=Non
     if ingress_policing_rate:
         cmd += ['ingress_policing_burst=' + str(ingress_policing_burst)]
     run_command(cmd)
-    return web.Response(status=200)
+    return web.Response(status=200, reason="Traffic policy updated")

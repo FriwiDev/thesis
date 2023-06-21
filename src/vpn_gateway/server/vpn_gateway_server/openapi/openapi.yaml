@@ -19,10 +19,10 @@ servers:
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
-    put:
+    post:
       description: "Issues a new authentication token in exchange for credentials.\
         \ Currently requires no credentials, this is up to future implementations."
-      operationId: auth_put
+      operationId: auth_post
       parameters: []
       responses:
         "200":
@@ -129,6 +129,8 @@ paths:
           description: A value exceeds the allowed range
         "409":
           description: Tunnel entry id or specified ports already in use
+        "412":
+          description: A value does not match the schema
         "507":
           description: Already too many tunnel entries in use
       tags:

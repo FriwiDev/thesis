@@ -154,10 +154,10 @@ with esmf_client.ApiClient(configuration) as api_client:
     api_instance = authentication_api.AuthenticationApi(api_client)
     
     try:
-        api_response = api_instance.auth_put()
+        api_response = api_instance.auth_post()
         pprint(api_response)
     except esmf_client.ApiException as e:
-        print("Exception when calling AuthenticationApi->auth_put: %s\n" % e)
+        print("Exception when calling AuthenticationApi->auth_post: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -166,7 +166,7 @@ All URIs are relative to *http://localhost:8080/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*AuthenticationApi* | [**auth_put**](docs/apis/tags/AuthenticationApi.md#auth_put) | **put** /auth | 
+*AuthenticationApi* | [**auth_post**](docs/apis/tags/AuthenticationApi.md#auth_post) | **post** /auth | 
 *SliceManagementApi* | [**slice_delete**](docs/apis/tags/SliceManagementApi.md#slice_delete) | **delete** /slice | 
 *SliceManagementApi* | [**slice_get**](docs/apis/tags/SliceManagementApi.md#slice_get) | **get** /slice | 
 *SliceManagementApi* | [**slice_put**](docs/apis/tags/SliceManagementApi.md#slice_put) | **put** /slice | 

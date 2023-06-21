@@ -104,7 +104,7 @@
     "/auth": {
       "summary": "Manages authentication towards this service",
       "description": "Endpoint to manage authentication tokens",
-      "put": {
+      "post": {
         "tags": ["Authentication"],
         "description": "Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.",
         "parameters": [

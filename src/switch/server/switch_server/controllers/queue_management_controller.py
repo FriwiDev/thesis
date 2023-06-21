@@ -39,7 +39,7 @@ async def queue_delete(request: web.Request, auth, queue_id, port) -> web.Respon
         return web.Response(status=404, reason="The queue could not be found.")
     del QueueData.queues[queue_id]
     flush_queues(queue.port)
-    return web.Response(status=200)
+    return web.Response(status=200, reason="The queue was successfully deleted.")
 
 
 async def queue_put(request: web.Request, auth, body=None) -> web.Response:

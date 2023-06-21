@@ -11,9 +11,9 @@ from unittest.mock import patch
 
 import urllib3
 
-import dsmf_client
-from dsmf_client.paths.auth import put  # noqa: E501
-from dsmf_client import configuration, schemas, api_client
+import dtmf_client
+from dtmf_client.paths.auth import post  # noqa: E501
+from dtmf_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
 
@@ -26,7 +26,7 @@ class TestAuth(ApiTestMixin, unittest.TestCase):
 
     def setUp(self):
         used_api_client = api_client.ApiClient(configuration=self._configuration)
-        self.api = put.ApiForput(api_client=used_api_client)  # noqa: E501
+        self.api = post.ApiForpost(api_client=used_api_client)  # noqa: E501
 
     def tearDown(self):
         pass

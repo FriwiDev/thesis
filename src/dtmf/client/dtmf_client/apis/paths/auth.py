@@ -1,7 +1,7 @@
-from dtmf_client.paths.auth.put import ApiForput
+from dtmf_client.paths.auth.post import ApiForpost
 
 
 class Auth(
-    ApiForput,
+    ApiForpost,
 ):
     pass

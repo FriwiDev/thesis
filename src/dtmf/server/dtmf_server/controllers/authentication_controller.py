@@ -4,8 +4,8 @@ from aiohttp import web
 from dtmf_server import util
 
 
-async def auth_put(request: web.Request, ) -> web.Response:
-    """auth_put
+async def auth_post(request: web.Request, ) -> web.Response:
+    """auth_post
 
     Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.
 

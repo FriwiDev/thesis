@@ -22,10 +22,10 @@ servers:
 paths:
   /auth:
     description: Endpoint to manage authentication tokens
-    put:
+    post:
       description: "Issues a new authentication token in exchange for credentials.\
         \ Currently requires no credentials, this is up to future implementations."
-      operationId: auth_put
+      operationId: auth_post
       parameters: []
       responses:
         "200":

@@ -41,6 +41,11 @@ jobs:
         with:
           output: pages/vpn_gateway
           spec-file: openapi/vpn_gateway.json
+      - name: Generate Swagger UI for controller
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: pages/controller
+          spec-file: openapi/controller.json
       - name: Render .drawio files
         uses: docker://ghcr.io/racklet/render-drawio-action:v1
         with:

@@ -17,9 +17,10 @@ curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin
 chmod +x openapi-generator-cli.sh
 
 # Perform the generation for every openapi definition
-generate_component "ctmf" "8080"
-generate_component "dsmf" "8081"
-generate_component "dtmf" "8081"
-generate_component "esmf" "8080"
-generate_component "switch" "8082"
-generate_component "vpn_gateway" "8083"
+#generate_component "ctmf" "8080"
+#generate_component "dsmf" "8081"
+#generate_component "dtmf" "8081"
+#generate_component "esmf" "8080"
+#generate_component "switch" "8082"
+#generate_component "vpn_gateway" "8083"
+generate_component "controller" "8080"

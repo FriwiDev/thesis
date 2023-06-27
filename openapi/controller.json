@@ -1,0 +1,1067 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Controller",
+    "description": "The API used by the DSMF/DTMF to contact the controller. This API is a subset of the API provided by the ryu controller and modelled strictly according to their specification. Currently we only support OpenFlow 1.2 or higher. Please refer to the specification here: <a href=\"https://ryu.readthedocs.io/en/latest/app/ofctl_rest.html\">https://ryu.readthedocs.io/en/latest/app/ofctl_rest.html</a>",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{protocol}://{apiRoot}/stats",
+      "variables": {
+        "protocol": {
+          "enum": [
+            "http",
+            "https"
+          ],
+          "default": "http"
+        },
+        "apiRoot": {
+          "default": "localhost:8080",
+          "description": "The server to use"
+        }
+      }
+    }
+  ],
+  "components": {
+    "schemas": {
+      "switch_description": {
+        "type": "object",
+        "description": "A switch description",
+        "properties": {
+          "mfr_desc": {
+            "type": "string",
+            "description": "Manufacturer description",
+            "example": "Nicira, Inc."
+          },
+          "hw_desc": {
+            "type": "string",
+            "description": "Hardware description",
+            "example": "Open vSwitch"
+          },
+          "sw_desc": {
+            "type": "string",
+            "description": "Software description",
+            "example": "2.3.90"
+          },
+          "serial_num": {
+            "type": "string",
+            "description": "Serial number",
+            "example": "None"
+          },
+          "dp_desc": {
+            "type": "string",
+            "description": "Human readable description of datapath",
+            "example": "None"
+          }
+        }
+      },
+      "switch_flow_query": {
+        "type": "object",
+        "description": "A switch flow query",
+        "properties": {
+          "table_id": {
+            "description": "Table ID",
+            "type": "integer",
+            "format": "i16",
+            "example": 0
+          },
+          "out_port": {
+            "description": "Require matching entries to include this as an output port",
+            "type": "integer",
+            "format": "i16",
+            "example": 2
+          },
+          "out_group": {
+            "description": "Require matching entries to include this as an output group",
+            "type": "integer",
+            "format": "i16",
+            "example": 1
+          },
+          "cookie": {
+            "description": "Require matching entries to contain this cookie value",
+            "type": "integer",
+            "format": "i32",
+            "example": 1
+          },
+          "cookie_mask": {
+            "description": "Mask used to restrict the cookie bits that must match",
+            "type": "integer",
+            "format": "i32",
+            "example": 1
+          },
+          "match": {
+            "description": "Fields to match",
+            "$ref": "#/components/schemas/switch_flow_match_v1_2",
+            "example": 0
+          },
+          "priority": {
+            "description": "Priority of the entry",
+            "type": "integer",
+            "format": "i16",
+            "example": 0
+          }
+        }
+      },
+      "switch_flow_instruction": {
+        "type": "object",
+        "description": "A switch flow instruction (Openflow >= v1_4)",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The instruction to use",
+            "example": "APPLY_ACTIONS",
+            "enum": [
+              "APPLY_ACTIONS"
+            ]
+          },
+          "actions": {
+            "type": "array",
+            "description": "The actions to take",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "example": [
+              {
+                "port": 2,
+                "max_len": 0,
+                "type": "OUTPUT"
+              }
+            ]
+          }
+        }
+      },
+      "switch_flow_match_v1_2": {
+        "type": "object",
+        "description": "A switch flow match entity (only selected properties, OpenFlow >= v1_2)",
+        "properties": {
+          "in_port": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Input switch port",
+            "example": 7
+          },
+          "eth_src": {
+            "type": "string",
+            "description": "Ethernet source address",
+            "example": "aa:bb:cc:11:22:33"
+          },
+          "eth_dst": {
+            "type": "string",
+            "description": "Ethernet destination address",
+            "example": "aa:bb:cc:11:22:33"
+          },
+          "eth_type": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Ethernet frame type",
+            "example": 123
+          },
+          "tcp_src": {
+            "type": "integer",
+            "format": "i16",
+            "description": "TCP source port",
+            "example": 1
+          },
+          "tcp_dst": {
+            "type": "integer",
+            "format": "i16",
+            "description": "TCP destination port",
+            "example": 2
+          },
+          "udp_src": {
+            "type": "integer",
+            "format": "i16",
+            "description": "UDP source port",
+            "example": 1
+          },
+          "udp_dst": {
+            "type": "integer",
+            "format": "i16",
+            "description": "UDP destination port",
+            "example": 2
+          }
+        }
+      },
+      "switch_table_feature": {
+        "type": "object",
+        "description": "Switch table feature",
+        "properties": {
+          "table_id": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Table ID",
+            "example": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of Table",
+            "example": "table_0"
+          },
+          "metadata_match": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Bits of metadata table can match",
+            "example": "165647653657647563400"
+          },
+          "metadata_write": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Bits of metadata table can write",
+            "example": "165647653657647563400"
+          },
+          "config": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Bitmap of OFPTC_* values",
+            "example": "0"
+          },
+          "max_entries": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Max number of entries supported",
+            "example": "4096"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "struct ofp_table_feature_prop_header",
+            "example": [
+              {
+                "type": "INSTRUCTIONS",
+                "instruction_ids": [
+                  {
+                    "len": 4,
+                    "type": 1
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "switch_flow": {
+        "type": "object",
+        "description": "A switch flow",
+        "properties": {
+          "dpid": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Datapath ID. Only set when using this object to create or modify a flow entry.",
+            "example": 1
+          },
+          "length": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Length of this entry. Not in use when using this object to create or modify a flow entry.",
+            "example": 88
+          },
+          "buffer_id": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Buffered packet to apply to, or OFP_NO_BUFFER. Only used when writing flow entries.",
+            "example": 1
+          },
+          "table_id": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Table ID",
+            "example": 0
+          },
+          "duration_sec": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Time flow has been alive in seconds",
+            "example": 2
+          },
+          "duration_nsec": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Time flow has been alive in nanoseconds beyond duration_sec",
+            "example": 688768767
+          },
+          "priority": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Priority of the entry",
+            "example": 11111
+          },
+          "idle_timeout": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Number of seconds idle before expiration",
+            "example": 0
+          },
+          "hard_timeout": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Number of seconds before expiration",
+            "example": 0
+          },
+          "flags": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Bitmap of OFPFF_* flags",
+            "example": 1
+          },
+          "cookie": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Opaque controller-issued identifier",
+            "example": 1
+          },
+          "packet_count": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Number of packets in flow",
+            "example": 0
+          },
+          "byte_count": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Number of bytes in flow",
+            "example": 0
+          },
+          "match": {
+            "$ref": "#/components/schemas/switch_flow_match_v1_2"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Instruction set (OpenFlow <= v1_3)",
+            "example": [
+              "OUTPUT:2"
+            ]
+          },
+          "instructions": {
+            "type": "array",
+            "description": "struct ofp_instruction_header (OpenFlow >= v1_4)",
+            "items": {
+              "$ref": "#/components/schemas/switch_flow_instruction"
+            }
+          }
+        }
+      },
+      "switch_port_description": {
+        "type": "object",
+        "description": "Switch port description",
+        "properties": {
+          "port_no": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Port number",
+            "example": 1
+          },
+          "hw_addr": {
+            "type": "string",
+            "description": "Ethernet hardware address",
+            "example": "0a:b6:d0:0c:e1:d7"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of port",
+            "example": "s1-eth1"
+          },
+          "config": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Bitmap of OFPPC_* flags",
+            "example": 0
+          },
+          "state": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Bitmap of OFPPS_* flags",
+            "example": 0
+          },
+          "curr": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Current features (OpenFlow <= 1.4)",
+            "example": 2112
+          },
+          "advertised": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Features being advertised by the port (OpenFlow <= 1.4)",
+            "example": 0
+          },
+          "supported": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Features being supported by the port (OpenFlow <= 1.4)",
+            "example": 0
+          },
+          "peer": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Features advertised by peer (OpenFlow <= 1.4)",
+            "example": 0
+          },
+          "curr_speed": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Current port bitrate in kbps (OpenFlow <= 1.4)",
+            "example": 5374634756
+          },
+          "max_speed": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Max port bitrate in kbps (OpenFlow <= 1.4)",
+            "example": 0
+          },
+          "length": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Length of this entry (OpenFlow >= 1.5)",
+            "example": 168
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "struct ofp_port_desc_prop_header (OpenFlow >= 1.5)",
+            "example": [
+              {
+                "length": 32,
+                "curr": 10248
+              }
+            ]
+          }
+        }
+      },
+      "switch_queue_stat": {
+        "type": "object",
+        "description": "Switch queue stats",
+        "properties": {
+          "port_no": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Port number",
+            "example": 1
+          },
+          "queue_id": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Queue ID",
+            "example": 0
+          },
+          "tx_bytes": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Number of transmitted bytes",
+            "example": 0
+          },
+          "tx_packets": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Number of transmitted packets",
+            "example": 0
+          },
+          "tx_errors": {
+            "type": "integer",
+            "format": "i64",
+            "description": "Number of packets dropped due to overrun",
+            "example": 0
+          },
+          "duration_sec": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Time queue has been alive in seconds",
+            "example": 40
+          },
+          "duration_nsec": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Time queue has been alive in nanoseconds beyond duration_sec",
+            "example": 456387563
+          },
+          "length": {
+            "type": "integer",
+            "format": "i32",
+            "description": "Length of this entry (OpenFlow >= 1.4)",
+            "example": 168
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "struct ofp_port_desc_prop_header (OpenFlow >= 1.4)",
+            "example": [
+              {
+                "length": 32,
+                "curr": 10248
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/switches": {
+      "summary": "Manages switches connected to the controller",
+      "description": "Endpoint to manage switches",
+      "get": {
+        "tags": [
+          "General Switch Information"
+        ],
+        "description": "Get the list of all switches which connected to the controller.",
+        "responses": {
+          "200": {
+            "description": "A list of DPIDs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "i64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/desc/{dpid}": {
+      "summary": "Manages switch descriptions",
+      "description": "Endpoint to manage switch descriptions",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "General Switch Information"
+        ],
+        "description": "Fetch the description of a switch.",
+        "responses": {
+          "200": {
+            "description": "The switch description",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/switch_description"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/flow/{dpid}": {
+      "summary": "Manages switch flows",
+      "description": "Endpoint to manage switch flows",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Flow management"
+        ],
+        "description": "Fetch the flow stats of a switch.",
+        "responses": {
+          "200": {
+            "description": "The switch stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/switch_flow"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Flow management"
+        ],
+        "description": "Fetch the flow stats of a switch.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/switch_flow_query"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The switch stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/switch_flow"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/tablefeatures/{dpid}": {
+      "summary": "Manages table features",
+      "description": "Endpoint to manage table features",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Table management"
+        ],
+        "description": "Fetch the table features of a switch.",
+        "responses": {
+          "200": {
+            "description": "The table features",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/switch_table_feature"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/portdesc/{dpid}": {
+      "summary": "Manages port descriptions",
+      "description": "Endpoint to manage port descriptions",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Port management"
+        ],
+        "description": "Fetch the port descriptions of a switch.",
+        "responses": {
+          "200": {
+            "description": "The port descriptions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/switch_port_description"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/portdesc/{dpid}/{port}": {
+      "summary": "Manages port descriptions",
+      "description": "Endpoint to manage port descriptions (OpenFlow >= v1_5)",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        },
+        {
+          "name": "port",
+          "in": "path",
+          "description": "The id of the port to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i16"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Port management"
+        ],
+        "description": "Fetch the port descriptions of a switch.",
+        "responses": {
+          "200": {
+            "description": "The port descriptions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/switch_port_description"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch or port not found"
+          }
+        }
+      }
+    },
+    "/queue/{dpid}": {
+      "summary": "Manages queue stats",
+      "description": "Endpoint to manage queue stats",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "Queue management"
+        ],
+        "description": "Fetch the queue stats of a switch.",
+        "responses": {
+          "200": {
+            "description": "The queue stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/switch_queue_stat"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/queue/{dpid}/{port}": {
+      "summary": "Manages queue stats",
+      "description": "Endpoint to manage queue stats",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        },
+        {
+          "name": "port",
+          "in": "path",
+          "description": "The id of the port to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i16"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Queue management"
+        ],
+        "description": "Fetch the queue stats of a switch.",
+        "responses": {
+          "200": {
+            "description": "The queue stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/switch_queue_stat"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch or port not found"
+          }
+        }
+      }
+    },
+    "/queue/{dpid}/{port}/{queue_id}": {
+      "summary": "Manages queue stats",
+      "description": "Endpoint to manage queue stats",
+      "parameters": [
+        {
+          "name": "dpid",
+          "in": "path",
+          "description": "The DPID of the switch to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i64"
+          },
+          "required": true
+        },
+        {
+          "name": "port",
+          "in": "path",
+          "description": "The id of the port to query or ALL.",
+          "schema": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "format": "i16"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "ALL"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "queue_id",
+          "in": "path",
+          "description": "The queue id to query.",
+          "schema": {
+            "type": "integer",
+            "format": "i32"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Queue management"
+        ],
+        "description": "Fetch the queue stats of a switch.",
+        "responses": {
+          "200": {
+            "description": "The queue stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/switch_queue_stat"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Switch, port or queue id not found"
+          }
+        }
+      }
+    },
+    "/flowentry/add": {
+      "summary": "Manages flow entries",
+      "description": "Endpoint to add flow entries",
+      "post": {
+        "tags": [
+          "Flow management"
+        ],
+        "description": "Add a new flow entry to a switch. Needs to be confirmed afterwards.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/switch_flow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The creation of the flow entry was attempted"
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/flowentry/delete": {
+      "summary": "Manages flow entries",
+      "description": "Endpoint to delete flow entries",
+      "post": {
+        "tags": [
+          "Flow management"
+        ],
+        "description": "Delete all matching flow entries from a switch. Needs to be confirmed afterwards.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/switch_flow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The deletion of all matching flow entries was attempted"
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/flowentry/delete_strict": {
+      "summary": "Manages flow entries",
+      "description": "Endpoint to delete flow entries",
+      "post": {
+        "tags": [
+          "Flow management"
+        ],
+        "description": "Delete one strictly matching flow entry from a switch. Needs to be confirmed afterwards.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/switch_flow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The deletion of one strictly matching flow entry was attempted"
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    },
+    "/flowentry/clear/{dpid}": {
+      "summary": "Manages flow entries",
+      "description": "Endpoint to delete flow entries",
+      "delete": {
+        "tags": [
+          "Flow management"
+        ],
+        "description": "Delete all flow entries from a switch. Needs to be confirmed afterwards.",
+        "parameters": [
+          {
+            "name": "dpid",
+            "in": "path",
+            "description": "The DPID of the switch.",
+            "schema": {
+              "type": "integer",
+              "format": "i64"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The deletion of all flow entries was attempted"
+          },
+          "404": {
+            "description": "Switch not found"
+          }
+        }
+      }
+    }
+  }
+}

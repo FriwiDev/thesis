@@ -83,6 +83,12 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
+                <button aria-controls="controller-tab-pane" aria-selected="false" class="nav-link"
+                        data-bs-target="#controller-tab-pane"
+                        data-bs-toggle="tab" id="controller-tab" role="tab" type="button">Controller
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
                 <button aria-controls="vpn-gateway-tab-pane" aria-selected="false" class="nav-link"
                         data-bs-target="#vpn-gateway-tab-pane"
                         data-bs-toggle="tab" id="vpn-gateway-tab" role="tab" type="button">VPN Gateway
@@ -122,8 +128,12 @@
                 tunnel capacity within the domain of the function. The DTMF is a subset of the DSMF.
             </div>
             <div aria-labelledby="switch-tab" class="tab-pane fade" id="switch-tab-pane" role="tabpanel"
-                 tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (via OpenFlow), as well
-                as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
+                 tabindex="0">The <b>Switch</b> provides the ability to create and remove flows (to the controller via
+                OpenFlow), as well as create and remove quality of service (QoS) queues to the DSMFs and DTMFs.
+            </div>
+            <div aria-labelledby="controller-tab" class="tab-pane fade" id="controller-tab-pane" role="tabpanel"
+                 tabindex="0">The <b>Controller</b> provides the ability to create and remove flows on the switches
+                connected to it. It exposes this functionality to the DSMFs and DTMFs.
             </div>
             <div aria-labelledby="vpn-gateway-tab" class="tab-pane fade" id="vpn-gateway-tab-pane" role="tabpanel"
                  tabindex="0">The <b>VPN Gateway</b> provides the ability to create and remove tunnel entries.
@@ -146,6 +156,7 @@
             <a class="btn btn-primary btn-lg px-4" href="dsmf" target="_blank">DSMF</a>
             <a class="btn btn-primary btn-lg px-4" href="dtmf" target="_blank">DTMF</a>
             <a class="btn btn-primary btn-lg px-4" href="switch" target="_blank">Switch</a>
+            <a class="btn btn-primary btn-lg px-4" href="controller" target="_blank">Controller</a>
             <a class="btn btn-primary btn-lg px-4" href="vpn_gateway" target="_blank">VPN Gateway</a>
         </div>
 

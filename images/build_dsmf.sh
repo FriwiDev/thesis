@@ -17,6 +17,8 @@ lxc exec "$IMAGE_NAME" -- apt autoremove -y
 
 # Install our service components
 bash build_steps/install_pkg.sh "$IMAGE_NAME" ../src/switch/client
+bash build_steps/install_pkg.sh "$IMAGE_NAME" ../src/vpn_gateway/client
+bash build_steps/install_pkg.sh "$IMAGE_NAME" ../src/controller/client
 bash build_steps/install_pkg.sh "$IMAGE_NAME" ../src/dsmf/server
 
 # Finalize normal testbed container

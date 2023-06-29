@@ -62,6 +62,42 @@
           "public_key": {
             "type": "string",
             "description": "The public key to use for authentication of the tunnel from the other side"
+          },
+          "matches": {
+            "type": "array",
+            "description": "A specification for which packets to transport through the tunnel",
+            "items": {
+              "type": "object",
+              "description": "A match entry specifying packets that should be routed through the tunnel",
+              "properties": {
+                "direction": {
+                  "type": "string",
+                  "enum": ["SRC", "DST"],
+                  "description": "Specifies the fields of the packets that need to be matched"
+                },
+                "transport_protocol": {
+                  "type": "string",
+                  "enum": ["UDP", "TCP"],
+                  "description": "The protocol to be expected"
+                },
+                "ip": {
+                  "type": "string",
+                  "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
+                  "default": null
+                },
+                "mac": {
+                  "type": "string",
+                  "description": "Specifies the source or target mac to be matched. Leave empty for no matching.",
+                  "default": null
+                },
+                "port": {
+                  "type": "integer",
+                  "format": "i16",
+                  "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
+                  "default": 0
+                }
+              }
+            }
           }
         }
       }
@@ -135,7 +171,7 @@
         "tags": [
           "Tunnel Entry Management"
         ],
-        "description": "Creates a new tunnel entry",
+        "description": "Creates a new tunnel entry or updates one",
         "parameters": [
           {
             "name": "auth",
@@ -148,7 +184,7 @@
           }
         ],
         "requestBody": {
-          "description": "The tunnel entry to create. The id will be checked for conflicts and inherited from the request.",
+          "description": "The tunnel entry to create. The id will be inherited from the request.",
           "content": {
             "application/json": {
               "schema": {
@@ -172,9 +208,6 @@
           },
           "406": {
             "description": "A value exceeds the allowed range"
-          },
-          "409": {
-            "description": "Tunnel entry id or specified ports already in use"
           },
           "412": {
             "description": "A value does not match the schema"

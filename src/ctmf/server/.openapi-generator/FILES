@@ -9,6 +9,7 @@ ctmf_server/controllers/security_controller_.py
 ctmf_server/controllers/tunnel_synchronization_controller.py
 ctmf_server/models/__init__.py
 ctmf_server/models/base_model_.py
+ctmf_server/models/endpoint.py
 ctmf_server/models/tunnel.py
 ctmf_server/openapi/openapi.yaml
 ctmf_server/typing_utils.py

@@ -11,6 +11,7 @@ esmf_server/controllers/slice_synchronization_controller.py
 esmf_server/controllers/tunnel_synchronization_controller.py
 esmf_server/models/__init__.py
 esmf_server/models/base_model_.py
+esmf_server/models/endpoint.py
 esmf_server/models/slice.py
 esmf_server/models/tunnel.py
 esmf_server/openapi/openapi.yaml

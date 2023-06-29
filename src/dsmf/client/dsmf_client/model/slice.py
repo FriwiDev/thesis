@@ -41,8 +41,14 @@ class Slice(
             max_rate = schemas.Int64Schema
             burst_rate = schemas.Int64Schema
             latency = schemas.IntSchema
-            _from = schemas.StrSchema
-            to = schemas.StrSchema
+        
+            @staticmethod
+            def _from() -> typing.Type['Endpoint']:
+                return Endpoint
+        
+            @staticmethod
+            def to() -> typing.Type['Endpoint']:
+                return Endpoint
             __annotations__ = {
                 "id": id,
                 "min_rate": min_rate,
@@ -69,10 +75,10 @@ class Slice(
     def __getitem__(self, name: typing_extensions.Literal["latency"]) -> MetaOapg.properties.latency: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["from"]) -> MetaOapg.properties._from: ...
+    def __getitem__(self, name: typing_extensions.Literal["from"]) -> 'Endpoint': ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["to"]) -> MetaOapg.properties.to: ...
+    def __getitem__(self, name: typing_extensions.Literal["to"]) -> 'Endpoint': ...
     
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
@@ -98,10 +104,10 @@ class Slice(
     def get_item_oapg(self, name: typing_extensions.Literal["latency"]) -> typing.Union[MetaOapg.properties.latency, schemas.Unset]: ...
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["from"]) -> typing.Union[MetaOapg.properties._from, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["from"]) -> typing.Union['Endpoint', schemas.Unset]: ...
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["to"]) -> typing.Union[MetaOapg.properties.to, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["to"]) -> typing.Union['Endpoint', schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
@@ -118,7 +124,7 @@ class Slice(
         max_rate: typing.Union[MetaOapg.properties.max_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         burst_rate: typing.Union[MetaOapg.properties.burst_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         latency: typing.Union[MetaOapg.properties.latency, decimal.Decimal, int, schemas.Unset] = schemas.unset,
-        to: typing.Union[MetaOapg.properties.to, str, schemas.Unset] = schemas.unset,
+        to: typing.Union['Endpoint', schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
         **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
     ) -> 'Slice':
@@ -134,3 +140,5 @@ class Slice(
             _configuration=_configuration,
             **kwargs,
         )
+
+from dsmf_client.model.endpoint import Endpoint

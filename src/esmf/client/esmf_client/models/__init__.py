@@ -11,5 +11,6 @@
 # import sys
 # sys.setrecursionlimit(n)
 
+from esmf_client.model.endpoint import Endpoint
 from esmf_client.model.slice import Slice
 from esmf_client.model.tunnel import Tunnel

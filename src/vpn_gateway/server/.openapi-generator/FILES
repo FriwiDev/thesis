@@ -18,6 +18,7 @@ vpn_gateway_server/controllers/tunnel_entry_management_controller.py
 vpn_gateway_server/models/__init__.py
 vpn_gateway_server/models/base_model_.py
 vpn_gateway_server/models/tunnel_entry.py
+vpn_gateway_server/models/tunnel_entry_matches_inner.py
 vpn_gateway_server/openapi/openapi.yaml
 vpn_gateway_server/typing_utils.py
 vpn_gateway_server/util.py

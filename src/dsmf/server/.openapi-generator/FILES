@@ -12,6 +12,7 @@ dsmf_server/controllers/tunnel_management_controller.py
 dsmf_server/controllers/tunnel_reservation_controller.py
 dsmf_server/models/__init__.py
 dsmf_server/models/base_model_.py
+dsmf_server/models/endpoint.py
 dsmf_server/models/slice.py
 dsmf_server/models/tunnel.py
 dsmf_server/openapi/openapi.yaml

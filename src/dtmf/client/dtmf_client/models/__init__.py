@@ -11,4 +11,5 @@
 # import sys
 # sys.setrecursionlimit(n)
 
+from dtmf_client.model.endpoint import Endpoint
 from dtmf_client.model.tunnel import Tunnel

@@ -51,12 +51,40 @@
             "description": "The required maximum latency"
           },
           "from": {
-            "type": "string",
-            "description": "The name of the input domain or host"
+            "$ref": "#/components/schemas/endpoint"
           },
           "to": {
+            "$ref": "#/components/schemas/endpoint"
+          }
+        }
+      },
+      "endpoint": {
+        "type": "object",
+        "description": "Specifying an endpoint to be matched for source or target",
+        "properties": {
+          "transport_protocol": {
             "type": "string",
-            "description": "The name of the output domain or host"
+            "enum": [
+              "UDP",
+              "TCP"
+            ],
+            "description": "The protocol to be expected"
+          },
+          "ip": {
+            "type": "string",
+            "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
+            "default": null
+          },
+          "mac": {
+            "type": "string",
+            "description": "Specifies the source or target mac to be matched. Leave empty for no matching.",
+            "default": null
+          },
+          "port": {
+            "type": "integer",
+            "format": "i16",
+            "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
+            "default": 0
           }
         }
       }

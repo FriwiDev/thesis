@@ -176,6 +176,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [Endpoint](docs/models/Endpoint.md)
  - [Tunnel](docs/models/Tunnel.md)
 
 ## Documentation For Authorization

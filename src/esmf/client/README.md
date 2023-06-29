@@ -185,6 +185,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [Endpoint](docs/models/Endpoint.md)
  - [Slice](docs/models/Slice.md)
  - [Tunnel](docs/models/Tunnel.md)
 

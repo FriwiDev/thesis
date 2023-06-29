@@ -1,7 +1,7 @@
-from vpn_gateway_client.paths.auth.put import ApiForput
+from vpn_gateway_client.paths.auth.post import ApiForpost
 
 
 class Auth(
-    ApiForput,
+    ApiForpost,
 ):
     pass

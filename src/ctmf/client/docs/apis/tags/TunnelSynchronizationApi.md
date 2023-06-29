@@ -580,8 +580,13 @@ with ctmf_client.ApiClient(configuration) as api_client:
         max_rate=1,
         burst_rate=1,
         latency=1,
-        _from="_from_example",
-        to="to_example",
+        _from=Endpoint(
+            transport_protocol="UDP",
+            ip="ip_example",
+            mac="mac_example",
+            port=0,
+        ),
+,
     )
     try:
         api_response = api_instance.tunnel_reservation_put(

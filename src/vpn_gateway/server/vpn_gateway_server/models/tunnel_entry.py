@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import List, Dict, Type
 
 from vpn_gateway_server.models.base_model_ import Model
+from vpn_gateway_server.models.tunnel_entry_matches_inner import TunnelEntryMatchesInner
 from vpn_gateway_server import util
 
 
@@ -14,7 +15,7 @@ class TunnelEntry(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, inner_intf: str=None, outer_intf: str=None, inner_subnet: str=None, outer_subnet: str=None, local_port: int=None, remote_end: str=None, private_key: str=None, public_key: str=None):
+    def __init__(self, id: int=None, inner_intf: str=None, outer_intf: str=None, inner_subnet: str=None, outer_subnet: str=None, local_port: int=None, remote_end: str=None, private_key: str=None, public_key: str=None, matches: List[TunnelEntryMatchesInner]=None):
         """TunnelEntry - a model defined in OpenAPI
 
         :param id: The id of this TunnelEntry.
@@ -26,6 +27,7 @@ class TunnelEntry(Model):
         :param remote_end: The remote_end of this TunnelEntry.
         :param private_key: The private_key of this TunnelEntry.
         :param public_key: The public_key of this TunnelEntry.
+        :param matches: The matches of this TunnelEntry.
         """
         self.openapi_types = {
             'id': int,
@@ -36,7 +38,8 @@ class TunnelEntry(Model):
             'local_port': int,
             'remote_end': str,
             'private_key': str,
-            'public_key': str
+            'public_key': str,
+            'matches': List[TunnelEntryMatchesInner]
         }
 
         self.attribute_map = {
@@ -48,7 +51,8 @@ class TunnelEntry(Model):
             'local_port': 'local_port',
             'remote_end': 'remote_end',
             'private_key': 'private_key',
-            'public_key': 'public_key'
+            'public_key': 'public_key',
+            'matches': 'matches'
         }
 
         self._id = id
@@ -60,6 +64,7 @@ class TunnelEntry(Model):
         self._remote_end = remote_end
         self._private_key = private_key
         self._public_key = public_key
+        self._matches = matches
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'TunnelEntry':
@@ -276,3 +281,26 @@ class TunnelEntry(Model):
         """
 
         self._public_key = public_key
+
+    @property
+    def matches(self):
+        """Gets the matches of this TunnelEntry.
+
+        A specification for which packets to transport through the tunnel
+
+        :return: The matches of this TunnelEntry.
+        :rtype: List[TunnelEntryMatchesInner]
+        """
+        return self._matches
+
+    @matches.setter
+    def matches(self, matches):
+        """Sets the matches of this TunnelEntry.
+
+        A specification for which packets to transport through the tunnel
+
+        :param matches: The matches of this TunnelEntry.
+        :type matches: List[TunnelEntryMatchesInner]
+        """
+
+        self._matches = matches

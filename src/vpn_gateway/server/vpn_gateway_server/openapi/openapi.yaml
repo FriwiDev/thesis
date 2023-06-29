@@ -97,7 +97,7 @@ paths:
       - Tunnel Entry Management
       x-openapi-router-controller: vpn_gateway_server.controllers.tunnel_entry_management_controller
     put:
-      description: Creates a new tunnel entry
+      description: Creates a new tunnel entry or updates one
       operationId: tunnel_entry_put
       parameters:
       - description: The authentication token issued by prior login
@@ -113,8 +113,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tunnel_entry'
-        description: The tunnel entry to create. The id will be checked for conflicts
-          and inherited from the request.
+        description: The tunnel entry to create. The id will be inherited from the
+          request.
         x-body-name: body
       responses:
         "200":
@@ -127,8 +127,6 @@ paths:
           description: A specified interface could not be found
         "406":
           description: A value exceeds the allowed range
-        "409":
-          description: Tunnel entry id or specified ports already in use
         "412":
           description: A value does not match the schema
         "507":
@@ -151,6 +149,17 @@ components:
         outer_intf: outer_intf
         private_key: private_key
         id: 0
+        matches:
+        - port: 1
+          ip: ip
+          transport_protocol: UDP
+          mac: mac
+          direction: SRC
+        - port: 1
+          ip: ip
+          transport_protocol: UDP
+          mac: mac
+          direction: SRC
       properties:
         id:
           description: The tunnel identifier
@@ -196,5 +205,55 @@ components:
             the other side
           title: public_key
           type: string
+        matches:
+          description: A specification for which packets to transport through the
+            tunnel
+          items:
+            $ref: '#/components/schemas/tunnel_entry_matches_inner'
+          title: matches
+          type: array
       title: tunnel_entry
+      type: object
+    tunnel_entry_matches_inner:
+      description: A match entry specifying packets that should be routed through
+        the tunnel
+      example:
+        port: 1
+        ip: ip
+        transport_protocol: UDP
+        mac: mac
+        direction: SRC
+      properties:
+        direction:
+          description: Specifies the fields of the packets that need to be matched
+          enum:
+          - SRC
+          - DST
+          title: direction
+          type: string
+        transport_protocol:
+          description: The protocol to be expected
+          enum:
+          - UDP
+          - TCP
+          title: transport_protocol
+          type: string
+        ip:
+          description: Specifies the source or target ip to be matched. Leave empty
+            for no matching.
+          title: ip
+          type: string
+        mac:
+          description: Specifies the source or target mac to be matched. Leave empty
+            for no matching.
+          title: mac
+          type: string
+        port:
+          default: 0
+          description: Specifies the source or target port to be matched. Leave empty
+            or on 0 for no matching.
+          format: i16
+          title: port
+          type: integer
+      title: tunnel_entry_matches_inner
       type: object

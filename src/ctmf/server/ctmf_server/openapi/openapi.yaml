@@ -235,9 +235,17 @@ components:
         burst_rate: 5
         latency: 5
         max_rate: 1
-        from: from
+        from:
+          port: 2
+          ip: ip
+          transport_protocol: UDP
+          mac: mac
         id: 0
-        to: to
+        to:
+          port: 2
+          ip: ip
+          transport_protocol: UDP
+          mac: mac
         min_rate: 6
       properties:
         id:
@@ -266,12 +274,42 @@ components:
           title: latency
           type: integer
         from:
-          description: The name of the input domain or host
-          title: from
-          type: string
+          $ref: '#/components/schemas/endpoint'
         to:
-          description: The name of the output domain or host
-          title: to
-          type: string
+          $ref: '#/components/schemas/endpoint'
       title: tunnel
+      type: object
+    endpoint:
+      description: Specifying an endpoint to be matched for source or target
+      example:
+        port: 2
+        ip: ip
+        transport_protocol: UDP
+        mac: mac
+      properties:
+        transport_protocol:
+          description: The protocol to be expected
+          enum:
+          - UDP
+          - TCP
+          title: transport_protocol
+          type: string
+        ip:
+          description: Specifies the source or target ip to be matched. Leave empty
+            for no matching.
+          title: ip
+          type: string
+        mac:
+          description: Specifies the source or target mac to be matched. Leave empty
+            for no matching.
+          title: mac
+          type: string
+        port:
+          default: 0
+          description: Specifies the source or target port to be matched. Leave empty
+            or on 0 for no matching.
+          format: i16
+          title: port
+          type: integer
+      title: endpoint
       type: object

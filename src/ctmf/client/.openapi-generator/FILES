@@ -11,6 +11,8 @@ ctmf_client/apis/tags/tunnel_synchronization_api.py
 ctmf_client/configuration.py
 ctmf_client/exceptions.py
 ctmf_client/model/__init__.py
+ctmf_client/model/endpoint.py
+ctmf_client/model/endpoint.pyi
 ctmf_client/model/tunnel.py
 ctmf_client/model/tunnel.pyi
 ctmf_client/models/__init__.py
@@ -18,6 +20,7 @@ ctmf_client/rest.py
 ctmf_client/schemas.py
 docs/apis/tags/AuthenticationApi.md
 docs/apis/tags/TunnelSynchronizationApi.md
+docs/models/Endpoint.md
 docs/models/Tunnel.md
 git_push.sh
 requirements.txt
@@ -26,5 +29,6 @@ setup.py
 test-requirements.txt
 test/__init__.py
 test/test_models/__init__.py
+test/test_models/test_endpoint.py
 test/test_models/test_tunnel.py
 tox.ini

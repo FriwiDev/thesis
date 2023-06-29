@@ -6,6 +6,7 @@ README.md
 docs/apis/tags/AuthenticationApi.md
 docs/apis/tags/TunnelManagementApi.md
 docs/apis/tags/TunnelReservationApi.md
+docs/models/Endpoint.md
 docs/models/Tunnel.md
 dtmf_client/__init__.py
 dtmf_client/api_client.py
@@ -16,6 +17,8 @@ dtmf_client/apis/tags/tunnel_reservation_api.py
 dtmf_client/configuration.py
 dtmf_client/exceptions.py
 dtmf_client/model/__init__.py
+dtmf_client/model/endpoint.py
+dtmf_client/model/endpoint.pyi
 dtmf_client/model/tunnel.py
 dtmf_client/model/tunnel.pyi
 dtmf_client/models/__init__.py
@@ -28,5 +31,6 @@ setup.py
 test-requirements.txt
 test/__init__.py
 test/test_models/__init__.py
+test/test_models/test_endpoint.py
 test/test_models/test_tunnel.py
 tox.ini

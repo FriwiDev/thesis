@@ -127,14 +127,14 @@ _response_for_406 = api_client.OpenApiResponse(
 
 
 @dataclass
-class ApiResponseFor409(api_client.ApiResponse):
+class ApiResponseFor412(api_client.ApiResponse):
     response: urllib3.HTTPResponse
     body: schemas.Unset = schemas.unset
     headers: schemas.Unset = schemas.unset
 
 
-_response_for_409 = api_client.OpenApiResponse(
-    response_cls=ApiResponseFor409,
+_response_for_412 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor412,
 )
 
 

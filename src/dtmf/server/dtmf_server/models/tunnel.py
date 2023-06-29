@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import List, Dict, Type
 
 from dtmf_server.models.base_model_ import Model
+from dtmf_server.models.endpoint import Endpoint
 from dtmf_server import util
 
 
@@ -14,7 +15,7 @@ class Tunnel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, _from: str=None, to: str=None):
+    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, _from: Endpoint=None, to: Endpoint=None):
         """Tunnel - a model defined in OpenAPI
 
         :param id: The id of this Tunnel.
@@ -31,8 +32,8 @@ class Tunnel(Model):
             'max_rate': int,
             'burst_rate': int,
             'latency': int,
-            '_from': str,
-            'to': str
+            '_from': Endpoint,
+            'to': Endpoint
         }
 
         self.attribute_map = {
@@ -181,10 +182,9 @@ class Tunnel(Model):
     def _from(self):
         """Gets the _from of this Tunnel.
 
-        The name of the input domain or host
 
         :return: The _from of this Tunnel.
-        :rtype: str
+        :rtype: Endpoint
         """
         return self.__from
 
@@ -192,10 +192,9 @@ class Tunnel(Model):
     def _from(self, _from):
         """Sets the _from of this Tunnel.
 
-        The name of the input domain or host
 
         :param _from: The _from of this Tunnel.
-        :type _from: str
+        :type _from: Endpoint
         """
 
         self.__from = _from
@@ -204,10 +203,9 @@ class Tunnel(Model):
     def to(self):
         """Gets the to of this Tunnel.
 
-        The name of the output domain or host
 
         :return: The to of this Tunnel.
-        :rtype: str
+        :rtype: Endpoint
         """
         return self._to
 
@@ -215,10 +213,9 @@ class Tunnel(Model):
     def to(self, to):
         """Sets the to of this Tunnel.
 
-        The name of the output domain or host
 
         :param to: The to of this Tunnel.
-        :type to: str
+        :type to: Endpoint
         """
 
         self._to = to

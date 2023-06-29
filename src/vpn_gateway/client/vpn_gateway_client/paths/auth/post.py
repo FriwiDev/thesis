@@ -25,6 +25,8 @@ import frozendict  # noqa: F401
 
 from vpn_gateway_client import schemas  # noqa: F401
 
+from . import path
+
 SchemaFor200ResponseBodyApplicationJson = schemas.StrSchema
 
 
@@ -56,6 +58,10 @@ class ApiResponseFor403(api_client.ApiResponse):
 _response_for_403 = api_client.OpenApiResponse(
     response_cls=ApiResponseFor403,
 )
+_status_code_to_response = {
+    '200': _response_for_200,
+    '403': _response_for_403,
+}
 _all_accept_content_types = (
     'application/json',
 )
@@ -63,7 +69,7 @@ _all_accept_content_types = (
 
 class BaseApi(api_client.Api):
     @typing.overload
-    def _auth_put_oapg(
+    def _auth_post_oapg(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -74,7 +80,7 @@ class BaseApi(api_client.Api):
     ]: ...
 
     @typing.overload
-    def _auth_put_oapg(
+    def _auth_post_oapg(
         self,
         skip_deserialization: typing_extensions.Literal[True],
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
@@ -83,7 +89,7 @@ class BaseApi(api_client.Api):
     ) -> api_client.ApiResponseWithoutDeserialization: ...
 
     @typing.overload
-    def _auth_put_oapg(
+    def _auth_post_oapg(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -94,7 +100,7 @@ class BaseApi(api_client.Api):
         api_client.ApiResponseWithoutDeserialization,
     ]: ...
 
-    def _auth_put_oapg(
+    def _auth_post_oapg(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -116,7 +122,7 @@ class BaseApi(api_client.Api):
 
         response = self.api_client.call_api(
             resource_path=used_path,
-            method='put'.upper(),
+            method='post'.upper(),
             headers=_headers,
             stream=stream,
             timeout=timeout,
@@ -141,11 +147,11 @@ class BaseApi(api_client.Api):
         return api_response
 
 
-class AuthPut(BaseApi):
+class AuthPost(BaseApi):
     # this class is used by api classes that refer to endpoints with operationId fn names
 
     @typing.overload
-    def auth_put(
+    def auth_post(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -156,7 +162,7 @@ class AuthPut(BaseApi):
     ]: ...
 
     @typing.overload
-    def auth_put(
+    def auth_post(
         self,
         skip_deserialization: typing_extensions.Literal[True],
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
@@ -165,7 +171,7 @@ class AuthPut(BaseApi):
     ) -> api_client.ApiResponseWithoutDeserialization: ...
 
     @typing.overload
-    def auth_put(
+    def auth_post(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -176,14 +182,14 @@ class AuthPut(BaseApi):
         api_client.ApiResponseWithoutDeserialization,
     ]: ...
 
-    def auth_put(
+    def auth_post(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = False,
     ):
-        return self._auth_put_oapg(
+        return self._auth_post_oapg(
             accept_content_types=accept_content_types,
             stream=stream,
             timeout=timeout,
@@ -191,11 +197,11 @@ class AuthPut(BaseApi):
         )
 
 
-class ApiForput(BaseApi):
+class ApiForpost(BaseApi):
     # this class is used by api classes that refer to endpoints by path and http method names
 
     @typing.overload
-    def put(
+    def post(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -206,7 +212,7 @@ class ApiForput(BaseApi):
     ]: ...
 
     @typing.overload
-    def put(
+    def post(
         self,
         skip_deserialization: typing_extensions.Literal[True],
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
@@ -215,7 +221,7 @@ class ApiForput(BaseApi):
     ) -> api_client.ApiResponseWithoutDeserialization: ...
 
     @typing.overload
-    def put(
+    def post(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
@@ -226,14 +232,14 @@ class ApiForput(BaseApi):
         api_client.ApiResponseWithoutDeserialization,
     ]: ...
 
-    def put(
+    def post(
         self,
         accept_content_types: typing.Tuple[str] = _all_accept_content_types,
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = False,
     ):
-        return self._auth_put_oapg(
+        return self._auth_post_oapg(
             accept_content_types=accept_content_types,
             stream=stream,
             timeout=timeout,

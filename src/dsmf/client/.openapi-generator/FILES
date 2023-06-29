@@ -8,6 +8,7 @@ docs/apis/tags/SliceManagementApi.md
 docs/apis/tags/SliceReservationApi.md
 docs/apis/tags/TunnelManagementApi.md
 docs/apis/tags/TunnelReservationApi.md
+docs/models/Endpoint.md
 docs/models/Slice.md
 docs/models/Tunnel.md
 dsmf_client/__init__.py
@@ -21,6 +22,8 @@ dsmf_client/apis/tags/tunnel_reservation_api.py
 dsmf_client/configuration.py
 dsmf_client/exceptions.py
 dsmf_client/model/__init__.py
+dsmf_client/model/endpoint.py
+dsmf_client/model/endpoint.pyi
 dsmf_client/model/slice.py
 dsmf_client/model/slice.pyi
 dsmf_client/model/tunnel.py
@@ -35,6 +38,7 @@ setup.py
 test-requirements.txt
 test/__init__.py
 test/test_models/__init__.py
+test/test_models/test_endpoint.py
 test/test_models/test_slice.py
 test/test_models/test_tunnel.py
 tox.ini

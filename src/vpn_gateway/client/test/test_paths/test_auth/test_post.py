@@ -12,7 +12,7 @@ from unittest.mock import patch
 import urllib3
 
 import vpn_gateway_client
-from vpn_gateway_client.paths.auth import put  # noqa: E501
+from vpn_gateway_client.paths.auth import post  # noqa: E501
 from vpn_gateway_client import configuration, schemas, api_client
 
 from .. import ApiTestMixin
@@ -26,7 +26,7 @@ class TestAuth(ApiTestMixin, unittest.TestCase):
 
     def setUp(self):
         used_api_client = api_client.ApiClient(configuration=self._configuration)
-        self.api = put.ApiForput(api_client=used_api_client)  # noqa: E501
+        self.api = post.ApiForpost(api_client=used_api_client)  # noqa: E501
 
     def tearDown(self):
         pass

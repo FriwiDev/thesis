@@ -10,6 +10,7 @@ dtmf_server/controllers/tunnel_management_controller.py
 dtmf_server/controllers/tunnel_reservation_controller.py
 dtmf_server/models/__init__.py
 dtmf_server/models/base_model_.py
+dtmf_server/models/endpoint.py
 dtmf_server/models/tunnel.py
 dtmf_server/openapi/openapi.yaml
 dtmf_server/typing_utils.py

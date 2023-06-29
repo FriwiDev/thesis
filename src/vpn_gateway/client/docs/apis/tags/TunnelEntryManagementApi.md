@@ -223,7 +223,7 @@ No authorization required
 
 
 
-Creates a new tunnel entry
+Creates a new tunnel entry or updates one
 
 ### Example
 
@@ -268,6 +268,15 @@ with vpn_gateway_client.ApiClient(configuration) as api_client:
         remote_end="remote_end_example",
         private_key="private_key_example",
         public_key="public_key_example",
+        matches=[
+            dict(
+                direction="SRC",
+                transport_protocol="UDP",
+                ip="ip_example",
+                mac="mac_example",
+                port=0,
+            )
+        ],
     )
     try:
         api_response = api_instance.tunnel_entry_put(
@@ -321,7 +330,7 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 403 | [ApiResponseFor403](#tunnel_entry_put.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#tunnel_entry_put.ApiResponseFor404) | A specified interface could not be found
 406 | [ApiResponseFor406](#tunnel_entry_put.ApiResponseFor406) | A value exceeds the allowed range
-409 | [ApiResponseFor409](#tunnel_entry_put.ApiResponseFor409) | Tunnel entry id or specified ports already in use
+412 | [ApiResponseFor412](#tunnel_entry_put.ApiResponseFor412) | A value does not match the schema
 507 | [ApiResponseFor507](#tunnel_entry_put.ApiResponseFor507) | Already too many tunnel entries in use
 
 #### tunnel_entry_put.ApiResponseFor200
@@ -359,7 +368,7 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
-#### tunnel_entry_put.ApiResponseFor409
+#### tunnel_entry_put.ApiResponseFor412
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

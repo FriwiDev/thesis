@@ -77,7 +77,7 @@
           },
           "mac": {
             "type": "string",
-            "description": "Specifies the source or target mac to be matched. Leave empty for no matching.",
+            "description": "Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.",
             "default": null
           },
           "port": {

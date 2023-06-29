@@ -65,27 +65,6 @@ class TunnelEntry(
                             class properties:
                                 
                                 
-                                class direction(
-                                    schemas.EnumBase,
-                                    schemas.StrSchema
-                                ):
-                                
-                                
-                                    class MetaOapg:
-                                        enum_value_to_name = {
-                                            "SRC": "SRC",
-                                            "DST": "DST",
-                                        }
-                                    
-                                    @schemas.classproperty
-                                    def SRC(cls):
-                                        return cls("SRC")
-                                    
-                                    @schemas.classproperty
-                                    def DST(cls):
-                                        return cls("DST")
-                                
-                                
                                 class transport_protocol(
                                     schemas.EnumBase,
                                     schemas.StrSchema
@@ -105,81 +84,92 @@ class TunnelEntry(
                                     @schemas.classproperty
                                     def TCP(cls):
                                         return cls("TCP")
-                                ip = schemas.StrSchema
-                                mac = schemas.StrSchema
-                                port = schemas.IntSchema
+                                source_ip = schemas.StrSchema
+                                target_ip = schemas.StrSchema
+                                source_mac = schemas.StrSchema
+                                source_port = schemas.IntSchema
+                                target_port = schemas.IntSchema
                                 __annotations__ = {
-                                    "direction": direction,
                                     "transport_protocol": transport_protocol,
-                                    "ip": ip,
-                                    "mac": mac,
-                                    "port": port,
+                                    "source_ip": source_ip,
+                                    "target_ip": target_ip,
+                                    "source_mac": source_mac,
+                                    "source_port": source_port,
+                                    "target_port": target_port,
                                 }
-                        
-                        @typing.overload
-                        def __getitem__(self, name: typing_extensions.Literal["direction"]) -> MetaOapg.properties.direction: ...
                         
                         @typing.overload
                         def __getitem__(self, name: typing_extensions.Literal["transport_protocol"]) -> MetaOapg.properties.transport_protocol: ...
                         
                         @typing.overload
-                        def __getitem__(self, name: typing_extensions.Literal["ip"]) -> MetaOapg.properties.ip: ...
+                        def __getitem__(self, name: typing_extensions.Literal["source_ip"]) -> MetaOapg.properties.source_ip: ...
                         
                         @typing.overload
-                        def __getitem__(self, name: typing_extensions.Literal["mac"]) -> MetaOapg.properties.mac: ...
+                        def __getitem__(self, name: typing_extensions.Literal["target_ip"]) -> MetaOapg.properties.target_ip: ...
                         
                         @typing.overload
-                        def __getitem__(self, name: typing_extensions.Literal["port"]) -> MetaOapg.properties.port: ...
+                        def __getitem__(self, name: typing_extensions.Literal["source_mac"]) -> MetaOapg.properties.source_mac: ...
+                        
+                        @typing.overload
+                        def __getitem__(self, name: typing_extensions.Literal["source_port"]) -> MetaOapg.properties.source_port: ...
+                        
+                        @typing.overload
+                        def __getitem__(self, name: typing_extensions.Literal["target_port"]) -> MetaOapg.properties.target_port: ...
                         
                         @typing.overload
                         def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
                         
-                        def __getitem__(self, name: typing.Union[typing_extensions.Literal["direction", "transport_protocol", "ip", "mac", "port", ], str]):
+                        def __getitem__(self, name: typing.Union[typing_extensions.Literal["transport_protocol", "source_ip", "target_ip", "source_mac", "source_port", "target_port", ], str]):
                             # dict_instance[name] accessor
                             return super().__getitem__(name)
                         
                         
                         @typing.overload
-                        def get_item_oapg(self, name: typing_extensions.Literal["direction"]) -> typing.Union[MetaOapg.properties.direction, schemas.Unset]: ...
-                        
-                        @typing.overload
                         def get_item_oapg(self, name: typing_extensions.Literal["transport_protocol"]) -> typing.Union[MetaOapg.properties.transport_protocol, schemas.Unset]: ...
                         
                         @typing.overload
-                        def get_item_oapg(self, name: typing_extensions.Literal["ip"]) -> typing.Union[MetaOapg.properties.ip, schemas.Unset]: ...
+                        def get_item_oapg(self, name: typing_extensions.Literal["source_ip"]) -> typing.Union[MetaOapg.properties.source_ip, schemas.Unset]: ...
                         
                         @typing.overload
-                        def get_item_oapg(self, name: typing_extensions.Literal["mac"]) -> typing.Union[MetaOapg.properties.mac, schemas.Unset]: ...
+                        def get_item_oapg(self, name: typing_extensions.Literal["target_ip"]) -> typing.Union[MetaOapg.properties.target_ip, schemas.Unset]: ...
                         
                         @typing.overload
-                        def get_item_oapg(self, name: typing_extensions.Literal["port"]) -> typing.Union[MetaOapg.properties.port, schemas.Unset]: ...
+                        def get_item_oapg(self, name: typing_extensions.Literal["source_mac"]) -> typing.Union[MetaOapg.properties.source_mac, schemas.Unset]: ...
+                        
+                        @typing.overload
+                        def get_item_oapg(self, name: typing_extensions.Literal["source_port"]) -> typing.Union[MetaOapg.properties.source_port, schemas.Unset]: ...
+                        
+                        @typing.overload
+                        def get_item_oapg(self, name: typing_extensions.Literal["target_port"]) -> typing.Union[MetaOapg.properties.target_port, schemas.Unset]: ...
                         
                         @typing.overload
                         def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
                         
-                        def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["direction", "transport_protocol", "ip", "mac", "port", ], str]):
+                        def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["transport_protocol", "source_ip", "target_ip", "source_mac", "source_port", "target_port", ], str]):
                             return super().get_item_oapg(name)
                         
                     
                         def __new__(
                             cls,
                             *_args: typing.Union[dict, frozendict.frozendict, ],
-                            direction: typing.Union[MetaOapg.properties.direction, str, schemas.Unset] = schemas.unset,
                             transport_protocol: typing.Union[MetaOapg.properties.transport_protocol, str, schemas.Unset] = schemas.unset,
-                            ip: typing.Union[MetaOapg.properties.ip, str, schemas.Unset] = schemas.unset,
-                            mac: typing.Union[MetaOapg.properties.mac, str, schemas.Unset] = schemas.unset,
-                            port: typing.Union[MetaOapg.properties.port, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+                            source_ip: typing.Union[MetaOapg.properties.source_ip, str, schemas.Unset] = schemas.unset,
+                            target_ip: typing.Union[MetaOapg.properties.target_ip, str, schemas.Unset] = schemas.unset,
+                            source_mac: typing.Union[MetaOapg.properties.source_mac, str, schemas.Unset] = schemas.unset,
+                            source_port: typing.Union[MetaOapg.properties.source_port, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+                            target_port: typing.Union[MetaOapg.properties.target_port, decimal.Decimal, int, schemas.Unset] = schemas.unset,
                             _configuration: typing.Optional[schemas.Configuration] = None,
                             **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
                         ) -> 'items':
                             return super().__new__(
                                 cls,
                                 *_args,
-                                direction=direction,
                                 transport_protocol=transport_protocol,
-                                ip=ip,
-                                mac=mac,
-                                port=port,
+                                source_ip=source_ip,
+                                target_ip=target_ip,
+                                source_mac=source_mac,
+                                source_port=source_port,
+                                target_port=target_port,
                                 _configuration=_configuration,
                                 **kwargs,
                             )

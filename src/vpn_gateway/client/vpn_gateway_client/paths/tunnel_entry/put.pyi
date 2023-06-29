@@ -67,14 +67,26 @@ request_body_tunnel_entry = api_client.RequestBody(
 
 
 @dataclass
-class ApiResponseFor200(api_client.ApiResponse):
+class ApiResponseFor201(api_client.ApiResponse):
     response: urllib3.HTTPResponse
     body: schemas.Unset = schemas.unset
     headers: schemas.Unset = schemas.unset
 
 
-_response_for_200 = api_client.OpenApiResponse(
-    response_cls=ApiResponseFor200,
+_response_for_201 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor201,
+)
+
+
+@dataclass
+class ApiResponseFor202(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_202 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor202,
 )
 
 
@@ -127,6 +139,18 @@ _response_for_406 = api_client.OpenApiResponse(
 
 
 @dataclass
+class ApiResponseFor409(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_409 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor409,
+)
+
+
+@dataclass
 class ApiResponseFor412(api_client.ApiResponse):
     response: urllib3.HTTPResponse
     body: schemas.Unset = schemas.unset
@@ -161,7 +185,8 @@ class BaseApi(api_client.Api):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: typing_extensions.Literal[False] = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
     ]: ...
 
     @typing.overload
@@ -174,7 +199,8 @@ class BaseApi(api_client.Api):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: typing_extensions.Literal[False] = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
     ]: ...
 
 
@@ -199,7 +225,8 @@ class BaseApi(api_client.Api):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
         api_client.ApiResponseWithoutDeserialization,
     ]: ...
 
@@ -287,7 +314,8 @@ class TunnelEntryPut(BaseApi):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: typing_extensions.Literal[False] = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
     ]: ...
 
     @typing.overload
@@ -300,7 +328,8 @@ class TunnelEntryPut(BaseApi):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: typing_extensions.Literal[False] = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
     ]: ...
 
 
@@ -325,7 +354,8 @@ class TunnelEntryPut(BaseApi):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
         api_client.ApiResponseWithoutDeserialization,
     ]: ...
 
@@ -361,7 +391,8 @@ class ApiForput(BaseApi):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: typing_extensions.Literal[False] = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
     ]: ...
 
     @typing.overload
@@ -374,7 +405,8 @@ class ApiForput(BaseApi):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: typing_extensions.Literal[False] = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
     ]: ...
 
 
@@ -399,7 +431,8 @@ class ApiForput(BaseApi):
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = ...,
     ) -> typing.Union[
-        ApiResponseFor200,
+        ApiResponseFor201,
+        ApiResponseFor202,
         api_client.ApiResponseWithoutDeserialization,
     ]: ...
 

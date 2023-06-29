@@ -70,30 +70,36 @@
               "type": "object",
               "description": "A match entry specifying packets that should be routed through the tunnel",
               "properties": {
-                "direction": {
-                  "type": "string",
-                  "enum": ["SRC", "DST"],
-                  "description": "Specifies the fields of the packets that need to be matched"
-                },
                 "transport_protocol": {
                   "type": "string",
                   "enum": ["UDP", "TCP"],
                   "description": "The protocol to be expected"
                 },
-                "ip": {
+                "source_ip": {
                   "type": "string",
-                  "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
+                  "description": "Specifies the source ip to be matched. Leave empty for no matching.",
                   "default": null
                 },
-                "mac": {
+                "target_ip": {
                   "type": "string",
-                  "description": "Specifies the source or target mac to be matched. Leave empty for no matching.",
+                  "description": "Specifies the target ip to be matched. Leave empty for no matching.",
                   "default": null
                 },
-                "port": {
+                "source_mac": {
+                  "type": "string",
+                  "description": "Specifies the source mac to be matched. Leave empty for no matching.",
+                  "default": null
+                },
+                "source_port": {
                   "type": "integer",
                   "format": "i16",
-                  "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
+                  "description": "Specifies the source port to be matched. Leave empty or on 0 for no matching.",
+                  "default": 0
+                },
+                "target_port": {
+                  "type": "integer",
+                  "format": "i16",
+                  "description": "Specifies the target port to be matched. Leave empty or on 0 for no matching.",
                   "default": 0
                 }
               }
@@ -171,7 +177,7 @@
         "tags": [
           "Tunnel Entry Management"
         ],
-        "description": "Creates a new tunnel entry or updates one",
+        "description": "Creates a new tunnel entry or updates one. Only updating of match entries is allowed - not the rest of the tunnel parameters.",
         "parameters": [
           {
             "name": "auth",
@@ -184,7 +190,7 @@
           }
         ],
         "requestBody": {
-          "description": "The tunnel entry to create. The id will be inherited from the request.",
+          "description": "The tunnel entry to create or update. The id will be inherited from the request.",
           "content": {
             "application/json": {
               "schema": {
@@ -194,8 +200,11 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "The tunnel entry has been created"
+          },
+          "202": {
+            "description": "The tunnel entry has been updated"
           },
           "400": {
             "description": "No body provided."
@@ -208,6 +217,9 @@
           },
           "406": {
             "description": "A value exceeds the allowed range"
+          },
+          "409": {
+            "description": "A tunnel entry with this id already exists and information apart from match entries was changed."
           },
           "412": {
             "description": "A value does not match the schema"

@@ -535,8 +535,9 @@ components:
           title: ip
           type: string
         mac:
-          description: Specifies the source or target mac to be matched. Leave empty
-            for no matching.
+          description: "Specifies the source or target mac to be matched. Leave empty\
+            \ for no matching. We currently can not match the destination mac address,\
+            \ it will be ignored."
           title: mac
           type: string
         port:

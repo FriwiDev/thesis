@@ -46,11 +46,12 @@ dict, frozendict.frozendict,  | frozendict.frozendict,  | A match entry specifyi
 ### Dictionary Keys
 Key | Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | ------------- | -------------
-**direction** | str,  | str,  | Specifies the fields of the packets that need to be matched | [optional] must be one of ["SRC", "DST", ] 
 **transport_protocol** | str,  | str,  | The protocol to be expected | [optional] must be one of ["UDP", "TCP", ] 
-**ip** | str,  | str,  | Specifies the source or target ip to be matched. Leave empty for no matching. | [optional] 
-**mac** | str,  | str,  | Specifies the source or target mac to be matched. Leave empty for no matching. | [optional] 
-**port** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the source or target port to be matched. Leave empty or on 0 for no matching. | [optional] if omitted the server will use the default value of 0
+**source_ip** | str,  | str,  | Specifies the source ip to be matched. Leave empty for no matching. | [optional] 
+**target_ip** | str,  | str,  | Specifies the target ip to be matched. Leave empty for no matching. | [optional] 
+**source_mac** | str,  | str,  | Specifies the source mac to be matched. Leave empty for no matching. | [optional] 
+**source_port** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the source port to be matched. Leave empty or on 0 for no matching. | [optional] if omitted the server will use the default value of 0
+**target_port** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the target port to be matched. Leave empty or on 0 for no matching. | [optional] if omitted the server will use the default value of 0
 **any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)

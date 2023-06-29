@@ -14,36 +14,40 @@ class TunnelEntryMatchesInner(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, direction: str=None, transport_protocol: str=None, ip: str=None, mac: str=None, port: int=0):
+    def __init__(self, transport_protocol: str=None, source_ip: str=None, target_ip: str=None, source_mac: str=None, source_port: int=0, target_port: int=0):
         """TunnelEntryMatchesInner - a model defined in OpenAPI
 
-        :param direction: The direction of this TunnelEntryMatchesInner.
         :param transport_protocol: The transport_protocol of this TunnelEntryMatchesInner.
-        :param ip: The ip of this TunnelEntryMatchesInner.
-        :param mac: The mac of this TunnelEntryMatchesInner.
-        :param port: The port of this TunnelEntryMatchesInner.
+        :param source_ip: The source_ip of this TunnelEntryMatchesInner.
+        :param target_ip: The target_ip of this TunnelEntryMatchesInner.
+        :param source_mac: The source_mac of this TunnelEntryMatchesInner.
+        :param source_port: The source_port of this TunnelEntryMatchesInner.
+        :param target_port: The target_port of this TunnelEntryMatchesInner.
         """
         self.openapi_types = {
-            'direction': str,
             'transport_protocol': str,
-            'ip': str,
-            'mac': str,
-            'port': int
+            'source_ip': str,
+            'target_ip': str,
+            'source_mac': str,
+            'source_port': int,
+            'target_port': int
         }
 
         self.attribute_map = {
-            'direction': 'direction',
             'transport_protocol': 'transport_protocol',
-            'ip': 'ip',
-            'mac': 'mac',
-            'port': 'port'
+            'source_ip': 'source_ip',
+            'target_ip': 'target_ip',
+            'source_mac': 'source_mac',
+            'source_port': 'source_port',
+            'target_port': 'target_port'
         }
 
-        self._direction = direction
         self._transport_protocol = transport_protocol
-        self._ip = ip
-        self._mac = mac
-        self._port = port
+        self._source_ip = source_ip
+        self._target_ip = target_ip
+        self._source_mac = source_mac
+        self._source_port = source_port
+        self._target_port = target_port
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'TunnelEntryMatchesInner':
@@ -53,35 +57,6 @@ class TunnelEntryMatchesInner(Model):
         :return: The tunnel_entry_matches_inner of this TunnelEntryMatchesInner.
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def direction(self):
-        """Gets the direction of this TunnelEntryMatchesInner.
-
-        Specifies the fields of the packets that need to be matched
-
-        :return: The direction of this TunnelEntryMatchesInner.
-        :rtype: str
-        """
-        return self._direction
-
-    @direction.setter
-    def direction(self, direction):
-        """Sets the direction of this TunnelEntryMatchesInner.
-
-        Specifies the fields of the packets that need to be matched
-
-        :param direction: The direction of this TunnelEntryMatchesInner.
-        :type direction: str
-        """
-        allowed_values = ["SRC", "DST"]  # noqa: E501
-        if direction not in allowed_values:
-            raise ValueError(
-                "Invalid value for `direction` ({0}), must be one of {1}"
-                .format(direction, allowed_values)
-            )
-
-        self._direction = direction
 
     @property
     def transport_protocol(self):
@@ -113,70 +88,116 @@ class TunnelEntryMatchesInner(Model):
         self._transport_protocol = transport_protocol
 
     @property
-    def ip(self):
-        """Gets the ip of this TunnelEntryMatchesInner.
+    def source_ip(self):
+        """Gets the source_ip of this TunnelEntryMatchesInner.
 
-        Specifies the source or target ip to be matched. Leave empty for no matching.
+        Specifies the source ip to be matched. Leave empty for no matching.
 
-        :return: The ip of this TunnelEntryMatchesInner.
+        :return: The source_ip of this TunnelEntryMatchesInner.
         :rtype: str
         """
-        return self._ip
+        return self._source_ip
 
-    @ip.setter
-    def ip(self, ip):
-        """Sets the ip of this TunnelEntryMatchesInner.
+    @source_ip.setter
+    def source_ip(self, source_ip):
+        """Sets the source_ip of this TunnelEntryMatchesInner.
 
-        Specifies the source or target ip to be matched. Leave empty for no matching.
+        Specifies the source ip to be matched. Leave empty for no matching.
 
-        :param ip: The ip of this TunnelEntryMatchesInner.
-        :type ip: str
+        :param source_ip: The source_ip of this TunnelEntryMatchesInner.
+        :type source_ip: str
         """
 
-        self._ip = ip
+        self._source_ip = source_ip
 
     @property
-    def mac(self):
-        """Gets the mac of this TunnelEntryMatchesInner.
+    def target_ip(self):
+        """Gets the target_ip of this TunnelEntryMatchesInner.
 
-        Specifies the source or target mac to be matched. Leave empty for no matching.
+        Specifies the target ip to be matched. Leave empty for no matching.
 
-        :return: The mac of this TunnelEntryMatchesInner.
+        :return: The target_ip of this TunnelEntryMatchesInner.
         :rtype: str
         """
-        return self._mac
+        return self._target_ip
 
-    @mac.setter
-    def mac(self, mac):
-        """Sets the mac of this TunnelEntryMatchesInner.
+    @target_ip.setter
+    def target_ip(self, target_ip):
+        """Sets the target_ip of this TunnelEntryMatchesInner.
 
-        Specifies the source or target mac to be matched. Leave empty for no matching.
+        Specifies the target ip to be matched. Leave empty for no matching.
 
-        :param mac: The mac of this TunnelEntryMatchesInner.
-        :type mac: str
+        :param target_ip: The target_ip of this TunnelEntryMatchesInner.
+        :type target_ip: str
         """
 
-        self._mac = mac
+        self._target_ip = target_ip
 
     @property
-    def port(self):
-        """Gets the port of this TunnelEntryMatchesInner.
+    def source_mac(self):
+        """Gets the source_mac of this TunnelEntryMatchesInner.
 
-        Specifies the source or target port to be matched. Leave empty or on 0 for no matching.
+        Specifies the source mac to be matched. Leave empty for no matching.
 
-        :return: The port of this TunnelEntryMatchesInner.
+        :return: The source_mac of this TunnelEntryMatchesInner.
+        :rtype: str
+        """
+        return self._source_mac
+
+    @source_mac.setter
+    def source_mac(self, source_mac):
+        """Sets the source_mac of this TunnelEntryMatchesInner.
+
+        Specifies the source mac to be matched. Leave empty for no matching.
+
+        :param source_mac: The source_mac of this TunnelEntryMatchesInner.
+        :type source_mac: str
+        """
+
+        self._source_mac = source_mac
+
+    @property
+    def source_port(self):
+        """Gets the source_port of this TunnelEntryMatchesInner.
+
+        Specifies the source port to be matched. Leave empty or on 0 for no matching.
+
+        :return: The source_port of this TunnelEntryMatchesInner.
         :rtype: int
         """
-        return self._port
+        return self._source_port
 
-    @port.setter
-    def port(self, port):
-        """Sets the port of this TunnelEntryMatchesInner.
+    @source_port.setter
+    def source_port(self, source_port):
+        """Sets the source_port of this TunnelEntryMatchesInner.
 
-        Specifies the source or target port to be matched. Leave empty or on 0 for no matching.
+        Specifies the source port to be matched. Leave empty or on 0 for no matching.
 
-        :param port: The port of this TunnelEntryMatchesInner.
-        :type port: int
+        :param source_port: The source_port of this TunnelEntryMatchesInner.
+        :type source_port: int
         """
 
-        self._port = port
+        self._source_port = source_port
+
+    @property
+    def target_port(self):
+        """Gets the target_port of this TunnelEntryMatchesInner.
+
+        Specifies the target port to be matched. Leave empty or on 0 for no matching.
+
+        :return: The target_port of this TunnelEntryMatchesInner.
+        :rtype: int
+        """
+        return self._target_port
+
+    @target_port.setter
+    def target_port(self, target_port):
+        """Sets the target_port of this TunnelEntryMatchesInner.
+
+        Specifies the target port to be matched. Leave empty or on 0 for no matching.
+
+        :param target_port: The target_port of this TunnelEntryMatchesInner.
+        :type target_port: int
+        """
+
+        self._target_port = target_port

@@ -106,7 +106,7 @@ class Endpoint(Model):
     def mac(self):
         """Gets the mac of this Endpoint.
 
-        Specifies the source or target mac to be matched. Leave empty for no matching.
+        Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.
 
         :return: The mac of this Endpoint.
         :rtype: str
@@ -117,7 +117,7 @@ class Endpoint(Model):
     def mac(self, mac):
         """Sets the mac of this Endpoint.
 
-        Specifies the source or target mac to be matched. Leave empty for no matching.
+        Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.
 
         :param mac: The mac of this Endpoint.
         :type mac: str

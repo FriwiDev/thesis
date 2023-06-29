@@ -223,7 +223,7 @@ No authorization required
 
 
 
-Creates a new tunnel entry or updates one
+Creates a new tunnel entry or updates one. Only updating of match entries is allowed - not the rest of the tunnel parameters.
 
 ### Example
 
@@ -270,11 +270,12 @@ with vpn_gateway_client.ApiClient(configuration) as api_client:
         public_key="public_key_example",
         matches=[
             dict(
-                direction="SRC",
                 transport_protocol="UDP",
-                ip="ip_example",
-                mac="mac_example",
-                port=0,
+                source_ip="source_ip_example",
+                target_ip="target_ip_example",
+                source_mac="source_mac_example",
+                source_port=0,
+                target_port=0,
             )
         ],
     )
@@ -325,15 +326,24 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#tunnel_entry_put.ApiResponseFor200) | The tunnel entry has been created
+201 | [ApiResponseFor201](#tunnel_entry_put.ApiResponseFor201) | The tunnel entry has been created
+202 | [ApiResponseFor202](#tunnel_entry_put.ApiResponseFor202) | The tunnel entry has been updated
 400 | [ApiResponseFor400](#tunnel_entry_put.ApiResponseFor400) | No body provided.
 403 | [ApiResponseFor403](#tunnel_entry_put.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#tunnel_entry_put.ApiResponseFor404) | A specified interface could not be found
 406 | [ApiResponseFor406](#tunnel_entry_put.ApiResponseFor406) | A value exceeds the allowed range
+409 | [ApiResponseFor409](#tunnel_entry_put.ApiResponseFor409) | A tunnel entry with this id already exists and information apart from match entries was changed.
 412 | [ApiResponseFor412](#tunnel_entry_put.ApiResponseFor412) | A value does not match the schema
 507 | [ApiResponseFor507](#tunnel_entry_put.ApiResponseFor507) | Already too many tunnel entries in use
 
-#### tunnel_entry_put.ApiResponseFor200
+#### tunnel_entry_put.ApiResponseFor201
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_entry_put.ApiResponseFor202
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -362,6 +372,13 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### tunnel_entry_put.ApiResponseFor406
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_entry_put.ApiResponseFor409
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

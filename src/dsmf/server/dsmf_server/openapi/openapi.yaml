@@ -216,8 +216,12 @@ paths:
           description: Invalid authentication provided
         "404":
           description: The input or output could not be found
+        "406":
+          description: A value exceeds the allowed range
         "409":
           description: A slice with this id is already known
+        "412":
+          description: A value does not match the schema
         "507":
           description: Insufficient resources
       tags:
@@ -404,9 +408,13 @@ paths:
           description: Invalid authentication provided
         "404":
           description: The input or output could not be found
+        "406":
+          description: A value exceeds the allowed range
         "409":
           description: A tunnel with this id is already known and does not match current
             source and target
+        "412":
+          description: A value does not match the schema
         "507":
           description: Insufficient resources
       tags:

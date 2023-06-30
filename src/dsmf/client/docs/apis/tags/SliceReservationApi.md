@@ -322,7 +322,9 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 200 | [ApiResponseFor200](#slice_reservation_put.ApiResponseFor200) | The slice has been reserved
 403 | [ApiResponseFor403](#slice_reservation_put.ApiResponseFor403) | Invalid authentication provided
 404 | [ApiResponseFor404](#slice_reservation_put.ApiResponseFor404) | The input or output could not be found
+406 | [ApiResponseFor406](#slice_reservation_put.ApiResponseFor406) | A value exceeds the allowed range
 409 | [ApiResponseFor409](#slice_reservation_put.ApiResponseFor409) | A slice with this id is already known
+412 | [ApiResponseFor412](#slice_reservation_put.ApiResponseFor412) | A value does not match the schema
 507 | [ApiResponseFor507](#slice_reservation_put.ApiResponseFor507) | Insufficient resources
 
 #### slice_reservation_put.ApiResponseFor200
@@ -346,7 +348,21 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### slice_reservation_put.ApiResponseFor406
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 #### slice_reservation_put.ApiResponseFor409
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_put.ApiResponseFor412
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

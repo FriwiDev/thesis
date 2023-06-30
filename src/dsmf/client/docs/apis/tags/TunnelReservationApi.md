@@ -322,7 +322,9 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 200 | [ApiResponseFor200](#tunnel_reservation_put.ApiResponseFor200) | The tunnel has been reserved
 403 | [ApiResponseFor403](#tunnel_reservation_put.ApiResponseFor403) | Invalid authentication provided
 404 | [ApiResponseFor404](#tunnel_reservation_put.ApiResponseFor404) | The input or output could not be found
+406 | [ApiResponseFor406](#tunnel_reservation_put.ApiResponseFor406) | A value exceeds the allowed range
 409 | [ApiResponseFor409](#tunnel_reservation_put.ApiResponseFor409) | A tunnel with this id is already known and does not match current source and target
+412 | [ApiResponseFor412](#tunnel_reservation_put.ApiResponseFor412) | A value does not match the schema
 507 | [ApiResponseFor507](#tunnel_reservation_put.ApiResponseFor507) | Insufficient resources
 
 #### tunnel_reservation_put.ApiResponseFor200
@@ -346,7 +348,21 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### tunnel_reservation_put.ApiResponseFor406
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 #### tunnel_reservation_put.ApiResponseFor409
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_reservation_put.ApiResponseFor412
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

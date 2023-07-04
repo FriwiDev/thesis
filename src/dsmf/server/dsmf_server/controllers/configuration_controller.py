@@ -1,8 +1,6 @@
-from typing import List, Dict
 from aiohttp import web
 
-from dsmf_server.models.service_configuration import ServiceConfiguration
-from dsmf_server import util
+from dsmf_server.models.domain_configuration import DomainConfiguration
 
 
 async def configuration_get(request: web.Request, auth) -> web.Response:
@@ -28,5 +26,5 @@ async def configuration_put(request: web.Request, auth, body=None) -> web.Respon
     :type body: dict | bytes
 
     """
-    body = ServiceConfiguration.from_dict(body)
+    body = DomainConfiguration.from_dict(body)
     return web.Response(status=200)

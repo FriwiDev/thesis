@@ -1,11 +1,5 @@
 # coding: utf-8
 
-import pytest
-import json
-from aiohttp import web
-
-from dsmf_server.models.service_configuration import ServiceConfiguration
-
 
 async def test_configuration_get(client):
     """Test case for configuration_get
@@ -30,7 +24,7 @@ async def test_configuration_put(client):
 
     
     """
-    body = dsmf_server.ServiceConfiguration()
+    body = dsmf_server.DomainConfiguration()
     params = [('auth', 'auth_example')]
     headers = { 
         'Content-Type': 'application/json',

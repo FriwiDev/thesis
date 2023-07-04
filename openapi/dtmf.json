@@ -55,6 +55,14 @@
           },
           "to": {
             "$ref": "#/components/schemas/endpoint"
+          },
+          "private_key": {
+            "type": "string",
+            "description": "The tunnel private key"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The tunnel public key (of the other side)"
           }
         }
       },
@@ -88,7 +96,7 @@
           }
         }
       },
-      "service_configuration": {
+      "domain_configuration": {
         "type": "object",
         "description": "The configuration for this service",
         "properties": {
@@ -130,6 +138,13 @@
             "description": "The routes to other networks known to us",
             "items": {
               "$ref": "#/components/schemas/network_border_configuration"
+            }
+          },
+          "networks": {
+            "type": "array",
+            "description": "The other networks known to us",
+            "items": {
+              "$ref": "#/components/schemas/network_configuration"
             }
           },
           "reservable_bitrate": {
@@ -210,6 +225,15 @@
             "type": "string",
             "description": "The name of the device that has a direct connection to the other network (our side)"
           },
+          "device_type": {
+            "type": "string",
+            "enum": [
+              "SWITCH",
+              "VPN",
+              "HOST"
+            ],
+            "description": "The type of the remote device"
+          },
           "connection": {
             "$ref": "#/components/schemas/connection_configuration"
           }
@@ -231,6 +255,30 @@
           "other_end": {
             "type": "string",
             "description": "The name of the device on the other side"
+          }
+        }
+      },
+      "network_configuration": {
+        "type": "object",
+        "description": "A network configuration element",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the network"
+          },
+          "reachable": {
+            "type": "array",
+            "description": "Networks reachable from this network",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferred_vpn": {
+            "type": "array",
+            "description": "VPN gateways to use (in order) to connect to this network",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
@@ -285,7 +333,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/service_configuration"
+                  "$ref": "#/components/schemas/domain_configuration"
                 }
               }
             }
@@ -314,7 +362,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/service_configuration"
+                "$ref": "#/components/schemas/domain_configuration"
               }
             }
           }

@@ -1,12 +1,8 @@
 # coding: utf-8
 
-from datetime import date, datetime
-
-from typing import List, Dict, Type
-
+from dsmf_server import util
 from dsmf_server.models.base_model_ import Model
 from dsmf_server.models.endpoint import Endpoint
-from dsmf_server import util
 
 
 class Tunnel(Model):
@@ -15,7 +11,9 @@ class Tunnel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, _from: Endpoint=None, to: Endpoint=None):
+    def __init__(self, id: int = None, min_rate: int = None, max_rate: int = None, burst_rate: int = None,
+                 latency: int = None, _from: Endpoint = None, to: Endpoint = None, private_key: str = None,
+                 public_key: str = None):
         """Tunnel - a model defined in OpenAPI
 
         :param id: The id of this Tunnel.
@@ -25,6 +23,8 @@ class Tunnel(Model):
         :param latency: The latency of this Tunnel.
         :param _from: The _from of this Tunnel.
         :param to: The to of this Tunnel.
+        :param private_key: The private_key of this Tunnel.
+        :param public_key: The public_key of this Tunnel.
         """
         self.openapi_types = {
             'id': int,
@@ -33,7 +33,9 @@ class Tunnel(Model):
             'burst_rate': int,
             'latency': int,
             '_from': Endpoint,
-            'to': Endpoint
+            'to': Endpoint,
+            'private_key': str,
+            'public_key': str
         }
 
         self.attribute_map = {
@@ -43,7 +45,9 @@ class Tunnel(Model):
             'burst_rate': 'burst_rate',
             'latency': 'latency',
             '_from': 'from',
-            'to': 'to'
+            'to': 'to',
+            'private_key': 'private_key',
+            'public_key': 'public_key'
         }
 
         self._id = id
@@ -53,6 +57,8 @@ class Tunnel(Model):
         self._latency = latency
         self.__from = _from
         self._to = to
+        self._private_key = private_key
+        self._public_key = public_key
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'Tunnel':
@@ -219,3 +225,49 @@ class Tunnel(Model):
         """
 
         self._to = to
+
+    @property
+    def private_key(self):
+        """Gets the private_key of this Tunnel.
+
+        The tunnel private key
+
+        :return: The private_key of this Tunnel.
+        :rtype: str
+        """
+        return self._private_key
+
+    @private_key.setter
+    def private_key(self, private_key):
+        """Sets the private_key of this Tunnel.
+
+        The tunnel private key
+
+        :param private_key: The private_key of this Tunnel.
+        :type private_key: str
+        """
+
+        self._private_key = private_key
+
+    @property
+    def public_key(self):
+        """Gets the public_key of this Tunnel.
+
+        The tunnel public key (of the other side)
+
+        :return: The public_key of this Tunnel.
+        :rtype: str
+        """
+        return self._public_key
+
+    @public_key.setter
+    def public_key(self, public_key):
+        """Sets the public_key of this Tunnel.
+
+        The tunnel public key (of the other side)
+
+        :param public_key: The public_key of this Tunnel.
+        :type public_key: str
+        """
+
+        self._public_key = public_key

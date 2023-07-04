@@ -187,9 +187,10 @@ Class | Method | HTTP request | Description
  - [ConnectionConfiguration](docs/models/ConnectionConfiguration.md)
  - [ControllerConfiguration](docs/models/ControllerConfiguration.md)
  - [DeviceConfiguration](docs/models/DeviceConfiguration.md)
+ - [DomainConfiguration](docs/models/DomainConfiguration.md)
  - [Endpoint](docs/models/Endpoint.md)
  - [NetworkBorderConfiguration](docs/models/NetworkBorderConfiguration.md)
- - [ServiceConfiguration](docs/models/ServiceConfiguration.md)
+ - [NetworkConfiguration](docs/models/NetworkConfiguration.md)
  - [Slice](docs/models/Slice.md)
  - [Tunnel](docs/models/Tunnel.md)
 

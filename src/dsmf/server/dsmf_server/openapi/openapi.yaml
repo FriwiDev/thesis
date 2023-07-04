@@ -57,7 +57,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/service_configuration'
+                $ref: '#/components/schemas/domain_configuration'
           description: The current configuration
         "403":
           description: Invalid authentication provided
@@ -80,7 +80,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/service_configuration'
+              $ref: '#/components/schemas/domain_configuration'
         description: The configuration to install. Will check for issues.
         x-body-name: body
       responses:
@@ -537,6 +537,7 @@ components:
       type: object
     tunnel:
       example:
+        public_key: public_key
         burst_rate: 5
         latency: 5
         max_rate: 1
@@ -545,6 +546,7 @@ components:
           ip: ip
           transport_protocol: UDP
           mac: mac
+        private_key: private_key
         id: 0
         to:
           port: 2
@@ -582,6 +584,14 @@ components:
           $ref: '#/components/schemas/endpoint'
         to:
           $ref: '#/components/schemas/endpoint'
+        private_key:
+          description: The tunnel private key
+          title: private_key
+          type: string
+        public_key:
+          description: The tunnel public key (of the other side)
+          title: public_key
+          type: string
       title: tunnel
       type: object
     endpoint:
@@ -619,18 +629,20 @@ components:
           type: integer
       title: endpoint
       type: object
-    service_configuration:
+    domain_configuration:
       description: The configuration for this service
       example:
         network_borders:
+          - device_name: device_name
+            network_name: network_name
+            device_type: SWITCH
+            connection:
+              intf_name: intf_name
+              other_end: other_end
+              intf_id: 1
         - device_name: device_name
           network_name: network_name
-          connection:
-            intf_name: intf_name
-            other_end: other_end
-            intf_id: 1
-        - device_name: device_name
-          network_name: network_name
+          device_type: SWITCH
           connection:
             intf_name: intf_name
             other_end: other_end
@@ -686,14 +698,29 @@ components:
             intf_id: 1
           network: network
         controllers:
-        - port: 0
-          ip: localhost
-          name: name
-        - port: 0
-          ip: localhost
-          name: name
+          - port: 0
+            ip: localhost
+            name: name
+          - port: 0
+            ip: localhost
+            name: name
         reservable_bitrate: 5
         type: DSMF
+        networks:
+          - name: name
+            preferred_vpn:
+              - preferred_vpn
+              - preferred_vpn
+            reachable:
+              - reachable
+              - reachable
+          - name: name
+            preferred_vpn:
+              - preferred_vpn
+              - preferred_vpn
+            reachable:
+              - reachable
+              - reachable
         network: network
       properties:
         type:
@@ -731,13 +758,19 @@ components:
             $ref: '#/components/schemas/network_border_configuration'
           title: network_borders
           type: array
+        networks:
+          description: The other networks known to us
+          items:
+            $ref: '#/components/schemas/network_configuration'
+          title: networks
+          type: array
         reservable_bitrate:
           default: 1000000000
           description: The bitrate that can be reserved by hosts on our network
           format: i64
           title: reservable_bitrate
           type: integer
-      title: service_configuration
+      title: domain_configuration
       type: object
     controller_configuration:
       description: A controller configuration element
@@ -817,6 +850,7 @@ components:
       example:
         device_name: device_name
         network_name: network_name
+        device_type: SWITCH
         connection:
           intf_name: intf_name
           other_end: other_end
@@ -830,6 +864,14 @@ components:
           description: The name of the device that has a direct connection to the
             other network (our side)
           title: device_name
+          type: string
+        device_type:
+          description: The type of the remote device
+          enum:
+            - SWITCH
+            - VPN
+            - HOST
+          title: device_type
           type: string
         connection:
           $ref: '#/components/schemas/connection_configuration'
@@ -856,4 +898,33 @@ components:
           title: other_end
           type: string
       title: connection_configuration
+      type: object
+    network_configuration:
+      description: A network configuration element
+      example:
+        name: name
+        preferred_vpn:
+          - preferred_vpn
+          - preferred_vpn
+        reachable:
+          - reachable
+          - reachable
+      properties:
+        name:
+          description: The name of the network
+          title: name
+          type: string
+        reachable:
+          description: Networks reachable from this network
+          items:
+            type: string
+          title: reachable
+          type: array
+        preferred_vpn:
+          description: VPN gateways to use (in order) to connect to this network
+          items:
+            type: string
+          title: preferred_vpn
+          type: array
+      title: network_configuration
       type: object

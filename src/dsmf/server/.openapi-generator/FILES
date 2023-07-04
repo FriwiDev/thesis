@@ -16,9 +16,10 @@ dsmf_server/models/base_model_.py
 dsmf_server/models/connection_configuration.py
 dsmf_server/models/controller_configuration.py
 dsmf_server/models/device_configuration.py
+dsmf_server/models/domain_configuration.py
 dsmf_server/models/endpoint.py
 dsmf_server/models/network_border_configuration.py
-dsmf_server/models/service_configuration.py
+dsmf_server/models/network_configuration.py
 dsmf_server/models/slice.py
 dsmf_server/models/tunnel.py
 dsmf_server/openapi/openapi.yaml

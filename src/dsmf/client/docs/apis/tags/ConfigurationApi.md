@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 # **configuration_get**
 <a id="configuration_get"></a>
-> ServiceConfiguration configuration_get(auth)
+> DomainConfiguration configuration_get(auth)
 
 
 
@@ -21,7 +21,7 @@ Fetch the current configuration of this service
 ```python
 import dsmf_client
 from dsmf_client.apis.tags import configuration_api
-from dsmf_client.model.service_configuration import ServiceConfiguration
+from dsmf_client.model.domain_configuration import DomainConfiguration
 from pprint import pprint
 # Defining the host is optional and defaults to http://localhost:8081/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -80,24 +80,26 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 403 | [ApiResponseFor403](#configuration_get.ApiResponseFor403) | Invalid authentication provided
 
 #### configuration_get.ApiResponseFor200
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-response | urllib3.HTTPResponse | Raw response |
-body | typing.Union[SchemaFor200ResponseBodyApplicationJson, ] |  |
-headers | Unset | headers were not defined |
+
+ Name     | Type                                                    | Description              | Notes 
+----------|---------------------------------------------------------|--------------------------|-------
+ response | urllib3.HTTPResponse                                    | Raw response             |
+ body     | typing.Union[SchemaFor200ResponseBodyApplicationJson, ] |                          |
+ headers  | Unset                                                   | headers were not defined |
 
 # SchemaFor200ResponseBodyApplicationJson
-Type | Description  | Notes
-------------- | ------------- | -------------
-[**ServiceConfiguration**](../../models/ServiceConfiguration.md) |  | 
 
+ Type                                                           | Description | Notes 
+----------------------------------------------------------------|-------------|-------
+ [**DomainConfiguration**](../../models/DomainConfiguration.md) |             |
 
 #### configuration_get.ApiResponseFor403
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-response | urllib3.HTTPResponse | Raw response |
-body | Unset | body was not defined |
-headers | Unset | headers were not defined |
+
+ Name     | Type                 | Description              | Notes 
+----------|----------------------|--------------------------|-------
+ response | urllib3.HTTPResponse | Raw response             |
+ body     | Unset                | body was not defined     |
+ headers  | Unset                | headers were not defined |
 
 ### Authorization
 
@@ -118,7 +120,7 @@ Installs a new configuration for this service
 ```python
 import dsmf_client
 from dsmf_client.apis.tags import configuration_api
-from dsmf_client.model.service_configuration import ServiceConfiguration
+from dsmf_client.model.domain_configuration import DomainConfiguration
 from pprint import pprint
 # Defining the host is optional and defaults to http://localhost:8081/v1
 # See configuration.py for a list of all supported configuration parameters.
@@ -146,7 +148,7 @@ with dsmf_client.ApiClient(configuration) as api_client:
     query_params = {
         'auth': "auth_example",
     }
-    body = ServiceConfiguration(
+    body = DomainConfiguration(
         type="DSMF",
         network="network_example",
         controllers=[
@@ -179,7 +181,19 @@ with dsmf_client.ApiClient(configuration) as api_client:
             NetworkBorderConfiguration(
                 network_name="network_name_example",
                 device_name="device_name_example",
+                device_type="SWITCH",
                 connection=ConnectionConfiguration(),
+            )
+        ],
+        networks=[
+            NetworkConfiguration(
+                name="name_example",
+                reachable=[
+                    "reachable_example"
+                ],
+                preferred_vpn=[
+                    "preferred_vpn_example"
+                ],
             )
         ],
         reservable_bitrate=1000000000,
@@ -194,30 +208,30 @@ with dsmf_client.ApiClient(configuration) as api_client:
 ```
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-body | typing.Union[SchemaForRequestBodyApplicationJson, Unset] | optional, default is unset |
-query_params | RequestQueryParams | |
-content_type | str | optional, default is 'application/json' | Selects the schema and serialization of the request body
-stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
-timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
-skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
+ Name                 | Type                                                     | Description                             | Notes                                                                                                                                                                                              
+----------------------|----------------------------------------------------------|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ body                 | typing.Union[SchemaForRequestBodyApplicationJson, Unset] | optional, default is unset              |
+ query_params         | RequestQueryParams                                       |                                         |
+ content_type         | str                                                      | optional, default is 'application/json' | Selects the schema and serialization of the request body                                                                                                                                           
+ stream               | bool                                                     | default is False                        | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file 
+ timeout              | typing.Optional[typing.Union[int, typing.Tuple]]         | default is None                         | the timeout used by the rest client                                                                                                                                                                
+ skip_deserialization | bool                                                     | default is False                        | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned                                                                         
 
 ### body
 
 # SchemaForRequestBodyApplicationJson
-Type | Description  | Notes
-------------- | ------------- | -------------
-[**ServiceConfiguration**](../../models/ServiceConfiguration.md) |  | 
 
+ Type                                                           | Description | Notes 
+----------------------------------------------------------------|-------------|-------
+ [**DomainConfiguration**](../../models/DomainConfiguration.md) |             |
 
 ### query_params
+
 #### RequestQueryParams
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-auth | AuthSchema | | 
-
+ Name | Type       | Description | Notes 
+------|------------|-------------|-------
+ auth | AuthSchema |             |
 
 # AuthSchema
 

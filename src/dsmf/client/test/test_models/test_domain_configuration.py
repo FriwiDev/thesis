@@ -11,13 +11,11 @@
 
 import unittest
 
-import dsmf_client
-from dsmf_client.model.service_configuration import ServiceConfiguration
 from dsmf_client import configuration
 
 
-class TestServiceConfiguration(unittest.TestCase):
-    """ServiceConfiguration unit test stubs"""
+class TestDomainConfiguration(unittest.TestCase):
+    """DomainConfiguration unit test stubs"""
     _configuration = configuration.Configuration()
 
 

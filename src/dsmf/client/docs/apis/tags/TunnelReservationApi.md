@@ -271,6 +271,8 @@ with dsmf_client.ApiClient(configuration) as api_client:
             port=0,
         ),
 ,
+        private_key="private_key_example",
+        public_key="public_key_example",
     )
     try:
         api_response = api_instance.tunnel_reservation_put(

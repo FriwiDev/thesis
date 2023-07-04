@@ -1,12 +1,8 @@
 # coding: utf-8
 
-from datetime import date, datetime
-
-from typing import List, Dict, Type
-
+from dsmf_server import util
 from dsmf_server.models.base_model_ import Model
 from dsmf_server.models.connection_configuration import ConnectionConfiguration
-from dsmf_server import util
 
 
 class NetworkBorderConfiguration(Model):
@@ -15,27 +11,32 @@ class NetworkBorderConfiguration(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, network_name: str=None, device_name: str=None, connection: ConnectionConfiguration=None):
+    def __init__(self, network_name: str = None, device_name: str = None, device_type: str = None,
+                 connection: ConnectionConfiguration = None):
         """NetworkBorderConfiguration - a model defined in OpenAPI
 
         :param network_name: The network_name of this NetworkBorderConfiguration.
         :param device_name: The device_name of this NetworkBorderConfiguration.
+        :param device_type: The device_type of this NetworkBorderConfiguration.
         :param connection: The connection of this NetworkBorderConfiguration.
         """
         self.openapi_types = {
             'network_name': str,
             'device_name': str,
+            'device_type': str,
             'connection': ConnectionConfiguration
         }
 
         self.attribute_map = {
             'network_name': 'network_name',
             'device_name': 'device_name',
+            'device_type': 'device_type',
             'connection': 'connection'
         }
 
         self._network_name = network_name
         self._device_name = device_name
+        self._device_type = device_type
         self._connection = connection
 
     @classmethod
@@ -92,6 +93,35 @@ class NetworkBorderConfiguration(Model):
         """
 
         self._device_name = device_name
+
+    @property
+    def device_type(self):
+        """Gets the device_type of this NetworkBorderConfiguration.
+
+        The type of the remote device
+
+        :return: The device_type of this NetworkBorderConfiguration.
+        :rtype: str
+        """
+        return self._device_type
+
+    @device_type.setter
+    def device_type(self, device_type):
+        """Sets the device_type of this NetworkBorderConfiguration.
+
+        The type of the remote device
+
+        :param device_type: The device_type of this NetworkBorderConfiguration.
+        :type device_type: str
+        """
+        allowed_values = ["SWITCH", "VPN", "HOST"]  # noqa: E501
+        if device_type not in allowed_values:
+            raise ValueError(
+                "Invalid value for `device_type` ({0}), must be one of {1}"
+                .format(device_type, allowed_values)
+            )
+
+        self._device_type = device_type
 
     @property
     def connection(self):

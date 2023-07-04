@@ -11,11 +11,3 @@
 # import sys
 # sys.setrecursionlimit(n)
 
-from dsmf_client.model.connection_configuration import ConnectionConfiguration
-from dsmf_client.model.controller_configuration import ControllerConfiguration
-from dsmf_client.model.device_configuration import DeviceConfiguration
-from dsmf_client.model.endpoint import Endpoint
-from dsmf_client.model.network_border_configuration import NetworkBorderConfiguration
-from dsmf_client.model.service_configuration import ServiceConfiguration
-from dsmf_client.model.slice import Slice
-from dsmf_client.model.tunnel import Tunnel

@@ -87,6 +87,152 @@
             "default": 0
           }
         }
+      },
+      "service_configuration": {
+        "type": "object",
+        "description": "The configuration for this service",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "DSMF",
+              "DTMF"
+            ],
+            "description": "The service type to be used"
+          },
+          "network": {
+            "type": "string",
+            "description": "Our network name"
+          },
+          "controllers": {
+            "type": "array",
+            "description": "Specifies the controllers available to us",
+            "items": {
+              "$ref": "#/components/schemas/controller_configuration"
+            }
+          },
+          "vpn_gateways": {
+            "type": "array",
+            "description": "The vpn gateways known to us",
+            "items": {
+              "$ref": "#/components/schemas/device_configuration"
+            }
+          },
+          "switches": {
+            "type": "array",
+            "description": "The switches known to us",
+            "items": {
+              "$ref": "#/components/schemas/device_configuration"
+            }
+          },
+          "network_borders": {
+            "type": "array",
+            "description": "The routes to other networks known to us",
+            "items": {
+              "$ref": "#/components/schemas/network_border_configuration"
+            }
+          },
+          "reservable_bitrate": {
+            "type": "integer",
+            "format": "i64",
+            "description": "The bitrate that can be reserved by hosts on our network",
+            "default": 1000000000
+          }
+        }
+      },
+      "controller_configuration": {
+        "type": "object",
+        "description": "A controller configuration element",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "The ip or name the controller can be reached on",
+            "default": "localhost"
+          },
+          "port": {
+            "type": "integer",
+            "format": "i16",
+            "description": "The port that the controller REST API can be reached on",
+            "default": 8080
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of this controller"
+          }
+        }
+      },
+      "device_configuration": {
+        "type": "object",
+        "description": "A device/switch configuration element",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "The ip or name the device can be reached on",
+            "default": "localhost"
+          },
+          "port": {
+            "type": "integer",
+            "format": "i16",
+            "description": "The port that the device REST API can be reached on",
+            "default": 8082
+          },
+          "connections": {
+            "type": "array",
+            "description": "The (relevant) interface definitions for this device",
+            "items": {
+              "$ref": "#/components/schemas/connection_configuration"
+            }
+          },
+          "network": {
+            "type": "string",
+            "description": "The network name this device is assigned to"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the device"
+          },
+          "dpid": {
+            "type": "integer",
+            "format": "i64",
+            "description": "The datapath id in case this is a switch"
+          }
+        }
+      },
+      "network_border_configuration": {
+        "type": "object",
+        "description": "A network border configuration element (telling us where to route traffic to when wanting to reach a different network)",
+        "properties": {
+          "network_name": {
+            "type": "string",
+            "description": "The network this border leads to"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "The name of the device that has a direct connection to the other network (our side)"
+          },
+          "connection": {
+            "$ref": "#/components/schemas/connection_configuration"
+          }
+        }
+      },
+      "connection_configuration": {
+        "type": "object",
+        "description": "A connection configuration element",
+        "properties": {
+          "intf_name": {
+            "type": "string",
+            "description": "The name of the interface on a switch"
+          },
+          "intf_id": {
+            "type": "integer",
+            "format": "i16",
+            "description": "The id of the interface"
+          },
+          "other_end": {
+            "type": "string",
+            "description": "The name of the device on the other side"
+          }
+        }
       }
     }
   },
@@ -112,6 +258,82 @@
           },
           "403": {
             "description": "Wrong credentials were specified"
+          }
+        }
+      }
+    },
+    "/configuration": {
+      "summary": "Manages the configuration of this service",
+      "description": "Endpoint to manage service configuration",
+      "get": {
+        "tags": ["Configuration"],
+        "description": "Fetch the current configuration of this service",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/service_configuration"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Configuration"],
+        "description": "Installs a new configuration for this service",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The configuration to install. Will check for issues.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/service_configuration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The configuration has been installed"
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          },
+          "406": {
+            "description": "A value exceeds the allowed range"
+          },
+          "409": {
+            "description": "There are slices currently running. Reconfiguring is not supported while slices are open."
+          },
+          "412": {
+            "description": "The provided configuration is invalid"
           }
         }
       }

@@ -38,6 +38,68 @@ paths:
       - Authentication
       x-openapi-router-controller: dsmf_server.controllers.authentication_controller
     summary: Manages authentication towards this service
+  /configuration:
+    description: Endpoint to manage service configuration
+    get:
+      description: Fetch the current configuration of this service
+      operationId: configuration_get
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/service_configuration'
+          description: The current configuration
+        "403":
+          description: Invalid authentication provided
+      tags:
+      - Configuration
+      x-openapi-router-controller: dsmf_server.controllers.configuration_controller
+    put:
+      description: Installs a new configuration for this service
+      operationId: configuration_put
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/service_configuration'
+        description: The configuration to install. Will check for issues.
+        x-body-name: body
+      responses:
+        "200":
+          description: The configuration has been installed
+        "403":
+          description: Invalid authentication provided
+        "406":
+          description: A value exceeds the allowed range
+        "409":
+          description: There are slices currently running. Reconfiguring is not supported
+            while slices are open.
+        "412":
+          description: The provided configuration is invalid
+      tags:
+      - Configuration
+      x-openapi-router-controller: dsmf_server.controllers.configuration_controller
+      x-codegen-request-body-name: body
+    summary: Manages the configuration of this service
   /slice_deployment:
     delete:
       description: Deletes a slice
@@ -556,4 +618,242 @@ components:
           title: port
           type: integer
       title: endpoint
+      type: object
+    service_configuration:
+      description: The configuration for this service
+      example:
+        network_borders:
+        - device_name: device_name
+          network_name: network_name
+          connection:
+            intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+        - device_name: device_name
+          network_name: network_name
+          connection:
+            intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+        vpn_gateways:
+        - port: 6
+          ip: localhost
+          name: name
+          dpid: 5
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          network: network
+        - port: 6
+          ip: localhost
+          name: name
+          dpid: 5
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          network: network
+        switches:
+        - port: 6
+          ip: localhost
+          name: name
+          dpid: 5
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          network: network
+        - port: 6
+          ip: localhost
+          name: name
+          dpid: 5
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
+          network: network
+        controllers:
+        - port: 0
+          ip: localhost
+          name: name
+        - port: 0
+          ip: localhost
+          name: name
+        reservable_bitrate: 5
+        type: DSMF
+        network: network
+      properties:
+        type:
+          description: The service type to be used
+          enum:
+          - DSMF
+          - DTMF
+          title: type
+          type: string
+        network:
+          description: Our network name
+          title: network
+          type: string
+        controllers:
+          description: Specifies the controllers available to us
+          items:
+            $ref: '#/components/schemas/controller_configuration'
+          title: controllers
+          type: array
+        vpn_gateways:
+          description: The vpn gateways known to us
+          items:
+            $ref: '#/components/schemas/device_configuration'
+          title: vpn_gateways
+          type: array
+        switches:
+          description: The switches known to us
+          items:
+            $ref: '#/components/schemas/device_configuration'
+          title: switches
+          type: array
+        network_borders:
+          description: The routes to other networks known to us
+          items:
+            $ref: '#/components/schemas/network_border_configuration'
+          title: network_borders
+          type: array
+        reservable_bitrate:
+          default: 1000000000
+          description: The bitrate that can be reserved by hosts on our network
+          format: i64
+          title: reservable_bitrate
+          type: integer
+      title: service_configuration
+      type: object
+    controller_configuration:
+      description: A controller configuration element
+      example:
+        port: 0
+        ip: localhost
+        name: name
+      properties:
+        ip:
+          default: localhost
+          description: The ip or name the controller can be reached on
+          title: ip
+          type: string
+        port:
+          default: 8080
+          description: The port that the controller REST API can be reached on
+          format: i16
+          title: port
+          type: integer
+        name:
+          description: The name of this controller
+          title: name
+          type: string
+      title: controller_configuration
+      type: object
+    device_configuration:
+      description: A device/switch configuration element
+      example:
+        port: 6
+        ip: localhost
+        name: name
+        dpid: 5
+        connections:
+        - intf_name: intf_name
+          other_end: other_end
+          intf_id: 1
+        - intf_name: intf_name
+          other_end: other_end
+          intf_id: 1
+        network: network
+      properties:
+        ip:
+          default: localhost
+          description: The ip or name the device can be reached on
+          title: ip
+          type: string
+        port:
+          default: 8082
+          description: The port that the device REST API can be reached on
+          format: i16
+          title: port
+          type: integer
+        connections:
+          description: The (relevant) interface definitions for this device
+          items:
+            $ref: '#/components/schemas/connection_configuration'
+          title: connections
+          type: array
+        network:
+          description: The network name this device is assigned to
+          title: network
+          type: string
+        name:
+          description: The name of the device
+          title: name
+          type: string
+        dpid:
+          description: The datapath id in case this is a switch
+          format: i64
+          title: dpid
+          type: integer
+      title: device_configuration
+      type: object
+    network_border_configuration:
+      description: A network border configuration element (telling us where to route
+        traffic to when wanting to reach a different network)
+      example:
+        device_name: device_name
+        network_name: network_name
+        connection:
+          intf_name: intf_name
+          other_end: other_end
+          intf_id: 1
+      properties:
+        network_name:
+          description: The network this border leads to
+          title: network_name
+          type: string
+        device_name:
+          description: The name of the device that has a direct connection to the
+            other network (our side)
+          title: device_name
+          type: string
+        connection:
+          $ref: '#/components/schemas/connection_configuration'
+      title: network_border_configuration
+      type: object
+    connection_configuration:
+      description: A connection configuration element
+      example:
+        intf_name: intf_name
+        other_end: other_end
+        intf_id: 1
+      properties:
+        intf_name:
+          description: The name of the interface on a switch
+          title: intf_name
+          type: string
+        intf_id:
+          description: The id of the interface
+          format: i16
+          title: intf_id
+          type: integer
+        other_end:
+          description: The name of the device on the other side
+          title: other_end
+          type: string
+      title: connection_configuration
       type: object

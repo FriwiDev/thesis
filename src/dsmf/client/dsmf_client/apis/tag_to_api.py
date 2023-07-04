@@ -2,6 +2,7 @@ import typing_extensions
 
 from dsmf_client.apis.tags import TagValues
 from dsmf_client.apis.tags.authentication_api import AuthenticationApi
+from dsmf_client.apis.tags.configuration_api import ConfigurationApi
 from dsmf_client.apis.tags.slice_management_api import SliceManagementApi
 from dsmf_client.apis.tags.slice_reservation_api import SliceReservationApi
 from dsmf_client.apis.tags.tunnel_management_api import TunnelManagementApi
@@ -11,6 +12,7 @@ TagToApi = typing_extensions.TypedDict(
     'TagToApi',
     {
         TagValues.AUTHENTICATION: AuthenticationApi,
+        TagValues.CONFIGURATION: ConfigurationApi,
         TagValues.SLICE_MANAGEMENT: SliceManagementApi,
         TagValues.SLICE_RESERVATION: SliceReservationApi,
         TagValues.TUNNEL_MANAGEMENT: TunnelManagementApi,
@@ -21,6 +23,7 @@ TagToApi = typing_extensions.TypedDict(
 tag_to_api = TagToApi(
     {
         TagValues.AUTHENTICATION: AuthenticationApi,
+        TagValues.CONFIGURATION: ConfigurationApi,
         TagValues.SLICE_MANAGEMENT: SliceManagementApi,
         TagValues.SLICE_RESERVATION: SliceReservationApi,
         TagValues.TUNNEL_MANAGEMENT: TunnelManagementApi,

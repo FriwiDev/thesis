@@ -2,6 +2,7 @@ import typing_extensions
 
 from dsmf_client.paths import PathValues
 from dsmf_client.apis.paths.auth import Auth
+from dsmf_client.apis.paths.configuration import Configuration
 from dsmf_client.apis.paths.slice_reservation import SliceReservation
 from dsmf_client.apis.paths.slice_deployment import SliceDeployment
 from dsmf_client.apis.paths.tunnel_reservation import TunnelReservation
@@ -11,6 +12,7 @@ PathToApi = typing_extensions.TypedDict(
     'PathToApi',
     {
         PathValues.AUTH: Auth,
+        PathValues.CONFIGURATION: Configuration,
         PathValues.SLICE_RESERVATION: SliceReservation,
         PathValues.SLICE_DEPLOYMENT: SliceDeployment,
         PathValues.TUNNEL_RESERVATION: TunnelReservation,
@@ -21,6 +23,7 @@ PathToApi = typing_extensions.TypedDict(
 path_to_api = PathToApi(
     {
         PathValues.AUTH: Auth,
+        PathValues.CONFIGURATION: Configuration,
         PathValues.SLICE_RESERVATION: SliceReservation,
         PathValues.SLICE_DEPLOYMENT: SliceDeployment,
         PathValues.TUNNEL_RESERVATION: TunnelReservation,

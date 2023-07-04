@@ -7,6 +7,7 @@ import enum
 
 class TagValues(str, enum.Enum):
     AUTHENTICATION = "Authentication"
+    CONFIGURATION = "Configuration"
     SLICE_MANAGEMENT = "Slice Management"
     SLICE_RESERVATION = "Slice Reservation"
     TUNNEL_MANAGEMENT = "Tunnel Management"

@@ -7,6 +7,7 @@ import enum
 
 class PathValues(str, enum.Enum):
     AUTH = "/auth"
+    CONFIGURATION = "/configuration"
     SLICE_RESERVATION = "/slice_reservation"
     SLICE_DEPLOYMENT = "/slice_deployment"
     TUNNEL_RESERVATION = "/tunnel_reservation"

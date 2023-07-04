@@ -5,6 +5,7 @@ dsmf_server/__init__.py
 dsmf_server/__main__.py
 dsmf_server/controllers/__init__.py
 dsmf_server/controllers/authentication_controller.py
+dsmf_server/controllers/configuration_controller.py
 dsmf_server/controllers/security_controller_.py
 dsmf_server/controllers/slice_management_controller.py
 dsmf_server/controllers/slice_reservation_controller.py
@@ -12,7 +13,12 @@ dsmf_server/controllers/tunnel_management_controller.py
 dsmf_server/controllers/tunnel_reservation_controller.py
 dsmf_server/models/__init__.py
 dsmf_server/models/base_model_.py
+dsmf_server/models/connection_configuration.py
+dsmf_server/models/controller_configuration.py
+dsmf_server/models/device_configuration.py
 dsmf_server/models/endpoint.py
+dsmf_server/models/network_border_configuration.py
+dsmf_server/models/service_configuration.py
 dsmf_server/models/slice.py
 dsmf_server/models/tunnel.py
 dsmf_server/openapi/openapi.yaml
@@ -24,6 +30,7 @@ test-requirements.txt
 tests/__init__.py
 tests/conftest.py
 tests/test_authentication_controller.py
+tests/test_configuration_controller.py
 tests/test_slice_management_controller.py
 tests/test_slice_reservation_controller.py
 tests/test_tunnel_management_controller.py

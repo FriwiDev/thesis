@@ -167,6 +167,8 @@ All URIs are relative to *http://localhost:8081/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AuthenticationApi* | [**auth_post**](docs/apis/tags/AuthenticationApi.md#auth_post) | **post** /auth | 
+*ConfigurationApi* | [**configuration_get**](docs/apis/tags/ConfigurationApi.md#configuration_get) | **get** /configuration | 
+*ConfigurationApi* | [**configuration_put**](docs/apis/tags/ConfigurationApi.md#configuration_put) | **put** /configuration | 
 *SliceManagementApi* | [**slice_deployment_delete**](docs/apis/tags/SliceManagementApi.md#slice_deployment_delete) | **delete** /slice_deployment | 
 *SliceManagementApi* | [**slice_deployment_get**](docs/apis/tags/SliceManagementApi.md#slice_deployment_get) | **get** /slice_deployment | 
 *SliceManagementApi* | [**slice_deployment_put**](docs/apis/tags/SliceManagementApi.md#slice_deployment_put) | **put** /slice_deployment | 
@@ -182,7 +184,12 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [ConnectionConfiguration](docs/models/ConnectionConfiguration.md)
+ - [ControllerConfiguration](docs/models/ControllerConfiguration.md)
+ - [DeviceConfiguration](docs/models/DeviceConfiguration.md)
  - [Endpoint](docs/models/Endpoint.md)
+ - [NetworkBorderConfiguration](docs/models/NetworkBorderConfiguration.md)
+ - [ServiceConfiguration](docs/models/ServiceConfiguration.md)
  - [Slice](docs/models/Slice.md)
  - [Tunnel](docs/models/Tunnel.md)
 
@@ -192,6 +199,7 @@ Class | Method | HTTP request | Description
 
 
 ## Author
+
 
 
 

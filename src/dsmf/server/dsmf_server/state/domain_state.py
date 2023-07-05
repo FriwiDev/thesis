@@ -2,8 +2,9 @@ from enum import Enum
 
 from dsmf_server.configuration_util import ConfigurationUtil
 
-SwitchType = Enum('SwitchType',
-                  ['SRC_ALL', 'SRC_ENTRY', 'SRC_TP', 'SRC_EXIT', 'BN_ALL', 'BN_BEGIN', 'BN_TP', 'BN_END', 'DST_ALL',
+DeviceType = Enum('SwitchType',
+                  ['SRC', 'DST', 'TUN_ENTRY', 'TUN_EXIT', 'SRC_ALL', 'SRC_ENTRY', 'SRC_TP', 'SRC_EXIT', 'BN_ALL',
+                   'BN_BEGIN', 'BN_TP', 'BN_END', 'DST_ALL',
                    'DST_BEGIN', 'DST_TP', 'DST_EXIT'])
 
 
@@ -15,7 +16,7 @@ class Tunnel(object):
     def __init__(self, tunnel_id: int):
         self.tunnel_id = tunnel_id
         # switch name -> role, switch forward port num, queue id
-        self.switch_roles: dict[str, (SwitchType, int, int)] = {}
+        self.switch_roles: dict[str, (DeviceType, int, int)] = {}
         # Network names in order
         self.route: [str] = []
 
@@ -25,6 +26,6 @@ class Slice(object):
         self.slice_id = slice_id
         self.tunnel = tunnel
         # switch name -> role, switch forward port num, queue id
-        self.switch_roles: dict[str, (SwitchType, int, int)] = {}
+        self.switch_roles: dict[str, (DeviceType, int, int)] = {}
         # Network names in order
         self.route: [str] = []

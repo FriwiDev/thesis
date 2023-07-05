@@ -1,8 +1,12 @@
 # coding: utf-8
 
-from dsmf_server import util
+from datetime import date, datetime
+
+from typing import List, Dict, Type
+
 from dsmf_server.models.base_model_ import Model
 from dsmf_server.models.endpoint import Endpoint
+from dsmf_server import util
 
 
 class Tunnel(Model):
@@ -11,51 +15,49 @@ class Tunnel(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int = None, min_rate: int = None, max_rate: int = None, burst_rate: int = None,
-                 latency: int = None, _from: Endpoint = None, to: Endpoint = None, private_key: str = None,
-                 public_key: str = None):
+    def __init__(self, tunnel_id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, fr: Endpoint=None, to: Endpoint=None, private_key: str=None, public_key: str=None):
         """Tunnel - a model defined in OpenAPI
 
-        :param id: The id of this Tunnel.
+        :param tunnel_id: The tunnel_id of this Tunnel.
         :param min_rate: The min_rate of this Tunnel.
         :param max_rate: The max_rate of this Tunnel.
         :param burst_rate: The burst_rate of this Tunnel.
         :param latency: The latency of this Tunnel.
-        :param _from: The _from of this Tunnel.
+        :param fr: The fr of this Tunnel.
         :param to: The to of this Tunnel.
         :param private_key: The private_key of this Tunnel.
         :param public_key: The public_key of this Tunnel.
         """
         self.openapi_types = {
-            'id': int,
+            'tunnel_id': int,
             'min_rate': int,
             'max_rate': int,
             'burst_rate': int,
             'latency': int,
-            '_from': Endpoint,
+            'fr': Endpoint,
             'to': Endpoint,
             'private_key': str,
             'public_key': str
         }
 
         self.attribute_map = {
-            'id': 'id',
+            'tunnel_id': 'tunnel_id',
             'min_rate': 'min_rate',
             'max_rate': 'max_rate',
             'burst_rate': 'burst_rate',
             'latency': 'latency',
-            '_from': 'from',
+            'fr': 'fr',
             'to': 'to',
             'private_key': 'private_key',
             'public_key': 'public_key'
         }
 
-        self._id = id
+        self._tunnel_id = tunnel_id
         self._min_rate = min_rate
         self._max_rate = max_rate
         self._burst_rate = burst_rate
         self._latency = latency
-        self.__from = _from
+        self._fr = fr
         self._to = to
         self._private_key = private_key
         self._public_key = public_key
@@ -70,27 +72,27 @@ class Tunnel(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self):
-        """Gets the id of this Tunnel.
+    def tunnel_id(self):
+        """Gets the tunnel_id of this Tunnel.
 
         The tunnel identifier
 
-        :return: The id of this Tunnel.
+        :return: The tunnel_id of this Tunnel.
         :rtype: int
         """
-        return self._id
+        return self._tunnel_id
 
-    @id.setter
-    def id(self, id):
-        """Sets the id of this Tunnel.
+    @tunnel_id.setter
+    def tunnel_id(self, tunnel_id):
+        """Sets the tunnel_id of this Tunnel.
 
         The tunnel identifier
 
-        :param id: The id of this Tunnel.
-        :type id: int
+        :param tunnel_id: The tunnel_id of this Tunnel.
+        :type tunnel_id: int
         """
 
-        self._id = id
+        self._tunnel_id = tunnel_id
 
     @property
     def min_rate(self):
@@ -185,25 +187,25 @@ class Tunnel(Model):
         self._latency = latency
 
     @property
-    def _from(self):
-        """Gets the _from of this Tunnel.
+    def fr(self):
+        """Gets the fr of this Tunnel.
 
 
-        :return: The _from of this Tunnel.
+        :return: The fr of this Tunnel.
         :rtype: Endpoint
         """
-        return self.__from
+        return self._fr
 
-    @_from.setter
-    def _from(self, _from):
-        """Sets the _from of this Tunnel.
+    @fr.setter
+    def fr(self, fr):
+        """Sets the fr of this Tunnel.
 
 
-        :param _from: The _from of this Tunnel.
-        :type _from: Endpoint
+        :param fr: The fr of this Tunnel.
+        :type fr: Endpoint
         """
 
-        self.__from = _from
+        self._fr = fr
 
     @property
     def to(self):

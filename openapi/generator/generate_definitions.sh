@@ -5,6 +5,7 @@ cd "$(dirname "$0")" || exit 1
 
 # Define a function to create a python client and server for our OpenAPI definitions
 generate_component () {
+  export OPENAPI_GENERATOR_VERSION=6.6.0
   rm -rf "gen/$1"
   mkdir -p "gen/$1/client"
   _JAVA_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED" ./openapi-generator-cli.sh generate -i "../$1.json" -g python -o "gen/$1/client" --additional-properties=packageName="$1_client"

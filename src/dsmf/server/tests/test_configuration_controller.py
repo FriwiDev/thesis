@@ -1,5 +1,11 @@
 # coding: utf-8
 
+import pytest
+import json
+from aiohttp import web
+
+from dsmf_server.models.domain_configuration import DomainConfiguration
+
 
 async def test_configuration_get(client):
     """Test case for configuration_get

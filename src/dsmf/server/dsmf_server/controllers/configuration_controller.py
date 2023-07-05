@@ -1,6 +1,8 @@
+from typing import List, Dict
 from aiohttp import web
 
 from dsmf_server.models.domain_configuration import DomainConfiguration
+from dsmf_server import util
 
 
 async def configuration_get(request: web.Request, auth) -> web.Response:

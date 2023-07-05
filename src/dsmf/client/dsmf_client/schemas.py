@@ -53,7 +53,7 @@ class FileIO(io.FileIO):
     def __new__(cls, _arg: typing.Union[io.FileIO, io.BufferedReader]):
         if isinstance(_arg, (io.FileIO, io.BufferedReader)):
             if _arg.closed:
-                raise ApiValueError('Invalid file impl; file is closed and must be open')
+                raise ApiValueError('Invalid file state; file is closed and must be open')
             _arg.close()
             inst = super(FileIO, cls).__new__(cls, _arg.name)
             super(FileIO, inst).__init__(_arg.name)

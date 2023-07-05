@@ -11,6 +11,8 @@
 
 import unittest
 
+import dsmf_client
+from dsmf_client.model.network_configuration import NetworkConfiguration
 from dsmf_client import configuration
 
 

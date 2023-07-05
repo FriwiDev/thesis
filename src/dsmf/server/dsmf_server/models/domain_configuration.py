@@ -1,13 +1,15 @@
 # coding: utf-8
 
-from typing import List
+from datetime import date, datetime
 
-from dsmf_server import util
+from typing import List, Dict, Type
+
 from dsmf_server.models.base_model_ import Model
 from dsmf_server.models.controller_configuration import ControllerConfiguration
 from dsmf_server.models.device_configuration import DeviceConfiguration
 from dsmf_server.models.network_border_configuration import NetworkBorderConfiguration
 from dsmf_server.models.network_configuration import NetworkConfiguration
+from dsmf_server import util
 
 
 class DomainConfiguration(Model):
@@ -16,10 +18,7 @@ class DomainConfiguration(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, type: str = None, network: str = None, controllers: List[ControllerConfiguration] = None,
-                 vpn_gateways: List[DeviceConfiguration] = None, switches: List[DeviceConfiguration] = None,
-                 network_borders: List[NetworkBorderConfiguration] = None, networks: List[NetworkConfiguration] = None,
-                 reservable_bitrate: int = 1000000000):
+    def __init__(self, type: str=None, network: str=None, controllers: List[ControllerConfiguration]=None, vpn_gateways: List[DeviceConfiguration]=None, switches: List[DeviceConfiguration]=None, network_borders: List[NetworkBorderConfiguration]=None, networks: List[NetworkConfiguration]=None, reservable_bitrate: int=1000000000):
         """DomainConfiguration - a model defined in OpenAPI
 
         :param type: The type of this DomainConfiguration.

@@ -1,9 +1,11 @@
 # coding: utf-8
 
-from typing import List
+from datetime import date, datetime
 
-from dsmf_server import util
+from typing import List, Dict, Type
+
 from dsmf_server.models.base_model_ import Model
+from dsmf_server import util
 
 
 class NetworkConfiguration(Model):
@@ -12,28 +14,32 @@ class NetworkConfiguration(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name: str = None, reachable: List[str] = None, preferred_vpn: List[str] = None):
+    def __init__(self, name: str=None, reachable: List[str]=None, preferred_vpn: List[str]=None, subnet: str=None):
         """NetworkConfiguration - a model defined in OpenAPI
 
         :param name: The name of this NetworkConfiguration.
         :param reachable: The reachable of this NetworkConfiguration.
         :param preferred_vpn: The preferred_vpn of this NetworkConfiguration.
+        :param subnet: The subnet of this NetworkConfiguration.
         """
         self.openapi_types = {
             'name': str,
             'reachable': List[str],
-            'preferred_vpn': List[str]
+            'preferred_vpn': List[str],
+            'subnet': str
         }
 
         self.attribute_map = {
             'name': 'name',
             'reachable': 'reachable',
-            'preferred_vpn': 'preferred_vpn'
+            'preferred_vpn': 'preferred_vpn',
+            'subnet': 'subnet'
         }
 
         self._name = name
         self._reachable = reachable
         self._preferred_vpn = preferred_vpn
+        self._subnet = subnet
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'NetworkConfiguration':
@@ -112,3 +118,26 @@ class NetworkConfiguration(Model):
         """
 
         self._preferred_vpn = preferred_vpn
+
+    @property
+    def subnet(self):
+        """Gets the subnet of this NetworkConfiguration.
+
+        Subnet of this network
+
+        :return: The subnet of this NetworkConfiguration.
+        :rtype: str
+        """
+        return self._subnet
+
+    @subnet.setter
+    def subnet(self, subnet):
+        """Sets the subnet of this NetworkConfiguration.
+
+        Subnet of this network
+
+        :param subnet: The subnet of this NetworkConfiguration.
+        :type subnet: str
+        """
+
+        self._subnet = subnet

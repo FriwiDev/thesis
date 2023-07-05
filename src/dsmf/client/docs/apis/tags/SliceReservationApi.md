@@ -259,16 +259,18 @@ with dsmf_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
     }
     body = Slice(
-        id=1,
+        slice_id=1,
         min_rate=1,
         max_rate=1,
         burst_rate=1,
         latency=1,
-        _from=Endpoint(
-            transport_protocol="UDP",
+        tunnel_id=1,
+        transport_protocol="UDP",
+        fr=Endpoint(
             ip="ip_example",
-            mac="mac_example",
             port=0,
+            name="name_example",
+            network="network_example",
         ),
 ,
     )

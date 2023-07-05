@@ -1,8 +1,12 @@
 # coding: utf-8
 
-from dsmf_server import util
+from datetime import date, datetime
+
+from typing import List, Dict, Type
+
 from dsmf_server.models.base_model_ import Model
 from dsmf_server.models.connection_configuration import ConnectionConfiguration
+from dsmf_server import util
 
 
 class NetworkBorderConfiguration(Model):
@@ -11,8 +15,7 @@ class NetworkBorderConfiguration(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, network_name: str = None, device_name: str = None, device_type: str = None,
-                 connection: ConnectionConfiguration = None):
+    def __init__(self, network_name: str=None, device_name: str=None, device_type: str=None, connection: ConnectionConfiguration=None):
         """NetworkBorderConfiguration - a model defined in OpenAPI
 
         :param network_name: The network_name of this NetworkBorderConfiguration.

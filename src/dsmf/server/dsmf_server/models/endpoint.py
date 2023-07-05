@@ -14,32 +14,32 @@ class Endpoint(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, transport_protocol: str=None, ip: str=None, mac: str=None, port: int=0):
+    def __init__(self, ip: str=None, port: int=0, name: str=None, network: str=None):
         """Endpoint - a model defined in OpenAPI
 
-        :param transport_protocol: The transport_protocol of this Endpoint.
         :param ip: The ip of this Endpoint.
-        :param mac: The mac of this Endpoint.
         :param port: The port of this Endpoint.
+        :param name: The name of this Endpoint.
+        :param network: The network of this Endpoint.
         """
         self.openapi_types = {
-            'transport_protocol': str,
             'ip': str,
-            'mac': str,
-            'port': int
+            'port': int,
+            'name': str,
+            'network': str
         }
 
         self.attribute_map = {
-            'transport_protocol': 'transport_protocol',
             'ip': 'ip',
-            'mac': 'mac',
-            'port': 'port'
+            'port': 'port',
+            'name': 'name',
+            'network': 'network'
         }
 
-        self._transport_protocol = transport_protocol
         self._ip = ip
-        self._mac = mac
         self._port = port
+        self._name = name
+        self._network = network
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'Endpoint':
@@ -49,35 +49,6 @@ class Endpoint(Model):
         :return: The endpoint of this Endpoint.
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def transport_protocol(self):
-        """Gets the transport_protocol of this Endpoint.
-
-        The protocol to be expected
-
-        :return: The transport_protocol of this Endpoint.
-        :rtype: str
-        """
-        return self._transport_protocol
-
-    @transport_protocol.setter
-    def transport_protocol(self, transport_protocol):
-        """Sets the transport_protocol of this Endpoint.
-
-        The protocol to be expected
-
-        :param transport_protocol: The transport_protocol of this Endpoint.
-        :type transport_protocol: str
-        """
-        allowed_values = ["UDP", "TCP"]  # noqa: E501
-        if transport_protocol not in allowed_values:
-            raise ValueError(
-                "Invalid value for `transport_protocol` ({0}), must be one of {1}"
-                .format(transport_protocol, allowed_values)
-            )
-
-        self._transport_protocol = transport_protocol
 
     @property
     def ip(self):
@@ -103,29 +74,6 @@ class Endpoint(Model):
         self._ip = ip
 
     @property
-    def mac(self):
-        """Gets the mac of this Endpoint.
-
-        Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.
-
-        :return: The mac of this Endpoint.
-        :rtype: str
-        """
-        return self._mac
-
-    @mac.setter
-    def mac(self, mac):
-        """Sets the mac of this Endpoint.
-
-        Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.
-
-        :param mac: The mac of this Endpoint.
-        :type mac: str
-        """
-
-        self._mac = mac
-
-    @property
     def port(self):
         """Gets the port of this Endpoint.
 
@@ -147,3 +95,49 @@ class Endpoint(Model):
         """
 
         self._port = port
+
+    @property
+    def name(self):
+        """Gets the name of this Endpoint.
+
+        Specifies the name of this entry to look up in our configuration.
+
+        :return: The name of this Endpoint.
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Sets the name of this Endpoint.
+
+        Specifies the name of this entry to look up in our configuration.
+
+        :param name: The name of this Endpoint.
+        :type name: str
+        """
+
+        self._name = name
+
+    @property
+    def network(self):
+        """Gets the network of this Endpoint.
+
+        Specifies the network name of this endpoint.
+
+        :return: The network of this Endpoint.
+        :rtype: str
+        """
+        return self._network
+
+    @network.setter
+    def network(self, network):
+        """Sets the network of this Endpoint.
+
+        Specifies the network name of this endpoint.
+
+        :param network: The network of this Endpoint.
+        :type network: str
+        """
+
+        self._network = network

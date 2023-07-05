@@ -488,26 +488,28 @@ components:
   schemas:
     slice:
       example:
+        tunnel_id: 2
         burst_rate: 5
         latency: 5
         max_rate: 1
-        from:
-          port: 2
-          ip: ip
-          transport_protocol: UDP
-          mac: mac
-        id: 0
+        transport_protocol: UDP
         to:
-          port: 2
+          port: 7
           ip: ip
-          transport_protocol: UDP
-          mac: mac
+          name: name
+          network: network
+        fr:
+          port: 7
+          ip: ip
+          name: name
+          network: network
         min_rate: 6
+        slice_id: 0
       properties:
-        id:
+        slice_id:
           description: The slice identifier
           format: int32
-          title: id
+          title: slice_id
           type: integer
         min_rate:
           description: The minimum transmission rate as bits/s
@@ -529,7 +531,19 @@ components:
           format: int16
           title: latency
           type: integer
-        from:
+        tunnel_id:
+          description: The tunnel identifier
+          format: int32
+          title: tunnel_id
+          type: integer
+        transport_protocol:
+          description: The protocol to be expected
+          enum:
+          - UDP
+          - TCP
+          title: transport_protocol
+          type: string
+        fr:
           $ref: '#/components/schemas/endpoint'
         to:
           $ref: '#/components/schemas/endpoint'
@@ -538,27 +552,27 @@ components:
     tunnel:
       example:
         public_key: public_key
+        tunnel_id: 0
         burst_rate: 5
         latency: 5
         max_rate: 1
-        from:
-          port: 2
-          ip: ip
-          transport_protocol: UDP
-          mac: mac
         private_key: private_key
-        id: 0
         to:
-          port: 2
+          port: 7
           ip: ip
-          transport_protocol: UDP
-          mac: mac
+          name: name
+          network: network
+        fr:
+          port: 7
+          ip: ip
+          name: name
+          network: network
         min_rate: 6
       properties:
-        id:
+        tunnel_id:
           description: The tunnel identifier
           format: int32
-          title: id
+          title: tunnel_id
           type: integer
         min_rate:
           description: The minimum transmission rate as bits/s
@@ -580,7 +594,7 @@ components:
           format: int16
           title: latency
           type: integer
-        from:
+        fr:
           $ref: '#/components/schemas/endpoint'
         to:
           $ref: '#/components/schemas/endpoint'
@@ -597,28 +611,15 @@ components:
     endpoint:
       description: Specifying an endpoint to be matched for source or target
       example:
-        port: 2
+        port: 7
         ip: ip
-        transport_protocol: UDP
-        mac: mac
+        name: name
+        network: network
       properties:
-        transport_protocol:
-          description: The protocol to be expected
-          enum:
-          - UDP
-          - TCP
-          title: transport_protocol
-          type: string
         ip:
           description: Specifies the source or target ip to be matched. Leave empty
             for no matching.
           title: ip
-          type: string
-        mac:
-          description: "Specifies the source or target mac to be matched. Leave empty\
-            \ for no matching. We currently can not match the destination mac address,\
-            \ it will be ignored."
-          title: mac
           type: string
         port:
           default: 0
@@ -627,19 +628,27 @@ components:
           format: i16
           title: port
           type: integer
+        name:
+          description: Specifies the name of this entry to look up in our configuration.
+          title: name
+          type: string
+        network:
+          description: Specifies the network name of this endpoint.
+          title: network
+          type: string
       title: endpoint
       type: object
     domain_configuration:
       description: The configuration for this service
       example:
         network_borders:
-          - device_name: device_name
-            network_name: network_name
-            device_type: SWITCH
-            connection:
-              intf_name: intf_name
-              other_end: other_end
-              intf_id: 1
+        - device_name: device_name
+          network_name: network_name
+          device_type: SWITCH
+          connection:
+            intf_name: intf_name
+            other_end: other_end
+            intf_id: 1
         - device_name: device_name
           network_name: network_name
           device_type: SWITCH
@@ -698,29 +707,31 @@ components:
             intf_id: 1
           network: network
         controllers:
-          - port: 0
-            ip: localhost
-            name: name
-          - port: 0
-            ip: localhost
-            name: name
+        - port: 0
+          ip: localhost
+          name: name
+        - port: 0
+          ip: localhost
+          name: name
         reservable_bitrate: 5
         type: DSMF
         networks:
-          - name: name
-            preferred_vpn:
-              - preferred_vpn
-              - preferred_vpn
-            reachable:
-              - reachable
-              - reachable
-          - name: name
-            preferred_vpn:
-              - preferred_vpn
-              - preferred_vpn
-            reachable:
-              - reachable
-              - reachable
+        - subnet: subnet
+          name: name
+          preferred_vpn:
+          - preferred_vpn
+          - preferred_vpn
+          reachable:
+          - reachable
+          - reachable
+        - subnet: subnet
+          name: name
+          preferred_vpn:
+          - preferred_vpn
+          - preferred_vpn
+          reachable:
+          - reachable
+          - reachable
         network: network
       properties:
         type:
@@ -868,9 +879,9 @@ components:
         device_type:
           description: The type of the remote device
           enum:
-            - SWITCH
-            - VPN
-            - HOST
+          - SWITCH
+          - VPN
+          - HOST
           title: device_type
           type: string
         connection:
@@ -902,13 +913,14 @@ components:
     network_configuration:
       description: A network configuration element
       example:
+        subnet: subnet
         name: name
         preferred_vpn:
-          - preferred_vpn
-          - preferred_vpn
+        - preferred_vpn
+        - preferred_vpn
         reachable:
-          - reachable
-          - reachable
+        - reachable
+        - reachable
       properties:
         name:
           description: The name of the network
@@ -926,5 +938,9 @@ components:
             type: string
           title: preferred_vpn
           type: array
+        subnet:
+          description: Subnet of this network
+          title: subnet
+          type: string
       title: network_configuration
       type: object

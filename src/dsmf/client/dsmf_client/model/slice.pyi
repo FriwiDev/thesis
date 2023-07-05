@@ -36,31 +36,48 @@ class Slice(
     class MetaOapg:
         
         class properties:
-            id = schemas.Int32Schema
+            slice_id = schemas.Int32Schema
             min_rate = schemas.Int64Schema
             max_rate = schemas.Int64Schema
             burst_rate = schemas.Int64Schema
             latency = schemas.IntSchema
+            tunnel_id = schemas.Int32Schema
+            
+            
+            class transport_protocol(
+                schemas.EnumBase,
+                schemas.StrSchema
+            ):
+                
+                @schemas.classproperty
+                def UDP(cls):
+                    return cls("UDP")
+                
+                @schemas.classproperty
+                def TCP(cls):
+                    return cls("TCP")
         
             @staticmethod
-            def _from() -> typing.Type['Endpoint']:
+            def fr() -> typing.Type['Endpoint']:
                 return Endpoint
         
             @staticmethod
             def to() -> typing.Type['Endpoint']:
                 return Endpoint
             __annotations__ = {
-                "id": id,
+                "slice_id": slice_id,
                 "min_rate": min_rate,
                 "max_rate": max_rate,
                 "burst_rate": burst_rate,
                 "latency": latency,
-                "from": _from,
+                "tunnel_id": tunnel_id,
+                "transport_protocol": transport_protocol,
+                "fr": fr,
                 "to": to,
             }
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["id"]) -> MetaOapg.properties.id: ...
+    def __getitem__(self, name: typing_extensions.Literal["slice_id"]) -> MetaOapg.properties.slice_id: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["min_rate"]) -> MetaOapg.properties.min_rate: ...
@@ -75,7 +92,13 @@ class Slice(
     def __getitem__(self, name: typing_extensions.Literal["latency"]) -> MetaOapg.properties.latency: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["from"]) -> 'Endpoint': ...
+    def __getitem__(self, name: typing_extensions.Literal["tunnel_id"]) -> MetaOapg.properties.tunnel_id: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["transport_protocol"]) -> MetaOapg.properties.transport_protocol: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["fr"]) -> 'Endpoint': ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["to"]) -> 'Endpoint': ...
@@ -83,13 +106,13 @@ class Slice(
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "latency", "from", "to", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["slice_id", "min_rate", "max_rate", "burst_rate", "latency", "tunnel_id", "transport_protocol", "fr", "to", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["id"]) -> typing.Union[MetaOapg.properties.id, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["slice_id"]) -> typing.Union[MetaOapg.properties.slice_id, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["min_rate"]) -> typing.Union[MetaOapg.properties.min_rate, schemas.Unset]: ...
@@ -104,7 +127,13 @@ class Slice(
     def get_item_oapg(self, name: typing_extensions.Literal["latency"]) -> typing.Union[MetaOapg.properties.latency, schemas.Unset]: ...
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["from"]) -> typing.Union['Endpoint', schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["tunnel_id"]) -> typing.Union[MetaOapg.properties.tunnel_id, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["transport_protocol"]) -> typing.Union[MetaOapg.properties.transport_protocol, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["fr"]) -> typing.Union['Endpoint', schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["to"]) -> typing.Union['Endpoint', schemas.Unset]: ...
@@ -112,18 +141,21 @@ class Slice(
     @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "latency", "from", "to", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["slice_id", "min_rate", "max_rate", "burst_rate", "latency", "tunnel_id", "transport_protocol", "fr", "to", ], str]):
         return super().get_item_oapg(name)
     
 
     def __new__(
         cls,
         *_args: typing.Union[dict, frozendict.frozendict, ],
-        id: typing.Union[MetaOapg.properties.id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        slice_id: typing.Union[MetaOapg.properties.slice_id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         min_rate: typing.Union[MetaOapg.properties.min_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         max_rate: typing.Union[MetaOapg.properties.max_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         burst_rate: typing.Union[MetaOapg.properties.burst_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         latency: typing.Union[MetaOapg.properties.latency, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        tunnel_id: typing.Union[MetaOapg.properties.tunnel_id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        transport_protocol: typing.Union[MetaOapg.properties.transport_protocol, str, schemas.Unset] = schemas.unset,
+        fr: typing.Union['Endpoint', schemas.Unset] = schemas.unset,
         to: typing.Union['Endpoint', schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
         **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
@@ -131,11 +163,14 @@ class Slice(
         return super().__new__(
             cls,
             *_args,
-            id=id,
+            slice_id=slice_id,
             min_rate=min_rate,
             max_rate=max_rate,
             burst_rate=burst_rate,
             latency=latency,
+            tunnel_id=tunnel_id,
+            transport_protocol=transport_protocol,
+            fr=fr,
             to=to,
             _configuration=_configuration,
             **kwargs,

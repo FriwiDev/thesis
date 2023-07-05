@@ -38,93 +38,73 @@ class Endpoint(
     class MetaOapg:
         
         class properties:
-            
-            
-            class transport_protocol(
-                schemas.EnumBase,
-                schemas.StrSchema
-            ):
-            
-            
-                class MetaOapg:
-                    enum_value_to_name = {
-                        "UDP": "UDP",
-                        "TCP": "TCP",
-                    }
-                
-                @schemas.classproperty
-                def UDP(cls):
-                    return cls("UDP")
-                
-                @schemas.classproperty
-                def TCP(cls):
-                    return cls("TCP")
             ip = schemas.StrSchema
-            mac = schemas.StrSchema
             port = schemas.IntSchema
+            name = schemas.StrSchema
+            network = schemas.StrSchema
             __annotations__ = {
-                "transport_protocol": transport_protocol,
                 "ip": ip,
-                "mac": mac,
                 "port": port,
+                "name": name,
+                "network": network,
             }
-    
-    @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["transport_protocol"]) -> MetaOapg.properties.transport_protocol: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["ip"]) -> MetaOapg.properties.ip: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["mac"]) -> MetaOapg.properties.mac: ...
+    def __getitem__(self, name: typing_extensions.Literal["port"]) -> MetaOapg.properties.port: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["port"]) -> MetaOapg.properties.port: ...
+    def __getitem__(self, name: typing_extensions.Literal["name"]) -> MetaOapg.properties.name: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["network"]) -> MetaOapg.properties.network: ...
     
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["transport_protocol", "ip", "mac", "port", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["ip", "port", "name", "network", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["transport_protocol"]) -> typing.Union[MetaOapg.properties.transport_protocol, schemas.Unset]: ...
-    
-    @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["ip"]) -> typing.Union[MetaOapg.properties.ip, schemas.Unset]: ...
-    
-    @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["mac"]) -> typing.Union[MetaOapg.properties.mac, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["port"]) -> typing.Union[MetaOapg.properties.port, schemas.Unset]: ...
     
     @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["name"]) -> typing.Union[MetaOapg.properties.name, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["network"]) -> typing.Union[MetaOapg.properties.network, schemas.Unset]: ...
+    
+    @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["transport_protocol", "ip", "mac", "port", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["ip", "port", "name", "network", ], str]):
         return super().get_item_oapg(name)
     
 
     def __new__(
         cls,
         *_args: typing.Union[dict, frozendict.frozendict, ],
-        transport_protocol: typing.Union[MetaOapg.properties.transport_protocol, str, schemas.Unset] = schemas.unset,
         ip: typing.Union[MetaOapg.properties.ip, str, schemas.Unset] = schemas.unset,
-        mac: typing.Union[MetaOapg.properties.mac, str, schemas.Unset] = schemas.unset,
         port: typing.Union[MetaOapg.properties.port, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        name: typing.Union[MetaOapg.properties.name, str, schemas.Unset] = schemas.unset,
+        network: typing.Union[MetaOapg.properties.network, str, schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
         **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
     ) -> 'Endpoint':
         return super().__new__(
             cls,
             *_args,
-            transport_protocol=transport_protocol,
             ip=ip,
-            mac=mac,
             port=port,
+            name=name,
+            network=network,
             _configuration=_configuration,
             **kwargs,
         )

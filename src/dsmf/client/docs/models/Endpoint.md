@@ -10,10 +10,10 @@ dict, frozendict.frozendict,  | frozendict.frozendict,  | Specifying an endpoint
 ### Dictionary Keys
 Key | Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | ------------- | -------------
-**transport_protocol** | str,  | str,  | The protocol to be expected | [optional] must be one of ["UDP", "TCP", ] 
 **ip** | str,  | str,  | Specifies the source or target ip to be matched. Leave empty for no matching. | [optional] 
-**mac** | str,  | str,  | Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored. | [optional] 
 **port** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the source or target port to be matched. Leave empty or on 0 for no matching. | [optional] if omitted the server will use the default value of 0
+**name** | str,  | str,  | Specifies the name of this entry to look up in our configuration. | [optional] 
+**network** | str,  | str,  | Specifies the network name of this endpoint. | [optional] 
 **any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)

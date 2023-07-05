@@ -25,7 +25,7 @@
       "tunnel": {
         "type": "object",
         "properties": {
-          "id": {
+          "tunnel_id": {
             "type": "integer",
             "format": "int32",
             "description": "The tunnel identifier"
@@ -50,7 +50,7 @@
             "format": "int16",
             "description": "The required maximum latency"
           },
-          "from": {
+          "fr": {
             "$ref": "#/components/schemas/endpoint"
           },
           "to": {
@@ -70,22 +70,9 @@
         "type": "object",
         "description": "Specifying an endpoint to be matched for source or target",
         "properties": {
-          "transport_protocol": {
-            "type": "string",
-            "enum": [
-              "UDP",
-              "TCP"
-            ],
-            "description": "The protocol to be expected"
-          },
           "ip": {
             "type": "string",
             "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
-            "default": null
-          },
-          "mac": {
-            "type": "string",
-            "description": "Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.",
             "default": null
           },
           "port": {
@@ -93,6 +80,16 @@
             "format": "i16",
             "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
             "default": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "Specifies the name of this entry to look up in our configuration.",
+            "default": null
+          },
+          "network": {
+            "type": "string",
+            "description": "Specifies the network name of this endpoint.",
+            "default": null
           }
         }
       },
@@ -279,6 +276,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "subnet": {
+            "type": "string",
+            "description": "Subnet of this network"
           }
         }
       }

@@ -1,6 +1,7 @@
 from enum import Enum
 
 from dsmf_server.configuration_util import ConfigurationUtil
+from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfiguration
 
 DeviceType = Enum('SwitchType',
                   ['SRC', 'DST', 'TUN_ENTRY', 'TUN_EXIT', 'SRC_ALL', 'SRC_ENTRY', 'SRC_TP', 'SRC_EXIT', 'BN_ALL',
@@ -10,6 +11,24 @@ DeviceType = Enum('SwitchType',
 
 class DomainState(object):
     config = ConfigurationUtil.load_configuration_from_disk()
+    tunnel_reservations: dict[int, Tunnel] = {}
+    tunnel_deployments: dict[int, Tunnel] = {}
+    slice_reservations: dict[int, Slice] = {}
+    slice_deployments: dict[int, Slice] = {}
+
+    @classmethod
+    def get_device(cls, name: str) -> DeviceConfiguration or None:
+        for device in cls.config.vpn_gateways + cls.config.switches:
+            if device.name == name:
+                return device
+        return None
+
+    @classmethod
+    def get_network(cls, name: str) -> NetworkConfiguration or None:
+        for net in cls.config.networks:
+            if net.name == name:
+                return net
+        return None
 
 
 class Tunnel(object):

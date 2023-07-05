@@ -11,6 +11,8 @@
 
 import unittest
 
+import dsmf_client
+from dsmf_client.model.domain_configuration import DomainConfiguration
 from dsmf_client import configuration
 
 

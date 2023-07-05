@@ -259,11 +259,8 @@ with vpn_gateway_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
     }
     body = TunnelEntry(
-        id=1,
-        inner_intf="inner_intf_example",
-        outer_intf="outer_intf_example",
+        tunnel_entry_id=1,
         inner_subnet="inner_subnet_example",
-        outer_subnet="outer_subnet_example",
         local_port=1,
         remote_end="remote_end_example",
         private_key="private_key_example",

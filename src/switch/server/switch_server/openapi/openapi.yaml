@@ -179,14 +179,14 @@ components:
         port: port
         burst_rate: 5
         max_rate: 1
-        id: 0
         priority: 5
+        queue_id: 0
         min_rate: 6
       properties:
-        id:
+        queue_id:
           description: The queue identifier used by OpenFlow
           format: int32
-          title: id
+          title: queue_id
           type: integer
         min_rate:
           description: The minimum queue rate in Bits/s

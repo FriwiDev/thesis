@@ -5,11 +5,11 @@ All URIs are relative to *http://localhost:8082/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**auth_put**](#auth_put) | **put** /auth | 
+[**auth_post**](#auth_post) | **post** /auth | 
 
-# **auth_put**
-<a id="auth_put"></a>
-> str auth_put()
+# **auth_post**
+<a id="auth_post"></a>
+> str auth_post()
 
 
 
@@ -34,10 +34,10 @@ with switch_client.ApiClient(configuration) as api_client:
 
     # example, this endpoint has no required or optional parameters
     try:
-        api_response = api_instance.auth_put()
+        api_response = api_instance.auth_post()
         pprint(api_response)
     except switch_client.ApiException as e:
-        print("Exception when calling AuthenticationApi->auth_put: %s\n" % e)
+        print("Exception when calling AuthenticationApi->auth_post: %s\n" % e)
 ```
 ### Parameters
 This endpoint does not need any parameter.
@@ -47,10 +47,10 @@ This endpoint does not need any parameter.
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#auth_put.ApiResponseFor200) | The authentication token as string
-403 | [ApiResponseFor403](#auth_put.ApiResponseFor403) | Wrong credentials were specified
+200 | [ApiResponseFor200](#auth_post.ApiResponseFor200) | The authentication token as string
+403 | [ApiResponseFor403](#auth_post.ApiResponseFor403) | Wrong credentials were specified
 
-#### auth_put.ApiResponseFor200
+#### auth_post.ApiResponseFor200
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -64,7 +64,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-#### auth_put.ApiResponseFor403
+#### auth_post.ApiResponseFor403
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

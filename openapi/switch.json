@@ -25,7 +25,7 @@
       "queue": {
         "type": "object",
         "properties": {
-          "id": {
+          "queue_id": {
             "type": "integer",
             "format": "int32",
             "description": "The queue identifier used by OpenFlow"

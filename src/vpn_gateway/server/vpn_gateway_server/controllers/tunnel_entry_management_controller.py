@@ -40,7 +40,7 @@ async def tunnel_entry_delete(request: web.Request, auth, tunnel_entry_id) -> we
     if tunnel_entry_id not in TunnelEntryData.tunnel_entries.keys():
         return web.Response(status=404, reason="The tunnel entry could not be found.")
     tunnel_entry = TunnelEntryData.tunnel_entries[tunnel_entry_id]
-    # Remove from local state
+    # Remove from local impl
     del TunnelEntryData.tunnel_entries[tunnel_entry_id]
     # Delete routing
     ret = apply_routing(None, tunnel_entry)
@@ -86,11 +86,11 @@ async def tunnel_entry_put(request: web.Request, auth, body=None) -> web.Respons
         return web.Response(status=400, reason="No body provided.")
     tunnel_entry = TunnelEntry.from_dict(body)
     # Check ranges
-    if tunnel_entry.id < 0 or tunnel_entry.id > MAX_TUNNEL_ID \
+    if tunnel_entry.tunnel_entry_id < 0 or tunnel_entry.tunnel_entry_id > MAX_TUNNEL_ID \
             or tunnel_entry.local_port <= 0 or tunnel_entry.local_port > MAX_PORT:
         return web.Response(status=406, reason="A value exceeds the allowed range")
     # Validate subnets, remote end and keys
-    if not validate_ip_network(tunnel_entry.inner_subnet) or not validate_ip_network(tunnel_entry.outer_subnet) \
+    if not validate_ip_network(tunnel_entry.inner_subnet) \
             or len(tunnel_entry.private_key) > 256 or not KEY_PATTERN.match(tunnel_entry.private_key) \
             or len(tunnel_entry.public_key) > 256 or not KEY_PATTERN.match(tunnel_entry.public_key) \
             or len(tunnel_entry.remote_end) > 64:
@@ -114,27 +114,23 @@ async def tunnel_entry_put(request: web.Request, auth, body=None) -> web.Respons
         if match.target_port and (match.target_port < 0 or match.target_port > MAX_PORT):
             return web.Response(status=412, reason="A value does not match the schema")
     # Check for conflicts -> apply routing again if conflict
-    if tunnel_entry.id in TunnelEntryData.tunnel_entries.keys():
-        old = TunnelEntryData.tunnel_entries[tunnel_entry.id]
-        if tunnel_entry.inner_intf != old.inner_intf or tunnel_entry.outer_intf != old.outer_intf \
-                or tunnel_entry.inner_subnet != old.inner_subnet or tunnel_entry.outer_subnet != old.outer_subnet \
+    if tunnel_entry.tunnel_entry_id in TunnelEntryData.tunnel_entries.keys():
+        old = TunnelEntryData.tunnel_entries[tunnel_entry.tunnel_entry_id]
+        if tunnel_entry.inner_subnet != old.inner_subnet \
                 or tunnel_entry.local_port != old.local_port or tunnel_entry.remote_end != old.remote_end \
                 or tunnel_entry.private_key != old.private_key or tunnel_entry.public_key != old.public_key:
             return web.Response(status=409, reason="A tunnel entry with this id already exists and information "
                                                    "apart from match entries was changed.")
         ret = apply_routing(tunnel_entry, old)
-        TunnelEntryData.tunnel_entries[tunnel_entry.id] = tunnel_entry
+        TunnelEntryData.tunnel_entries[tunnel_entry.tunnel_entry_id] = tunnel_entry
         if ret == 200:
             return web.Response(status=202, reason="The tunnel entry has been updated")
         else:
             return web.Response(status=500, reason="Internal Server Error")
     if tunnel_entry.local_port in [x.local_port for x in TunnelEntryData.tunnel_entries.values()]:
         return web.Response(status=409, reason="Tunnel entry id or specified ports already in use")
-    # Validate interfaces
-    if not check_interface(tunnel_entry.inner_intf) or not check_interface(tunnel_entry.outer_intf):
-        return web.Response(status=404, reason="A specified interface could not be found")
-    # Add to local state
-    TunnelEntryData.tunnel_entries[tunnel_entry.id] = tunnel_entry
+    # Add to local impl
+    TunnelEntryData.tunnel_entries[tunnel_entry.tunnel_entry_id] = tunnel_entry
     # Deploy to local
     # Steps: Bootstrap new wireguard interface -> install route for wg interface
     wg_intf = "wg" + str(tunnel_entry.local_port)
@@ -153,7 +149,7 @@ async def tunnel_entry_put(request: web.Request, auth, body=None) -> web.Respons
     if run_command(['ip', 'link', 'set', 'dev', wg_intf, 'up']) != 0:
         return web.Response(status=500, reason="Internal Server Error")
     # Apply routing
-    if run_command(['ip', 'route', 'add', 'default', 'via', 'dev', wg_intf, 'table', str(tunnel_entry.id)]) != 0:
+    if run_command(['ip', 'route', 'add', 'default', 'via', 'dev', wg_intf, 'table', str(tunnel_entry.tunnel_entry_id)]) != 0:
         return web.Response(status=500, reason="Internal Server Error")
     ret = apply_routing(tunnel_entry, None)
     if ret == 200:
@@ -168,11 +164,11 @@ def apply_routing(new: TunnelEntry or None, old: TunnelEntry or None) -> int:
     remove: [TunnelEntryMatchesInner] = []
     if not old:
         add = new.matches.copy()
-        if run_command(['ip', 'rule', 'add', 'fwmark', str(new.id), 'lookup', str(new.id)]) != 0:
+        if run_command(['ip', 'rule', 'add', 'fwmark', str(new.tunnel_entry_id), 'lookup', str(new.tunnel_entry_id)]) != 0:
             return 500
     elif not new:
         remove = old.matches.copy()
-        if run_command(['ip', 'rule', 'del', 'fwmark', str(new.id), 'lookup', str(new.id)]) != 0:
+        if run_command(['ip', 'rule', 'del', 'fwmark', str(new.tunnel_entry_id), 'lookup', str(new.tunnel_entry_id)]) != 0:
             return 500
     else:
         for n in new.matches:
@@ -183,19 +179,19 @@ def apply_routing(new: TunnelEntry or None, old: TunnelEntry or None) -> int:
                 remove.append(o)
     # Remove entries not applicable anymore
     for match in remove:
-        ret = deploy_iptables_rule(tunnel_id=old.id, match=match, add=False)
+        ret = deploy_iptables_rule(tunnel_entry_id=old.tunnel_entry_id, match=match, add=False)
         if ret != 200:
             return ret
     # Add new entries
     for match in add:
-        ret = deploy_iptables_rule(tunnel_id=new.id, match=match, add=True)
+        ret = deploy_iptables_rule(tunnel_entry_id=new.tunnel_entry_id, match=match, add=True)
         if ret != 200:
             return ret
     # Return success
     return 200
 
 
-def deploy_iptables_rule(tunnel_id: int, match: TunnelEntryMatchesInner, add: bool) -> int:
+def deploy_iptables_rule(tunnel_entry_id: int, match: TunnelEntryMatchesInner, add: bool) -> int:
     # Build iptables command
     cmd = ['iptables', '-t', 'mangle',
            '-A' if add else '-R', 'PREROUTING']
@@ -226,18 +222,10 @@ def deploy_iptables_rule(tunnel_id: int, match: TunnelEntryMatchesInner, add: bo
     cmd.append("-j")
     cmd.append("MARK")
     cmd.append("--set-mark")
-    cmd.append(str(tunnel_id))
+    cmd.append(str(tunnel_entry_id))
     if run_command(cmd) != 0:
         return 500
     return 200
-
-
-def check_interface(intf: str) -> bool:
-    # Validate the port first
-    if len(intf) > 32 or not INTF_PATTERN.match(intf):
-        return False
-    # Simply check if the directory for the network interface exists
-    return run_command(['test', '-d', '/sys/class/net/' + intf])[0] == 0
 
 def check_mac(mac: str) -> bool:
     # Validate pattern

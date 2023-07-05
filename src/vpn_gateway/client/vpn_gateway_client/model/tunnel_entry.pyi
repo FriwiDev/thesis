@@ -36,11 +36,8 @@ class TunnelEntry(
     class MetaOapg:
         
         class properties:
-            id = schemas.Int32Schema
-            inner_intf = schemas.StrSchema
-            outer_intf = schemas.StrSchema
+            tunnel_entry_id = schemas.Int32Schema
             inner_subnet = schemas.StrSchema
-            outer_subnet = schemas.StrSchema
             local_port = schemas.IntSchema
             remote_end = schemas.StrSchema
             private_key = schemas.StrSchema
@@ -181,11 +178,8 @@ class TunnelEntry(
                 def __getitem__(self, i: int) -> MetaOapg.items:
                     return super().__getitem__(i)
             __annotations__ = {
-                "id": id,
-                "inner_intf": inner_intf,
-                "outer_intf": outer_intf,
+                "tunnel_entry_id": tunnel_entry_id,
                 "inner_subnet": inner_subnet,
-                "outer_subnet": outer_subnet,
                 "local_port": local_port,
                 "remote_end": remote_end,
                 "private_key": private_key,
@@ -194,19 +188,10 @@ class TunnelEntry(
             }
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["id"]) -> MetaOapg.properties.id: ...
-    
-    @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["inner_intf"]) -> MetaOapg.properties.inner_intf: ...
-    
-    @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["outer_intf"]) -> MetaOapg.properties.outer_intf: ...
+    def __getitem__(self, name: typing_extensions.Literal["tunnel_entry_id"]) -> MetaOapg.properties.tunnel_entry_id: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["inner_subnet"]) -> MetaOapg.properties.inner_subnet: ...
-    
-    @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["outer_subnet"]) -> MetaOapg.properties.outer_subnet: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["local_port"]) -> MetaOapg.properties.local_port: ...
@@ -226,25 +211,16 @@ class TunnelEntry(
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "inner_intf", "outer_intf", "inner_subnet", "outer_subnet", "local_port", "remote_end", "private_key", "public_key", "matches", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["tunnel_entry_id", "inner_subnet", "local_port", "remote_end", "private_key", "public_key", "matches", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["id"]) -> typing.Union[MetaOapg.properties.id, schemas.Unset]: ...
-    
-    @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["inner_intf"]) -> typing.Union[MetaOapg.properties.inner_intf, schemas.Unset]: ...
-    
-    @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["outer_intf"]) -> typing.Union[MetaOapg.properties.outer_intf, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["tunnel_entry_id"]) -> typing.Union[MetaOapg.properties.tunnel_entry_id, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["inner_subnet"]) -> typing.Union[MetaOapg.properties.inner_subnet, schemas.Unset]: ...
-    
-    @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["outer_subnet"]) -> typing.Union[MetaOapg.properties.outer_subnet, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["local_port"]) -> typing.Union[MetaOapg.properties.local_port, schemas.Unset]: ...
@@ -264,18 +240,15 @@ class TunnelEntry(
     @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "inner_intf", "outer_intf", "inner_subnet", "outer_subnet", "local_port", "remote_end", "private_key", "public_key", "matches", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["tunnel_entry_id", "inner_subnet", "local_port", "remote_end", "private_key", "public_key", "matches", ], str]):
         return super().get_item_oapg(name)
     
 
     def __new__(
         cls,
         *_args: typing.Union[dict, frozendict.frozendict, ],
-        id: typing.Union[MetaOapg.properties.id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
-        inner_intf: typing.Union[MetaOapg.properties.inner_intf, str, schemas.Unset] = schemas.unset,
-        outer_intf: typing.Union[MetaOapg.properties.outer_intf, str, schemas.Unset] = schemas.unset,
+        tunnel_entry_id: typing.Union[MetaOapg.properties.tunnel_entry_id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         inner_subnet: typing.Union[MetaOapg.properties.inner_subnet, str, schemas.Unset] = schemas.unset,
-        outer_subnet: typing.Union[MetaOapg.properties.outer_subnet, str, schemas.Unset] = schemas.unset,
         local_port: typing.Union[MetaOapg.properties.local_port, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         remote_end: typing.Union[MetaOapg.properties.remote_end, str, schemas.Unset] = schemas.unset,
         private_key: typing.Union[MetaOapg.properties.private_key, str, schemas.Unset] = schemas.unset,
@@ -287,11 +260,8 @@ class TunnelEntry(
         return super().__new__(
             cls,
             *_args,
-            id=id,
-            inner_intf=inner_intf,
-            outer_intf=outer_intf,
+            tunnel_entry_id=tunnel_entry_id,
             inner_subnet=inner_subnet,
-            outer_subnet=outer_subnet,
             local_port=local_port,
             remote_end=remote_end,
             private_key=private_key,

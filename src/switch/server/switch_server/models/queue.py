@@ -14,10 +14,10 @@ class Queue(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, priority: int=None, port: str=None):
+    def __init__(self, queue_id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, priority: int=None, port: str=None):
         """Queue - a model defined in OpenAPI
 
-        :param id: The id of this Queue.
+        :param queue_id: The queue_id of this Queue.
         :param min_rate: The min_rate of this Queue.
         :param max_rate: The max_rate of this Queue.
         :param burst_rate: The burst_rate of this Queue.
@@ -25,7 +25,7 @@ class Queue(Model):
         :param port: The port of this Queue.
         """
         self.openapi_types = {
-            'id': int,
+            'queue_id': int,
             'min_rate': int,
             'max_rate': int,
             'burst_rate': int,
@@ -34,7 +34,7 @@ class Queue(Model):
         }
 
         self.attribute_map = {
-            'id': 'id',
+            'queue_id': 'queue_id',
             'min_rate': 'min_rate',
             'max_rate': 'max_rate',
             'burst_rate': 'burst_rate',
@@ -42,7 +42,7 @@ class Queue(Model):
             'port': 'port'
         }
 
-        self._id = id
+        self._queue_id = queue_id
         self._min_rate = min_rate
         self._max_rate = max_rate
         self._burst_rate = burst_rate
@@ -59,27 +59,27 @@ class Queue(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self):
-        """Gets the id of this Queue.
+    def queue_id(self):
+        """Gets the queue_id of this Queue.
 
         The queue identifier used by OpenFlow
 
-        :return: The id of this Queue.
+        :return: The queue_id of this Queue.
         :rtype: int
         """
-        return self._id
+        return self._queue_id
 
-    @id.setter
-    def id(self, id):
-        """Sets the id of this Queue.
+    @queue_id.setter
+    def queue_id(self, queue_id):
+        """Sets the queue_id of this Queue.
 
         The queue identifier used by OpenFlow
 
-        :param id: The id of this Queue.
-        :type id: int
+        :param queue_id: The queue_id of this Queue.
+        :type queue_id: int
         """
 
-        self._id = id
+        self._queue_id = queue_id
 
     @property
     def min_rate(self):

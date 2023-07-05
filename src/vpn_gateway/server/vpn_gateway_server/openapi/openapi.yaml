@@ -147,14 +147,11 @@ components:
     tunnel_entry:
       example:
         public_key: public_key
-        inner_intf: inner_intf
+        tunnel_entry_id: 0
         inner_subnet: inner_subnet
-        outer_subnet: outer_subnet
         remote_end: remote_end
         local_port: 6
-        outer_intf: outer_intf
         private_key: private_key
-        id: 0
         matches:
         - target_port: 5
           target_ip: target_ip
@@ -169,30 +166,15 @@ components:
           source_mac: source_mac
           source_ip: source_ip
       properties:
-        id:
+        tunnel_entry_id:
           description: The tunnel identifier
           format: int32
-          title: id
+          title: tunnel_entry_id
           type: integer
-        inner_intf:
-          description: The name of the network interface that faces towards the edge
-            network
-          title: inner_intf
-          type: string
-        outer_intf:
-          description: The name of the network interface that faces towards the first
-            black network
-          title: outer_intf
-          type: string
         inner_subnet:
           description: The subnet to route towards the inner interface (aka. the edge
             network/device)
           title: inner_subnet
-          type: string
-        outer_subnet:
-          description: The subnet to route towards the tunnel (aka. the other edge
-            network/device)
-          title: outer_subnet
           type: string
         local_port:
           description: The local port to use to bind the tunnel

@@ -2,7 +2,7 @@ import heapq as hq
 import math
 
 from dsmf_server.models import DeviceConfiguration, ConnectionConfiguration
-from dsmf_server.state.domain_state import DomainState, DeviceType
+from dsmf_server.impl.domain_state import DomainState, DeviceType
 
 
 class DomainUtil(object):
@@ -217,6 +217,20 @@ class DomainUtil(object):
                 return i
             i += 1
         return -1
+
+    @classmethod
+    def port_index_of_switch(cls, device: DeviceConfiguration, other: str) -> int:
+        for conn in device.connections:
+            if conn.other_end == other:
+                return conn.intf_id
+        return -1
+
+    @classmethod
+    def port_name_of_switch(cls, device: DeviceConfiguration, other: str) -> str or None:
+        for conn in device.connections:
+            if conn.other_end == other:
+                return conn.intf_name
+        return None
 
     @classmethod
     def switch_index_of(cls, name: str) -> int:

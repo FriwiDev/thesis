@@ -15,14 +15,11 @@ class TunnelEntry(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, inner_intf: str=None, outer_intf: str=None, inner_subnet: str=None, outer_subnet: str=None, local_port: int=None, remote_end: str=None, private_key: str=None, public_key: str=None, matches: List[TunnelEntryMatchesInner]=None):
+    def __init__(self, tunnel_entry_id: int=None, inner_subnet: str=None, local_port: int=None, remote_end: str=None, private_key: str=None, public_key: str=None, matches: List[TunnelEntryMatchesInner]=None):
         """TunnelEntry - a model defined in OpenAPI
 
-        :param id: The id of this TunnelEntry.
-        :param inner_intf: The inner_intf of this TunnelEntry.
-        :param outer_intf: The outer_intf of this TunnelEntry.
+        :param tunnel_entry_id: The tunnel_entry_id of this TunnelEntry.
         :param inner_subnet: The inner_subnet of this TunnelEntry.
-        :param outer_subnet: The outer_subnet of this TunnelEntry.
         :param local_port: The local_port of this TunnelEntry.
         :param remote_end: The remote_end of this TunnelEntry.
         :param private_key: The private_key of this TunnelEntry.
@@ -30,11 +27,8 @@ class TunnelEntry(Model):
         :param matches: The matches of this TunnelEntry.
         """
         self.openapi_types = {
-            'id': int,
-            'inner_intf': str,
-            'outer_intf': str,
+            'tunnel_entry_id': int,
             'inner_subnet': str,
-            'outer_subnet': str,
             'local_port': int,
             'remote_end': str,
             'private_key': str,
@@ -43,11 +37,8 @@ class TunnelEntry(Model):
         }
 
         self.attribute_map = {
-            'id': 'id',
-            'inner_intf': 'inner_intf',
-            'outer_intf': 'outer_intf',
+            'tunnel_entry_id': 'tunnel_entry_id',
             'inner_subnet': 'inner_subnet',
-            'outer_subnet': 'outer_subnet',
             'local_port': 'local_port',
             'remote_end': 'remote_end',
             'private_key': 'private_key',
@@ -55,11 +46,8 @@ class TunnelEntry(Model):
             'matches': 'matches'
         }
 
-        self._id = id
-        self._inner_intf = inner_intf
-        self._outer_intf = outer_intf
+        self._tunnel_entry_id = tunnel_entry_id
         self._inner_subnet = inner_subnet
-        self._outer_subnet = outer_subnet
         self._local_port = local_port
         self._remote_end = remote_end
         self._private_key = private_key
@@ -76,73 +64,27 @@ class TunnelEntry(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self):
-        """Gets the id of this TunnelEntry.
+    def tunnel_entry_id(self):
+        """Gets the tunnel_entry_id of this TunnelEntry.
 
         The tunnel identifier
 
-        :return: The id of this TunnelEntry.
+        :return: The tunnel_entry_id of this TunnelEntry.
         :rtype: int
         """
-        return self._id
+        return self._tunnel_entry_id
 
-    @id.setter
-    def id(self, id):
-        """Sets the id of this TunnelEntry.
+    @tunnel_entry_id.setter
+    def tunnel_entry_id(self, tunnel_entry_id):
+        """Sets the tunnel_entry_id of this TunnelEntry.
 
         The tunnel identifier
 
-        :param id: The id of this TunnelEntry.
-        :type id: int
+        :param tunnel_entry_id: The tunnel_entry_id of this TunnelEntry.
+        :type tunnel_entry_id: int
         """
 
-        self._id = id
-
-    @property
-    def inner_intf(self):
-        """Gets the inner_intf of this TunnelEntry.
-
-        The name of the network interface that faces towards the edge network
-
-        :return: The inner_intf of this TunnelEntry.
-        :rtype: str
-        """
-        return self._inner_intf
-
-    @inner_intf.setter
-    def inner_intf(self, inner_intf):
-        """Sets the inner_intf of this TunnelEntry.
-
-        The name of the network interface that faces towards the edge network
-
-        :param inner_intf: The inner_intf of this TunnelEntry.
-        :type inner_intf: str
-        """
-
-        self._inner_intf = inner_intf
-
-    @property
-    def outer_intf(self):
-        """Gets the outer_intf of this TunnelEntry.
-
-        The name of the network interface that faces towards the first black network
-
-        :return: The outer_intf of this TunnelEntry.
-        :rtype: str
-        """
-        return self._outer_intf
-
-    @outer_intf.setter
-    def outer_intf(self, outer_intf):
-        """Sets the outer_intf of this TunnelEntry.
-
-        The name of the network interface that faces towards the first black network
-
-        :param outer_intf: The outer_intf of this TunnelEntry.
-        :type outer_intf: str
-        """
-
-        self._outer_intf = outer_intf
+        self._tunnel_entry_id = tunnel_entry_id
 
     @property
     def inner_subnet(self):
@@ -166,29 +108,6 @@ class TunnelEntry(Model):
         """
 
         self._inner_subnet = inner_subnet
-
-    @property
-    def outer_subnet(self):
-        """Gets the outer_subnet of this TunnelEntry.
-
-        The subnet to route towards the tunnel (aka. the other edge network/device)
-
-        :return: The outer_subnet of this TunnelEntry.
-        :rtype: str
-        """
-        return self._outer_subnet
-
-    @outer_subnet.setter
-    def outer_subnet(self, outer_subnet):
-        """Sets the outer_subnet of this TunnelEntry.
-
-        The subnet to route towards the tunnel (aka. the other edge network/device)
-
-        :param outer_subnet: The outer_subnet of this TunnelEntry.
-        :type outer_subnet: str
-        """
-
-        self._outer_subnet = outer_subnet
 
     @property
     def local_port(self):

@@ -184,9 +184,11 @@
             traffic that will enter a tunnel. This is why we display connections from s3 to s4 and s6 to s7 here.
             All components starting with src_, bn_ (black network) or dst_ can be merged if there is only one switch
             between components, resulting in a role of &lt;src/bn/dst&gt;_all (with match of _entry/_begin and a simple
-            forward action).
+            forward action or a slice mpls push in case of src_all).
             Routing from dst to src is also possible by reversing the matching rules and actions, but swapping out
             source and destination accordingly.
+            The second flows of the bn components bootstrap a small reverse path for wireguard to perform
+            handshakes and key rotations.
             Rules matching * are only necessary when allowing other traffic to pass the topology.
         </p>
 

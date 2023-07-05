@@ -8,11 +8,11 @@ dict, frozendict.frozendict,  | frozendict.frozendict,  |  |
 ### Dictionary Keys
 Key | Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | ------------- | -------------
-**id** | decimal.Decimal, int,  | decimal.Decimal,  | The queue identifier used by OpenFlow | [optional] value must be a 32 bit integer
+**queue_id** | decimal.Decimal, int,  | decimal.Decimal,  | The queue identifier used by OpenFlow | [optional] value must be a 32 bit integer
 **min_rate** | decimal.Decimal, int,  | decimal.Decimal,  | The minimum queue rate in Bits/s | [optional] value must be a 64 bit integer
 **max_rate** | decimal.Decimal, int,  | decimal.Decimal,  | The maximum queue rate in Bits/s | [optional] value must be a 64 bit integer
 **burst_rate** | decimal.Decimal, int,  | decimal.Decimal,  | The burst queue rate in Bits/s | [optional] value must be a 64 bit integer
-**priority** | decimal.Decimal, int,  | decimal.Decimal,  | The queue priority | [optional] value must be a 64 bit integer
+**priority** | decimal.Decimal, int,  | decimal.Decimal,  | The queue priority | [optional] value must be a 32 bit integer
 **port** | str,  | str,  | The name of the output port on the switch | [optional] 
 **any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
 

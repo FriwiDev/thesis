@@ -67,7 +67,7 @@ async def queue_put(request: web.Request, auth, body=None) -> web.Response:
         return web.Response(status=406, reason="A value exceeds the allowed range")
     if not check_port(queue.port):
         return web.Response(status=404, reason="The switch port could not be found")
-    queue.id = QueueData.current_queue_id
+    queue.queue_id = QueueData.current_queue_id
     QueueData.queues[QueueData.current_queue_id] = queue
     QueueData.current_queue_id += 1
     flush_queues(queue.port)
@@ -78,10 +78,10 @@ def flush_queues(port: str):
     cmd = ['ovs-vsctl', 'set', 'port', port, 'qos=@newqos', '--', '--id=@newqos', 'create', 'qos', 'type=linux-htb']
     for queue in QueueData.queues.values():
         if queue.port == port:
-            cmd += ['queues:' + str(queue.id) + "=@queue" + str(queue.id)]
+            cmd += ['queues:' + str(queue.queue_id) + "=@queue" + str(queue.queue_id)]
     for queue in QueueData.queues.values():
         if queue.port == port:
-            cmd += ['--', '--id=@queue' + str(queue.id), 'create', 'queue',
+            cmd += ['--', '--id=@queue' + str(queue.queue_id), 'create', 'queue',
                     'other-config:min-rate=' + str(queue.min_rate),
                     'other-config:max-rate=' + str(queue.max_rate),
                     'other-config:burst=' + str(queue.burst_rate),

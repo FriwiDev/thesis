@@ -25,26 +25,14 @@
       "tunnel_entry": {
         "type": "object",
         "properties": {
-          "id": {
+          "tunnel_entry_id": {
             "type": "integer",
             "format": "int32",
             "description": "The tunnel identifier"
           },
-          "inner_intf": {
-            "type": "string",
-            "description": "The name of the network interface that faces towards the edge network"
-          },
-          "outer_intf": {
-            "type": "string",
-            "description": "The name of the network interface that faces towards the first black network"
-          },
           "inner_subnet": {
             "type": "string",
             "description": "The subnet to route towards the inner interface (aka. the edge network/device)"
-          },
-          "outer_subnet": {
-            "type": "string",
-            "description": "The subnet to route towards the tunnel (aka. the other edge network/device)"
           },
           "local_port": {
             "type": "integer",

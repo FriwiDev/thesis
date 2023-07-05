@@ -165,7 +165,7 @@ with switch_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
     }
     body = Queue(
-        id=1,
+        queue_id=1,
         min_rate=1,
         max_rate=1,
         burst_rate=1,

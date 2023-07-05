@@ -181,9 +181,10 @@
 
         <p class="lead mb-4">Our routing rules within a setup can be viewed below. These rules are conceptualized with
             other competing traffic in mind. Please note that the vpn gateways do not forward any traffic apart from
-            traffic
-            that will enter a tunnel. This is why we display connections from s3 to s4 and s6 to s7 here.
-            All components starting with src_, bn_ (black network) or dst_ can be merged if necessary.
+            traffic that will enter a tunnel. This is why we display connections from s3 to s4 and s6 to s7 here.
+            All components starting with src_, bn_ (black network) or dst_ can be merged if there is only one switch
+            between components, resulting in a role of &lt;src/bn/dst&gt;_all (with match of _entry/_begin and a simple
+            forward action).
             Routing from dst to src is also possible by reversing the matching rules and actions, but swapping out
             source and destination accordingly.
             Rules matching * are only necessary when allowing other traffic to pass the topology.

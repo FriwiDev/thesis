@@ -70,7 +70,8 @@ async def slice_deployment_put(request: web.Request, auth, slice_id) -> web.Resp
     if slice_id not in DomainState.slice_reservations.keys():
         return web.Response(status=404, reason="The slice reservation could not be found")
     body = DomainState.slice_reservations[slice_id]
-    # TODO Check tunnel existence
+    if body.tunnel_id not in DomainState.tunnel_deployments.keys():
+        return web.Response(status=412, reason="The tunnel referenced by this slice has not been deployed yet")
     DomainState.slice_deployments[slice_id] = body
     del DomainState.slice_reservations[slice_id]
     try:

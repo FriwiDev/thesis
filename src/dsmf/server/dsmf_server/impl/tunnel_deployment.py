@@ -63,16 +63,8 @@ class TunnelDeployment(object):
                         raise Exception("Error while deploying tunnel entry")
                 elif device_type == DeviceType.TUN_EXIT:
                     # Build a list of all traffic that should traverse our tunnel
+                    # (here nothing should be sent via tunnel)
                     matches = []
-                    for slice in DomainState.slice_deployments.values():
-                        if slice.tunnel_id == tunnel.tunnel_id:
-                            # A slice that uses our tunnel
-                            matches.append({
-                                "transport_protocol": "UDP",
-                                "source_ip": slice.to.ip,
-                                "target_ip": slice.fr.ip,
-                                "source_port": slice.to.port
-                            })
                     # Define the tunnel entry
                     entry = TunnelEntry(tunnel_entry_id=tunnel.tunnel_id,
                                         inner_subnet=DomainState.get_network(device.network).subnet,

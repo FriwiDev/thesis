@@ -21,7 +21,7 @@ class SwitchDeployment(object):
                      reverse_queue: Queue = None  # An already cached reverse queue
                      ) -> (Queue, Queue or None):  # Returns the queue and the potential reverse queue
         # One of the ports will be 0, indicating our direction (we only know the port on one side)
-        # TODO: Traffic shaping
+        # TODO-Thesis: Traffic shaping
         if switch_type == DeviceType.SRC_ENTRY or switch_type == DeviceType.SRC_TP \
                 or switch_type == DeviceType.SRC_EXIT or switch_type == DeviceType.SRC_ALL:
             intf_out = DomainUtil.port_name_of_switch(switch, next_name)
@@ -31,11 +31,11 @@ class SwitchDeployment(object):
             if queue.queue_id == -1:
                 raise Exception("Error while installing queue")
             port_out = DomainUtil.port_index_of_switch(switch, next_name)
+            port_in = DomainUtil.port_index_of_switch(switch, prev_name)
             # Remove old flows
             if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
                 raise Exception("Error while removing old flows")
             if switch_type == DeviceType.SRC_ENTRY or switch_type == DeviceType.SRC_ALL:
-                port_in = DomainUtil.port_index_of_switch(switch, prev_name)
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
@@ -47,6 +47,7 @@ class SwitchDeployment(object):
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
+                                                    in_port=port_in,
                                                     queue_id=queue.queue_id, out_port=port_out):
                     raise Exception("Error while installing flow")
             return queue, None
@@ -74,43 +75,46 @@ class SwitchDeployment(object):
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
                                                     src_ip=src_ip, dst_ip=dst_ip, dst_port=dst_port,
-                                                    mpls=slice_id * 2, push_mpls=True,
+                                                    mpls=slice_id, push_mpls=True,
                                                     queue_id=queue.queue_id, out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
-                                                    mpls_match=slice_id * 2 + 1,
-                                                    mpls=slice_id * 2 + 1, pop_mpls=True,
+                                                    mpls_match=slice_id,
+                                                    in_port=port_out,
+                                                    mpls=slice_id, pop_mpls=True,
                                                     queue_id=reverse_queue.queue_id, out_port=port_in):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.BN_TP:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
-                                                    mpls_match=slice_id * 2,
+                                                    mpls_match=slice_id,
+                                                    in_port=port_in,
                                                     queue_id=queue.queue_id, out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
-                                                    mpls_match=slice_id * 2 + 1,
+                                                    mpls_match=slice_id,
+                                                    in_port=port_out,
                                                     queue_id=reverse_queue.queue_id, out_port=port_in):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.BN_EXIT:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
-                                                    mpls_match=slice_id * 2,
-                                                    mpls=slice_id * 2, pop_mpls=True,
+                                                    mpls_match=slice_id,
+                                                    in_port=port_in,
+                                                    mpls=slice_id, pop_mpls=True,
                                                     queue_id=queue.queue_id, out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_out,
                                                     src_ip=dst_ip, dst_ip=src_ip, dst_port=src_port,
-                                                    # TODO Verify if this is correct - might need another 2 flows for other combinations
-                                                    mpls=slice_id * 2 + 1, push_mpls=True,
+                                                    # TODO-Thesis Verify if this is correct - might need another 2 flows for other combinations
+                                                    mpls=slice_id, push_mpls=True,
                                                     queue_id=reverse_queue.queue_id, out_port=port_in):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.BN_ALL:
-                port_in = DomainUtil.port_index_of_switch(switch, prev_name)
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
@@ -121,7 +125,7 @@ class SwitchDeployment(object):
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_out,
                                                     src_ip=dst_ip, dst_ip=src_ip, dst_port=src_port,
-                                                    # TODO Verify if this is correct - might need another 2 flows for other combinations
+                                                    # TODO-Thesis Verify if this is correct - might need another 2 flows for other combinations
                                                     queue_id=reverse_queue.queue_id, out_port=port_in):
                     raise Exception("Error while installing flow")
             return queue, reverse_queue
@@ -134,6 +138,7 @@ class SwitchDeployment(object):
             if queue.queue_id == -1:
                 raise Exception("Error while installing queue")
             port_out = DomainUtil.port_index_of_switch(switch, next_name)
+            port_in = DomainUtil.port_index_of_switch(switch, prev_name)
             # Remove old flows
             if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
                 raise Exception("Error while removing old flows")
@@ -141,12 +146,14 @@ class SwitchDeployment(object):
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
+                                                    in_port=port_in,
                                                     queue_id=queue.queue_id, out_port=port_out):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.DST_EXIT or switch_type == DeviceType.DST_ALL:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
+                                                    in_port=port_in,
                                                     mpls=slice_id, pop_mpls=True,
                                                     queue_id=queue.queue_id, out_port=port_out):
                     raise Exception("Error while installing flow")
@@ -320,7 +327,7 @@ class SwitchDeployment(object):
 
     @classmethod
     def controller_api_client(cls, switch: DeviceConfiguration) -> controller_client.ApiClient:
-        # TODO: Support for multiple controllers could be added here, depending on the switch
+        # TODO-FW: Support for multiple controllers could be added here, depending on the switch
         configuration = controller_client.Configuration(
             host="http://" + DomainState.config.controllers[0].ip + ":" + str(
                 DomainState.config.controllers[0].port) + "/stats"

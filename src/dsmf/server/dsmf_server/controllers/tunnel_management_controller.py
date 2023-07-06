@@ -23,7 +23,9 @@ async def tunnel_deployment_delete(request: web.Request, auth, tunnel_id) -> web
         return web.Response(status=403, reason="Invalid authentication provided.")
     if tunnel_id not in DomainState.tunnel_deployments.keys():
         return web.Response(status=404, reason="The tunnel deployment could not be found")
-    # TODO Check slice references
+    for sl in DomainState.slice_deployments.values():
+        if sl.tunnel_id == tunnel_id:
+            return web.Response(status=412, reason="The tunnel is still being referenced by a deployed slice")
     try:
         TunnelDeployment.remove_tunnel(DomainState.tunnel_deployments[tunnel_id],
                                        DomainState.tunnel_queue_pools[tunnel_id])

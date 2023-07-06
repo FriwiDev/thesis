@@ -18,7 +18,7 @@ Method | HTTP request | Description
 
 
 
-Deletes a tunnel from this domain
+Deletes a tunnel
 
 ### Example
 
@@ -87,8 +87,10 @@ Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#tunnel_deployment_delete.ApiResponseFor200) | The tunnel was successfully deleted.
-403 | [ApiResponseFor403](#tunnel_deployment_delete.ApiResponseFor403) | Invalid or insufficient authentication provided.
+403 | [ApiResponseFor403](#tunnel_deployment_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#tunnel_deployment_delete.ApiResponseFor404) | The tunnel could not be found.
+412 | [ApiResponseFor412](#tunnel_deployment_delete.ApiResponseFor412) | The tunnel is still being referenced by a deployed slice
+500 | [ApiResponseFor500](#tunnel_deployment_delete.ApiResponseFor500) | The deployment to the network failed
 
 #### tunnel_deployment_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -111,6 +113,20 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### tunnel_deployment_delete.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_deployment_delete.ApiResponseFor500
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 ### Authorization
 
 No authorization required
@@ -123,7 +139,7 @@ No authorization required
 
 
 
-Lists all current tunnels issued by the requesting ESMF. Used for synchronization purposes.
+Lists all current tunnels
 
 ### Example
 
@@ -185,7 +201,7 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#tunnel_deployment_get.ApiResponseFor200) | The current list of tunnels assigned to this ESMF.
+200 | [ApiResponseFor200](#tunnel_deployment_get.ApiResponseFor200) | The current list of tunnels
 403 | [ApiResponseFor403](#tunnel_deployment_get.ApiResponseFor403) | Invalid authentication provided
 
 #### tunnel_deployment_get.ApiResponseFor200
@@ -226,7 +242,7 @@ No authorization required
 
 
 
-Creates a new tunnel on this domain
+Creates a new tunnel or modifies a tunnel from a reservation
 
 ### Example
 
@@ -294,9 +310,10 @@ decimal.Decimal, int,  | decimal.Decimal,  |  | value must be a 32 bit integer
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#tunnel_deployment_put.ApiResponseFor200) | The tunnel has been deployed or altered
-403 | [ApiResponseFor403](#tunnel_deployment_put.ApiResponseFor403) | Invalid or insufficient authentication provided
-404 | [ApiResponseFor404](#tunnel_deployment_put.ApiResponseFor404) | The tunnel reservation could not be found
+200 | [ApiResponseFor200](#tunnel_deployment_put.ApiResponseFor200) | The tunnel has been created
+403 | [ApiResponseFor403](#tunnel_deployment_put.ApiResponseFor403) | Invalid authentication provided
+404 | [ApiResponseFor404](#tunnel_deployment_put.ApiResponseFor404) | The tunnel reservation could not be found.
+500 | [ApiResponseFor500](#tunnel_deployment_put.ApiResponseFor500) | The deployment to the network failed
 
 #### tunnel_deployment_put.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -313,6 +330,13 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### tunnel_deployment_put.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_deployment_put.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -400,8 +424,9 @@ Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#tunnel_reservation_delete.ApiResponseFor200) | The tunnel reservation was successfully deleted.
-403 | [ApiResponseFor403](#tunnel_reservation_delete.ApiResponseFor403) | Invalid or insufficient authentication provided.
+403 | [ApiResponseFor403](#tunnel_reservation_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#tunnel_reservation_delete.ApiResponseFor404) | The tunnel reservation could not be found.
+500 | [ApiResponseFor500](#tunnel_reservation_delete.ApiResponseFor500) | Internal error
 
 #### tunnel_reservation_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -424,6 +449,13 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### tunnel_reservation_delete.ApiResponseFor500
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 ### Authorization
 
 No authorization required
@@ -436,7 +468,7 @@ No authorization required
 
 
 
-Lists all current tunnel reservations issued by the requesting ESMF. Used for synchronization purposes.
+Lists all current tunnel reservations
 
 ### Example
 
@@ -498,7 +530,7 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#tunnel_reservation_get.ApiResponseFor200) | The current list of tunnel reservations assigned to this ESMF.
+200 | [ApiResponseFor200](#tunnel_reservation_get.ApiResponseFor200) | The current list of tunnel reservations
 403 | [ApiResponseFor403](#tunnel_reservation_get.ApiResponseFor403) | Invalid authentication provided
 
 #### tunnel_reservation_get.ApiResponseFor200
@@ -539,7 +571,7 @@ No authorization required
 
 
 
-Creates a new tunnel reservation on this domain
+Creates a new tunnel reservation or stages changes to an existing deployed tunnel, as long as source and target of the tunnel match.
 
 ### Example
 
@@ -575,18 +607,20 @@ with esmf_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
     }
     body = Tunnel(
-        id=1,
+        tunnel_id=1,
         min_rate=1,
         max_rate=1,
         burst_rate=1,
         latency=1,
-        _from=Endpoint(
-            transport_protocol="UDP",
+        fr=Endpoint(
             ip="ip_example",
-            mac="mac_example",
             port=0,
+            name="name_example",
+            network="network_example",
         ),
 ,
+        private_key="private_key_example",
+        public_key="public_key_example",
     )
     try:
         api_response = api_instance.tunnel_reservation_put(
@@ -635,11 +669,14 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#tunnel_reservation_put.ApiResponseFor200) | The tunnel has been reserved.
-403 | [ApiResponseFor403](#tunnel_reservation_put.ApiResponseFor403) | Invalid or insufficient authentication provided
+200 | [ApiResponseFor200](#tunnel_reservation_put.ApiResponseFor200) | The tunnel has been reserved
+403 | [ApiResponseFor403](#tunnel_reservation_put.ApiResponseFor403) | Invalid authentication provided
 404 | [ApiResponseFor404](#tunnel_reservation_put.ApiResponseFor404) | The input or output could not be found
-409 | [ApiResponseFor409](#tunnel_reservation_put.ApiResponseFor409) | A tunnel with this id already exists and source or target do not match
-507 | [ApiResponseFor507](#tunnel_reservation_put.ApiResponseFor507) | Insufficient resources by participating domain or requester
+406 | [ApiResponseFor406](#tunnel_reservation_put.ApiResponseFor406) | A value exceeds the allowed range
+409 | [ApiResponseFor409](#tunnel_reservation_put.ApiResponseFor409) | A tunnel with this id is already known and does not match current source and target
+412 | [ApiResponseFor412](#tunnel_reservation_put.ApiResponseFor412) | A value does not match the schema
+500 | [ApiResponseFor500](#tunnel_reservation_put.ApiResponseFor500) | Internal error
+507 | [ApiResponseFor507](#tunnel_reservation_put.ApiResponseFor507) | Insufficient resources
 
 #### tunnel_reservation_put.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -662,7 +699,28 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### tunnel_reservation_put.ApiResponseFor406
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 #### tunnel_reservation_put.ApiResponseFor409
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_reservation_put.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_reservation_put.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

@@ -103,6 +103,18 @@ _response_for_404 = api_client.OpenApiResponse(
 
 
 @dataclass
+class ApiResponseFor406(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_406 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor406,
+)
+
+
+@dataclass
 class ApiResponseFor409(api_client.ApiResponse):
     response: urllib3.HTTPResponse
     body: schemas.Unset = schemas.unset
@@ -111,6 +123,42 @@ class ApiResponseFor409(api_client.ApiResponse):
 
 _response_for_409 = api_client.OpenApiResponse(
     response_cls=ApiResponseFor409,
+)
+
+
+@dataclass
+class ApiResponseFor412(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_412 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor412,
+)
+
+
+@dataclass
+class ApiResponseFor421(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_421 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor421,
+)
+
+
+@dataclass
+class ApiResponseFor500(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_500 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor500,
 )
 
 

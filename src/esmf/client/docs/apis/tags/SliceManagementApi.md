@@ -94,6 +94,8 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 403 | [ApiResponseFor403](#slice_delete.ApiResponseFor403) | Invalid or insufficient authentication provided.
 404 | [ApiResponseFor404](#slice_delete.ApiResponseFor404) | One or multiple of the slices could not be found.
 417 | [ApiResponseFor417](#slice_delete.ApiResponseFor417) | No slice ids were provided.
+421 | [ApiResponseFor421](#slice_delete.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_delete.ApiResponseFor500) | Internal error
 
 #### slice_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -117,6 +119,20 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_delete.ApiResponseFor417
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_delete.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_delete.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -199,6 +215,7 @@ Code | Class | Description
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_get.ApiResponseFor200) | The current list of slices assigned to this requester
 403 | [ApiResponseFor403](#slice_get.ApiResponseFor403) | Invalid authentication provided
+421 | [ApiResponseFor421](#slice_get.ApiResponseFor421) | Slice management is not supported by this service
 
 #### slice_get.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -220,6 +237,13 @@ Class Name | Input Type | Accessed Type | Description | Notes
 [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) |  | 
 
 #### slice_get.ApiResponseFor403
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_get.ApiResponseFor421
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -263,16 +287,18 @@ with esmf_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
         'slices': [
         Slice(
-            id=1,
+            slice_id=1,
             min_rate=1,
             max_rate=1,
             burst_rate=1,
             latency=1,
-            _from=Endpoint(
-                transport_protocol="UDP",
+            tunnel_id=1,
+            transport_protocol="UDP",
+            fr=Endpoint(
                 ip="ip_example",
-                mac="mac_example",
                 port=0,
+                name="name_example",
+                network="network_example",
             ),
 ,
         )
@@ -333,6 +359,8 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 403 | [ApiResponseFor403](#slice_put.ApiResponseFor403) | Invalid or insufficient authentication provided
 404 | [ApiResponseFor404](#slice_put.ApiResponseFor404) | The input or output of one or multiple of the slices could not be found
 417 | [ApiResponseFor417](#slice_put.ApiResponseFor417) | No slices were requested
+421 | [ApiResponseFor421](#slice_put.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_put.ApiResponseFor500) | Internal error
 507 | [ApiResponseFor507](#slice_put.ApiResponseFor507) | Insufficient resources by participating domain or requester
 
 #### slice_put.ApiResponseFor200
@@ -363,6 +391,20 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_put.ApiResponseFor417
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_put.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_put.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from dsmf_server.configuration_util import ConfigurationUtil
+from dsmf_server.impl.configuration_util import ConfigurationUtil
 from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfiguration
 from switch_client.model.queue import Queue
 
@@ -33,21 +33,3 @@ class DomainState(object):
                 return net
         return None
 
-
-class Tunnel(object):
-    def __init__(self, tunnel_id: int):
-        self.tunnel_id = tunnel_id
-        # switch name -> role, switch forward port num, queue id
-        self.switch_roles: dict[str, (DeviceType, int, int)] = {}
-        # Network names in order
-        self.route: [str] = []
-
-
-class Slice(object):
-    def __init__(self, slice_id: int, tunnel: Tunnel):
-        self.slice_id = slice_id
-        self.tunnel = tunnel
-        # switch name -> role, switch forward port num, queue id
-        self.switch_roles: dict[str, (DeviceType, int, int)] = {}
-        # Network names in order
-        self.route: [str] = []

@@ -167,6 +167,8 @@ All URIs are relative to *http://localhost:8080/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AuthenticationApi* | [**auth_post**](docs/apis/tags/AuthenticationApi.md#auth_post) | **post** /auth | 
+*ConfigurationApi* | [**configuration_get**](docs/apis/tags/ConfigurationApi.md#configuration_get) | **get** /configuration | 
+*ConfigurationApi* | [**configuration_put**](docs/apis/tags/ConfigurationApi.md#configuration_put) | **put** /configuration | 
 *SliceManagementApi* | [**slice_delete**](docs/apis/tags/SliceManagementApi.md#slice_delete) | **delete** /slice | 
 *SliceManagementApi* | [**slice_get**](docs/apis/tags/SliceManagementApi.md#slice_get) | **get** /slice | 
 *SliceManagementApi* | [**slice_put**](docs/apis/tags/SliceManagementApi.md#slice_put) | **put** /slice | 
@@ -185,7 +187,11 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [ConnectionConfiguration](docs/models/ConnectionConfiguration.md)
+ - [DeviceConfiguration](docs/models/DeviceConfiguration.md)
+ - [DomainConfiguration](docs/models/DomainConfiguration.md)
  - [Endpoint](docs/models/Endpoint.md)
+ - [NetworkConfiguration](docs/models/NetworkConfiguration.md)
  - [Slice](docs/models/Slice.md)
  - [Tunnel](docs/models/Tunnel.md)
 
@@ -195,6 +201,7 @@ Class | Method | HTTP request | Description
 
 
 ## Author
+
 
 
 

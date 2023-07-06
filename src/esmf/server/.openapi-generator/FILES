@@ -5,13 +5,18 @@ esmf_server/__init__.py
 esmf_server/__main__.py
 esmf_server/controllers/__init__.py
 esmf_server/controllers/authentication_controller.py
+esmf_server/controllers/configuration_controller.py
 esmf_server/controllers/security_controller_.py
 esmf_server/controllers/slice_management_controller.py
 esmf_server/controllers/slice_synchronization_controller.py
 esmf_server/controllers/tunnel_synchronization_controller.py
 esmf_server/models/__init__.py
 esmf_server/models/base_model_.py
+esmf_server/models/connection_configuration.py
+esmf_server/models/device_configuration.py
+esmf_server/models/domain_configuration.py
 esmf_server/models/endpoint.py
+esmf_server/models/network_configuration.py
 esmf_server/models/slice.py
 esmf_server/models/tunnel.py
 esmf_server/openapi/openapi.yaml
@@ -23,6 +28,7 @@ test-requirements.txt
 tests/__init__.py
 tests/conftest.py
 tests/test_authentication_controller.py
+tests/test_configuration_controller.py
 tests/test_slice_management_controller.py
 tests/test_slice_synchronization_controller.py
 tests/test_tunnel_synchronization_controller.py

@@ -15,43 +15,51 @@ class Slice(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, _from: Endpoint=None, to: Endpoint=None):
+    def __init__(self, slice_id: int=None, min_rate: int=None, max_rate: int=None, burst_rate: int=None, latency: int=None, tunnel_id: int=None, transport_protocol: str=None, fr: Endpoint=None, to: Endpoint=None):
         """Slice - a model defined in OpenAPI
 
-        :param id: The id of this Slice.
+        :param slice_id: The slice_id of this Slice.
         :param min_rate: The min_rate of this Slice.
         :param max_rate: The max_rate of this Slice.
         :param burst_rate: The burst_rate of this Slice.
         :param latency: The latency of this Slice.
-        :param _from: The _from of this Slice.
+        :param tunnel_id: The tunnel_id of this Slice.
+        :param transport_protocol: The transport_protocol of this Slice.
+        :param fr: The fr of this Slice.
         :param to: The to of this Slice.
         """
         self.openapi_types = {
-            'id': int,
+            'slice_id': int,
             'min_rate': int,
             'max_rate': int,
             'burst_rate': int,
             'latency': int,
-            '_from': Endpoint,
+            'tunnel_id': int,
+            'transport_protocol': str,
+            'fr': Endpoint,
             'to': Endpoint
         }
 
         self.attribute_map = {
-            'id': 'id',
+            'slice_id': 'slice_id',
             'min_rate': 'min_rate',
             'max_rate': 'max_rate',
             'burst_rate': 'burst_rate',
             'latency': 'latency',
-            '_from': 'from',
+            'tunnel_id': 'tunnel_id',
+            'transport_protocol': 'transport_protocol',
+            'fr': 'fr',
             'to': 'to'
         }
 
-        self._id = id
+        self._slice_id = slice_id
         self._min_rate = min_rate
         self._max_rate = max_rate
         self._burst_rate = burst_rate
         self._latency = latency
-        self.__from = _from
+        self._tunnel_id = tunnel_id
+        self._transport_protocol = transport_protocol
+        self._fr = fr
         self._to = to
 
     @classmethod
@@ -64,27 +72,27 @@ class Slice(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self):
-        """Gets the id of this Slice.
+    def slice_id(self):
+        """Gets the slice_id of this Slice.
 
         The slice identifier
 
-        :return: The id of this Slice.
+        :return: The slice_id of this Slice.
         :rtype: int
         """
-        return self._id
+        return self._slice_id
 
-    @id.setter
-    def id(self, id):
-        """Sets the id of this Slice.
+    @slice_id.setter
+    def slice_id(self, slice_id):
+        """Sets the slice_id of this Slice.
 
         The slice identifier
 
-        :param id: The id of this Slice.
-        :type id: int
+        :param slice_id: The slice_id of this Slice.
+        :type slice_id: int
         """
 
-        self._id = id
+        self._slice_id = slice_id
 
     @property
     def min_rate(self):
@@ -179,25 +187,77 @@ class Slice(Model):
         self._latency = latency
 
     @property
-    def _from(self):
-        """Gets the _from of this Slice.
+    def tunnel_id(self):
+        """Gets the tunnel_id of this Slice.
+
+        The tunnel identifier
+
+        :return: The tunnel_id of this Slice.
+        :rtype: int
+        """
+        return self._tunnel_id
+
+    @tunnel_id.setter
+    def tunnel_id(self, tunnel_id):
+        """Sets the tunnel_id of this Slice.
+
+        The tunnel identifier
+
+        :param tunnel_id: The tunnel_id of this Slice.
+        :type tunnel_id: int
+        """
+
+        self._tunnel_id = tunnel_id
+
+    @property
+    def transport_protocol(self):
+        """Gets the transport_protocol of this Slice.
+
+        The protocol to be expected
+
+        :return: The transport_protocol of this Slice.
+        :rtype: str
+        """
+        return self._transport_protocol
+
+    @transport_protocol.setter
+    def transport_protocol(self, transport_protocol):
+        """Sets the transport_protocol of this Slice.
+
+        The protocol to be expected
+
+        :param transport_protocol: The transport_protocol of this Slice.
+        :type transport_protocol: str
+        """
+        allowed_values = ["UDP", "TCP"]  # noqa: E501
+        if transport_protocol not in allowed_values:
+            raise ValueError(
+                "Invalid value for `transport_protocol` ({0}), must be one of {1}"
+                .format(transport_protocol, allowed_values)
+            )
+
+        self._transport_protocol = transport_protocol
+
+    @property
+    def fr(self):
+        """Gets the fr of this Slice.
 
 
-        :return: The _from of this Slice.
+        :return: The fr of this Slice.
         :rtype: Endpoint
         """
-        return self.__from
+        return self._fr
 
-    @_from.setter
-    def _from(self, _from):
-        """Sets the _from of this Slice.
+    @fr.setter
+    def fr(self, fr):
+        """Sets the fr of this Slice.
 
 
-        :param _from: The _from of this Slice.
-        :type _from: Endpoint
+        :param fr: The fr of this Slice.
+        :type fr: Endpoint
         """
 
-        self.__from = _from
+        self._fr = fr
 
     @property
     def to(self):

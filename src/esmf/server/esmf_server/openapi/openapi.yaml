@@ -38,6 +38,68 @@ paths:
       - Authentication
       x-openapi-router-controller: esmf_server.controllers.authentication_controller
     summary: Manages authentication towards this service
+  /configuration:
+    description: Endpoint to manage service configuration
+    get:
+      description: Fetch the current configuration of this service
+      operationId: configuration_get
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/domain_configuration'
+          description: The current configuration
+        "403":
+          description: Invalid authentication provided
+      tags:
+      - Configuration
+      x-openapi-router-controller: esmf_server.controllers.configuration_controller
+    put:
+      description: Installs a new configuration for this service
+      operationId: configuration_put
+      parameters:
+      - description: The authentication token issued by prior login
+        explode: true
+        in: query
+        name: auth
+        required: true
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/domain_configuration'
+        description: The configuration to install. Will check for issues.
+        x-body-name: body
+      responses:
+        "200":
+          description: The configuration has been installed
+        "403":
+          description: Invalid authentication provided
+        "406":
+          description: A value exceeds the allowed range
+        "409":
+          description: There are slices currently running. Reconfiguring is not supported
+            while slices are open.
+        "412":
+          description: The provided configuration is invalid
+      tags:
+      - Configuration
+      x-openapi-router-controller: esmf_server.controllers.configuration_controller
+      x-codegen-request-body-name: body
+    summary: Manages the configuration of this service
   /slice:
     delete:
       description: Deletes one or multiple slices
@@ -71,6 +133,10 @@ paths:
           description: One or multiple of the slices could not be found.
         "417":
           description: No slice ids were provided.
+        "421":
+          description: Slice management is not supported by this service
+        "500":
+          description: Internal error
       tags:
       - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
@@ -98,6 +164,8 @@ paths:
           description: The current list of slices assigned to this requester
         "403":
           description: Invalid authentication provided
+        "421":
+          description: Slice management is not supported by this service
       tags:
       - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
@@ -139,6 +207,10 @@ paths:
             not be found
         "417":
           description: No slices were requested
+        "421":
+          description: Slice management is not supported by this service
+        "500":
+          description: Internal error
         "507":
           description: Insufficient resources by participating domain or requester
       tags:
@@ -147,7 +219,7 @@ paths:
     summary: Manages slices for requesters
   /slice_deployment:
     delete:
-      description: Deletes a slice from this domain
+      description: Deletes a slice
       operationId: slice_deployment_delete
       parameters:
       - description: The authentication token issued by prior login
@@ -171,16 +243,19 @@ paths:
         "200":
           description: The slice was successfully deleted.
         "403":
-          description: Invalid or insufficient authentication provided.
+          description: Invalid authentication provided.
         "404":
           description: The slice could not be found.
+        "421":
+          description: Slice management is not supported by this service
+        "500":
+          description: The deployment to the network failed
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
-    description: Endpoint to deploy slices on this domain
+    description: Endpoint to manage slices
     get:
-      description: Lists all current slices issued by the requesting ESMF. Used for
-        synchronization purposes.
+      description: Lists all current slices
       operationId: slice_deployment_get
       parameters:
       - description: The authentication token issued by prior login
@@ -199,14 +274,16 @@ paths:
                 items:
                   $ref: '#/components/schemas/slice'
                 type: array
-          description: The current list of slices assigned to this ESMF.
+          description: The current list of slices
         "403":
           description: Invalid authentication provided
+        "421":
+          description: Slice management is not supported by this service
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     put:
-      description: Creates a new slice on this domain
+      description: Creates a new slice from a reservation
       operationId: slice_deployment_put
       parameters:
       - description: The authentication token issued by prior login
@@ -217,7 +294,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: The id of the slice to be deployed.
+      - description: The slice to create from the corresponding reservation id
         explode: true
         in: query
         name: slice_id
@@ -228,16 +305,21 @@ paths:
         style: form
       responses:
         "200":
-          description: The slice has been deployed
+          description: The slice has been created
         "403":
-          description: Invalid or insufficient authentication provided
+          description: Invalid authentication provided
         "404":
-          description: The slice reservation could not be found
+          description: The slice reservation could not be found.
+        "412":
+          description: The tunnel referenced by this slice has not been deployed yet
+        "421":
+          description: Slice management is not supported by this service
+        "500":
+          description: The deployment to the network failed
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
-    summary: Manages slice deployments within the two-phase commit protocol between
-      ESMFs
+    summary: Manages slices on the current domain
   /slice_reservation:
     delete:
       description: Deletes a slice reservation
@@ -264,16 +346,19 @@ paths:
         "200":
           description: The slice reservation was successfully deleted.
         "403":
-          description: Invalid or insufficient authentication provided.
+          description: Invalid authentication provided.
         "404":
           description: The slice reservation could not be found.
+        "421":
+          description: Slice management is not supported by this service
+        "500":
+          description: Internal error
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
-    description: Endpoint to reserve slice capacity on this domain
+    description: Endpoint to manage slice reservations
     get:
-      description: Lists all current slice reservations issued by the requesting ESMF.
-        Used for synchronization purposes.
+      description: Lists all current slice reservations
       operationId: slice_reservation_get
       parameters:
       - description: The authentication token issued by prior login
@@ -292,14 +377,16 @@ paths:
                 items:
                   $ref: '#/components/schemas/slice'
                 type: array
-          description: The current list of slice reservations assigned to this ESMF.
+          description: The current list of slice reservations
         "403":
           description: Invalid authentication provided
+        "421":
+          description: Slice management is not supported by this service
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
     put:
-      description: Creates a new slice reservation on this domain
+      description: Creates a new slice reservation
       operationId: slice_reservation_put
       parameters:
       - description: The authentication token issued by prior login
@@ -315,28 +402,35 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/slice'
-        description: The slice to reserve.
+        description: The slice to reserve. Will check for issues.
         x-body-name: body
       responses:
         "200":
-          description: The slice has been reserved.
+          description: The slice has been reserved
         "403":
-          description: Invalid or insufficient authentication provided
+          description: Invalid authentication provided
         "404":
           description: The input or output could not be found
+        "406":
+          description: A value exceeds the allowed range
         "409":
           description: A slice with this id is already known
+        "412":
+          description: A value does not match the schema
+        "421":
+          description: Slice management is not supported by this service
+        "500":
+          description: Internal error
         "507":
-          description: Insufficient resources by participating domain or requester
+          description: Insufficient resources
       tags:
       - Slice Synchronization
       x-openapi-router-controller: esmf_server.controllers.slice_synchronization_controller
       x-codegen-request-body-name: body
-    summary: Manages slice reservations within the two-phase commit protocol between
-      ESMFs
+    summary: Manages slice reservations on the current domain
   /tunnel_deployment:
     delete:
-      description: Deletes a tunnel from this domain
+      description: Deletes a tunnel
       operationId: tunnel_deployment_delete
       parameters:
       - description: The authentication token issued by prior login
@@ -360,16 +454,19 @@ paths:
         "200":
           description: The tunnel was successfully deleted.
         "403":
-          description: Invalid or insufficient authentication provided.
+          description: Invalid authentication provided.
         "404":
           description: The tunnel could not be found.
+        "412":
+          description: The tunnel is still being referenced by a deployed slice
+        "500":
+          description: The deployment to the network failed
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
-    description: Endpoint to deploy tunnels on this domain
+    description: Endpoint to manage tunnels
     get:
-      description: Lists all current tunnels issued by the requesting ESMF. Used for
-        synchronization purposes.
+      description: Lists all current tunnels
       operationId: tunnel_deployment_get
       parameters:
       - description: The authentication token issued by prior login
@@ -388,14 +485,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/tunnel'
                 type: array
-          description: The current list of tunnels assigned to this ESMF.
+          description: The current list of tunnels
         "403":
           description: Invalid authentication provided
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     put:
-      description: Creates a new tunnel on this domain
+      description: Creates a new tunnel or modifies a tunnel from a reservation
       operationId: tunnel_deployment_put
       parameters:
       - description: The authentication token issued by prior login
@@ -406,7 +503,7 @@ paths:
         schema:
           type: string
         style: form
-      - description: The id of the tunnel to be deployed.
+      - description: The tunnel to create from the corresponding reservation id
         explode: true
         in: query
         name: tunnel_id
@@ -417,16 +514,17 @@ paths:
         style: form
       responses:
         "200":
-          description: The tunnel has been deployed or altered
+          description: The tunnel has been created
         "403":
-          description: Invalid or insufficient authentication provided
+          description: Invalid authentication provided
         "404":
-          description: The tunnel reservation could not be found
+          description: The tunnel reservation could not be found.
+        "500":
+          description: The deployment to the network failed
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
-    summary: Manages tunnel deployments within the two-phase commit protocol between
-      ESMFs
+    summary: Manages tunnels on the current domain
   /tunnel_reservation:
     delete:
       description: Deletes a tunnel reservation
@@ -453,16 +551,17 @@ paths:
         "200":
           description: The tunnel reservation was successfully deleted.
         "403":
-          description: Invalid or insufficient authentication provided.
+          description: Invalid authentication provided.
         "404":
           description: The tunnel reservation could not be found.
+        "500":
+          description: Internal error
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
-    description: Endpoint to reserve tunnel capacity on this domain
+    description: Endpoint to manage tunnel reservations
     get:
-      description: Lists all current tunnel reservations issued by the requesting
-        ESMF. Used for synchronization purposes.
+      description: Lists all current tunnel reservations
       operationId: tunnel_reservation_get
       parameters:
       - description: The authentication token issued by prior login
@@ -481,14 +580,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/tunnel'
                 type: array
-          description: The current list of tunnel reservations assigned to this ESMF.
+          description: The current list of tunnel reservations
         "403":
           description: Invalid authentication provided
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
     put:
-      description: Creates a new tunnel reservation on this domain
+      description: "Creates a new tunnel reservation or stages changes to an existing\
+        \ deployed tunnel, as long as source and target of the tunnel match."
       operationId: tunnel_reservation_put
       parameters:
       - description: The authentication token issued by prior login
@@ -504,50 +604,57 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/tunnel'
-        description: The tunnel to reserve or alter.
+        description: The tunnel to reserve. Will check for issues.
         x-body-name: body
       responses:
         "200":
-          description: The tunnel has been reserved.
+          description: The tunnel has been reserved
         "403":
-          description: Invalid or insufficient authentication provided
+          description: Invalid authentication provided
         "404":
           description: The input or output could not be found
+        "406":
+          description: A value exceeds the allowed range
         "409":
-          description: A tunnel with this id already exists and source or target do
-            not match
+          description: A tunnel with this id is already known and does not match current
+            source and target
+        "412":
+          description: A value does not match the schema
+        "500":
+          description: Internal error
         "507":
-          description: Insufficient resources by participating domain or requester
+          description: Insufficient resources
       tags:
       - Tunnel Synchronization
       x-openapi-router-controller: esmf_server.controllers.tunnel_synchronization_controller
       x-codegen-request-body-name: body
-    summary: Manages tunnel reservations within the two-phase commit protocol between
-      ESMFs and CTMFs
+    summary: Manages tunnel reservations on the current domain
 components:
   schemas:
     slice:
       example:
+        tunnel_id: 2
         burst_rate: 5
         latency: 5
         max_rate: 1
-        from:
-          port: 2
-          ip: ip
-          transport_protocol: UDP
-          mac: mac
-        id: 0
+        transport_protocol: UDP
         to:
-          port: 2
+          port: 7
           ip: ip
-          transport_protocol: UDP
-          mac: mac
+          name: name
+          network: network
+        fr:
+          port: 7
+          ip: ip
+          name: name
+          network: network
         min_rate: 6
+        slice_id: 0
       properties:
-        id:
+        slice_id:
           description: The slice identifier
           format: int32
-          title: id
+          title: slice_id
           type: integer
         min_rate:
           description: The minimum transmission rate as bits/s
@@ -569,69 +676,11 @@ components:
           format: int16
           title: latency
           type: integer
-        from:
-          $ref: '#/components/schemas/endpoint'
-        to:
-          $ref: '#/components/schemas/endpoint'
-      title: slice
-      type: object
-    tunnel:
-      example:
-        burst_rate: 5
-        latency: 5
-        max_rate: 1
-        from:
-          port: 2
-          ip: ip
-          transport_protocol: UDP
-          mac: mac
-        id: 0
-        to:
-          port: 2
-          ip: ip
-          transport_protocol: UDP
-          mac: mac
-        min_rate: 6
-      properties:
-        id:
+        tunnel_id:
           description: The tunnel identifier
           format: int32
-          title: id
+          title: tunnel_id
           type: integer
-        min_rate:
-          description: The minimum transmission rate as bits/s
-          format: int64
-          title: min_rate
-          type: integer
-        max_rate:
-          description: The maximum transmission rate as bits/s
-          format: int64
-          title: max_rate
-          type: integer
-        burst_rate:
-          description: The burst transmission rate as bits/s
-          format: int64
-          title: burst_rate
-          type: integer
-        latency:
-          description: The required maximum latency
-          format: int16
-          title: latency
-          type: integer
-        from:
-          $ref: '#/components/schemas/endpoint'
-        to:
-          $ref: '#/components/schemas/endpoint'
-      title: tunnel
-      type: object
-    endpoint:
-      description: Specifying an endpoint to be matched for source or target
-      example:
-        port: 2
-        ip: ip
-        transport_protocol: UDP
-        mac: mac
-      properties:
         transport_protocol:
           description: The protocol to be expected
           enum:
@@ -639,16 +688,83 @@ components:
           - TCP
           title: transport_protocol
           type: string
+        fr:
+          $ref: '#/components/schemas/endpoint'
+        to:
+          $ref: '#/components/schemas/endpoint'
+      title: slice
+      type: object
+    tunnel:
+      example:
+        public_key: public_key
+        tunnel_id: 0
+        burst_rate: 5
+        latency: 5
+        max_rate: 1
+        private_key: private_key
+        to:
+          port: 7
+          ip: ip
+          name: name
+          network: network
+        fr:
+          port: 7
+          ip: ip
+          name: name
+          network: network
+        min_rate: 6
+      properties:
+        tunnel_id:
+          description: The tunnel identifier
+          format: int32
+          title: tunnel_id
+          type: integer
+        min_rate:
+          description: The minimum transmission rate as bits/s
+          format: int64
+          title: min_rate
+          type: integer
+        max_rate:
+          description: The maximum transmission rate as bits/s
+          format: int64
+          title: max_rate
+          type: integer
+        burst_rate:
+          description: The burst transmission rate as bits/s
+          format: int64
+          title: burst_rate
+          type: integer
+        latency:
+          description: The required maximum latency
+          format: int16
+          title: latency
+          type: integer
+        fr:
+          $ref: '#/components/schemas/endpoint'
+        to:
+          $ref: '#/components/schemas/endpoint'
+        private_key:
+          description: The tunnel private key
+          title: private_key
+          type: string
+        public_key:
+          description: The tunnel public key (of the other side)
+          title: public_key
+          type: string
+      title: tunnel
+      type: object
+    endpoint:
+      description: Specifying an endpoint to be matched for source or target
+      example:
+        port: 7
+        ip: ip
+        name: name
+        network: network
+      properties:
         ip:
           description: Specifies the source or target ip to be matched. Leave empty
             for no matching.
           title: ip
-          type: string
-        mac:
-          description: "Specifies the source or target mac to be matched. Leave empty\
-            \ for no matching. We currently can not match the destination mac address,\
-            \ it will be ignored."
-          title: mac
           type: string
         port:
           default: 0
@@ -657,5 +773,232 @@ components:
           format: i16
           title: port
           type: integer
+        name:
+          description: Specifies the name of this entry to look up in our configuration.
+          title: name
+          type: string
+        network:
+          description: Specifies the network name of this endpoint.
+          title: network
+          type: string
       title: endpoint
+      type: object
+    domain_configuration:
+      description: The configuration for this service
+      example:
+        coordinators:
+        - port: 0
+          ip: localhost
+          name: name
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          network: network
+        - port: 0
+          ip: localhost
+          name: name
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          network: network
+        vpn_gateways:
+        - port: 0
+          ip: localhost
+          name: name
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          network: network
+        - port: 0
+          ip: localhost
+          name: name
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          network: network
+        domain_controller:
+          port: 0
+          ip: localhost
+          name: name
+          connections:
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          - intf_name: intf_name
+            other_end: other_end
+            intf_id: 6
+          network: network
+        reservable_bitrate: 1
+        type: ESMF
+        networks:
+        - subnet: subnet
+          name: name
+          preferred_vpn:
+          - preferred_vpn
+          - preferred_vpn
+          reachable:
+          - reachable
+          - reachable
+        - subnet: subnet
+          name: name
+          preferred_vpn:
+          - preferred_vpn
+          - preferred_vpn
+          reachable:
+          - reachable
+          - reachable
+        network: network
+      properties:
+        type:
+          description: The service type to be used
+          enum:
+          - ESMF
+          - CTMF
+          title: type
+          type: string
+        network:
+          description: Our network name
+          title: network
+          type: string
+        vpn_gateways:
+          description: The vpn gateways known to us
+          items:
+            $ref: '#/components/schemas/device_configuration'
+          title: vpn_gateways
+          type: array
+        networks:
+          description: The other networks known to us
+          items:
+            $ref: '#/components/schemas/network_configuration'
+          title: networks
+          type: array
+        coordinators:
+          description: A list of the other ESMF/CTMF services
+          items:
+            $ref: '#/components/schemas/device_configuration'
+          title: coordinators
+          type: array
+        domain_controller:
+          $ref: '#/components/schemas/device_configuration'
+        reservable_bitrate:
+          default: 1000000000
+          description: The bitrate that can be reserved by hosts on our network
+          format: i64
+          title: reservable_bitrate
+          type: integer
+      title: domain_configuration
+      type: object
+    device_configuration:
+      description: A device/switch configuration element
+      example:
+        port: 0
+        ip: localhost
+        name: name
+        connections:
+        - intf_name: intf_name
+          other_end: other_end
+          intf_id: 6
+        - intf_name: intf_name
+          other_end: other_end
+          intf_id: 6
+        network: network
+      properties:
+        ip:
+          default: localhost
+          description: The ip or name the device can be reached on
+          title: ip
+          type: string
+        port:
+          default: 8082
+          description: The port that the device REST API can be reached on
+          format: i16
+          title: port
+          type: integer
+        connections:
+          description: The (relevant) interface definitions for this device
+          items:
+            $ref: '#/components/schemas/connection_configuration'
+          title: connections
+          type: array
+        network:
+          description: The network name this device is assigned to
+          title: network
+          type: string
+        name:
+          description: The name of the device
+          title: name
+          type: string
+      title: device_configuration
+      type: object
+    connection_configuration:
+      description: A connection configuration element
+      example:
+        intf_name: intf_name
+        other_end: other_end
+        intf_id: 6
+      properties:
+        intf_name:
+          description: The name of the interface on a switch
+          title: intf_name
+          type: string
+        intf_id:
+          description: The id of the interface
+          format: i16
+          title: intf_id
+          type: integer
+        other_end:
+          description: The name of the device on the other side
+          title: other_end
+          type: string
+      title: connection_configuration
+      type: object
+    network_configuration:
+      description: A network configuration element
+      example:
+        subnet: subnet
+        name: name
+        preferred_vpn:
+        - preferred_vpn
+        - preferred_vpn
+        reachable:
+        - reachable
+        - reachable
+      properties:
+        name:
+          description: The name of the network
+          title: name
+          type: string
+        reachable:
+          description: Networks reachable from this network
+          items:
+            type: string
+          title: reachable
+          type: array
+        preferred_vpn:
+          description: VPN gateways to use (in order) to connect to this network
+          items:
+            type: string
+          title: preferred_vpn
+          type: array
+        subnet:
+          description: Subnet of this network
+          title: subnet
+          type: string
+      title: network_configuration
       type: object

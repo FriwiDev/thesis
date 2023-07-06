@@ -18,7 +18,7 @@ Method | HTTP request | Description
 
 
 
-Deletes a slice from this domain
+Deletes a slice
 
 ### Example
 
@@ -87,8 +87,10 @@ Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_deployment_delete.ApiResponseFor200) | The slice was successfully deleted.
-403 | [ApiResponseFor403](#slice_deployment_delete.ApiResponseFor403) | Invalid or insufficient authentication provided.
+403 | [ApiResponseFor403](#slice_deployment_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#slice_deployment_delete.ApiResponseFor404) | The slice could not be found.
+421 | [ApiResponseFor421](#slice_deployment_delete.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_deployment_delete.ApiResponseFor500) | The deployment to the network failed
 
 #### slice_deployment_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -111,6 +113,20 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### slice_deployment_delete.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_delete.ApiResponseFor500
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 ### Authorization
 
 No authorization required
@@ -123,7 +139,7 @@ No authorization required
 
 
 
-Lists all current slices issued by the requesting ESMF. Used for synchronization purposes.
+Lists all current slices
 
 ### Example
 
@@ -185,8 +201,9 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#slice_deployment_get.ApiResponseFor200) | The current list of slices assigned to this ESMF.
+200 | [ApiResponseFor200](#slice_deployment_get.ApiResponseFor200) | The current list of slices
 403 | [ApiResponseFor403](#slice_deployment_get.ApiResponseFor403) | Invalid authentication provided
+421 | [ApiResponseFor421](#slice_deployment_get.ApiResponseFor421) | Slice management is not supported by this service
 
 #### slice_deployment_get.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -214,6 +231,13 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### slice_deployment_get.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 ### Authorization
 
 No authorization required
@@ -226,7 +250,7 @@ No authorization required
 
 
 
-Creates a new slice on this domain
+Creates a new slice from a reservation
 
 ### Example
 
@@ -294,9 +318,12 @@ decimal.Decimal, int,  | decimal.Decimal,  |  | value must be a 32 bit integer
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#slice_deployment_put.ApiResponseFor200) | The slice has been deployed
-403 | [ApiResponseFor403](#slice_deployment_put.ApiResponseFor403) | Invalid or insufficient authentication provided
-404 | [ApiResponseFor404](#slice_deployment_put.ApiResponseFor404) | The slice reservation could not be found
+200 | [ApiResponseFor200](#slice_deployment_put.ApiResponseFor200) | The slice has been created
+403 | [ApiResponseFor403](#slice_deployment_put.ApiResponseFor403) | Invalid authentication provided
+404 | [ApiResponseFor404](#slice_deployment_put.ApiResponseFor404) | The slice reservation could not be found.
+412 | [ApiResponseFor412](#slice_deployment_put.ApiResponseFor412) | The tunnel referenced by this slice has not been deployed yet
+421 | [ApiResponseFor421](#slice_deployment_put.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_deployment_put.ApiResponseFor500) | The deployment to the network failed
 
 #### slice_deployment_put.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -313,6 +340,27 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_deployment_put.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_put.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_put.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_put.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -400,8 +448,10 @@ Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_reservation_delete.ApiResponseFor200) | The slice reservation was successfully deleted.
-403 | [ApiResponseFor403](#slice_reservation_delete.ApiResponseFor403) | Invalid or insufficient authentication provided.
+403 | [ApiResponseFor403](#slice_reservation_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#slice_reservation_delete.ApiResponseFor404) | The slice reservation could not be found.
+421 | [ApiResponseFor421](#slice_reservation_delete.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_reservation_delete.ApiResponseFor500) | Internal error
 
 #### slice_reservation_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -424,6 +474,20 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### slice_reservation_delete.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_delete.ApiResponseFor500
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 ### Authorization
 
 No authorization required
@@ -436,7 +500,7 @@ No authorization required
 
 
 
-Lists all current slice reservations issued by the requesting ESMF. Used for synchronization purposes.
+Lists all current slice reservations
 
 ### Example
 
@@ -498,8 +562,9 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#slice_reservation_get.ApiResponseFor200) | The current list of slice reservations assigned to this ESMF.
+200 | [ApiResponseFor200](#slice_reservation_get.ApiResponseFor200) | The current list of slice reservations
 403 | [ApiResponseFor403](#slice_reservation_get.ApiResponseFor403) | Invalid authentication provided
+421 | [ApiResponseFor421](#slice_reservation_get.ApiResponseFor421) | Slice management is not supported by this service
 
 #### slice_reservation_get.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -527,6 +592,13 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### slice_reservation_get.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 ### Authorization
 
 No authorization required
@@ -539,7 +611,7 @@ No authorization required
 
 
 
-Creates a new slice reservation on this domain
+Creates a new slice reservation
 
 ### Example
 
@@ -575,16 +647,18 @@ with esmf_client.ApiClient(configuration) as api_client:
         'auth': "auth_example",
     }
     body = Slice(
-        id=1,
+        slice_id=1,
         min_rate=1,
         max_rate=1,
         burst_rate=1,
         latency=1,
-        _from=Endpoint(
-            transport_protocol="UDP",
+        tunnel_id=1,
+        transport_protocol="UDP",
+        fr=Endpoint(
             ip="ip_example",
-            mac="mac_example",
             port=0,
+            name="name_example",
+            network="network_example",
         ),
 ,
     )
@@ -635,11 +709,15 @@ str,  | str,  |  |
 Code | Class | Description
 ------------- | ------------- | -------------
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
-200 | [ApiResponseFor200](#slice_reservation_put.ApiResponseFor200) | The slice has been reserved.
-403 | [ApiResponseFor403](#slice_reservation_put.ApiResponseFor403) | Invalid or insufficient authentication provided
+200 | [ApiResponseFor200](#slice_reservation_put.ApiResponseFor200) | The slice has been reserved
+403 | [ApiResponseFor403](#slice_reservation_put.ApiResponseFor403) | Invalid authentication provided
 404 | [ApiResponseFor404](#slice_reservation_put.ApiResponseFor404) | The input or output could not be found
+406 | [ApiResponseFor406](#slice_reservation_put.ApiResponseFor406) | A value exceeds the allowed range
 409 | [ApiResponseFor409](#slice_reservation_put.ApiResponseFor409) | A slice with this id is already known
-507 | [ApiResponseFor507](#slice_reservation_put.ApiResponseFor507) | Insufficient resources by participating domain or requester
+412 | [ApiResponseFor412](#slice_reservation_put.ApiResponseFor412) | A value does not match the schema
+421 | [ApiResponseFor421](#slice_reservation_put.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_reservation_put.ApiResponseFor500) | Internal error
+507 | [ApiResponseFor507](#slice_reservation_put.ApiResponseFor507) | Insufficient resources
 
 #### slice_reservation_put.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -662,7 +740,35 @@ response | urllib3.HTTPResponse | Raw response |
 body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
+#### slice_reservation_put.ApiResponseFor406
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
 #### slice_reservation_put.ApiResponseFor409
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_put.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_put.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_put.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

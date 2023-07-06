@@ -11,6 +11,10 @@
 # import sys
 # sys.setrecursionlimit(n)
 
+from esmf_client.model.connection_configuration import ConnectionConfiguration
+from esmf_client.model.device_configuration import DeviceConfiguration
+from esmf_client.model.domain_configuration import DomainConfiguration
 from esmf_client.model.endpoint import Endpoint
+from esmf_client.model.network_configuration import NetworkConfiguration
 from esmf_client.model.slice import Slice
 from esmf_client.model.tunnel import Tunnel

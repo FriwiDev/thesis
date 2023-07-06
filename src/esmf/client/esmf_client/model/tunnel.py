@@ -36,31 +36,35 @@ class Tunnel(
     class MetaOapg:
         
         class properties:
-            id = schemas.Int32Schema
+            tunnel_id = schemas.Int32Schema
             min_rate = schemas.Int64Schema
             max_rate = schemas.Int64Schema
             burst_rate = schemas.Int64Schema
             latency = schemas.IntSchema
         
             @staticmethod
-            def _from() -> typing.Type['Endpoint']:
+            def fr() -> typing.Type['Endpoint']:
                 return Endpoint
         
             @staticmethod
             def to() -> typing.Type['Endpoint']:
                 return Endpoint
+            private_key = schemas.StrSchema
+            public_key = schemas.StrSchema
             __annotations__ = {
-                "id": id,
+                "tunnel_id": tunnel_id,
                 "min_rate": min_rate,
                 "max_rate": max_rate,
                 "burst_rate": burst_rate,
                 "latency": latency,
-                "from": _from,
+                "fr": fr,
                 "to": to,
+                "private_key": private_key,
+                "public_key": public_key,
             }
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["id"]) -> MetaOapg.properties.id: ...
+    def __getitem__(self, name: typing_extensions.Literal["tunnel_id"]) -> MetaOapg.properties.tunnel_id: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["min_rate"]) -> MetaOapg.properties.min_rate: ...
@@ -75,21 +79,27 @@ class Tunnel(
     def __getitem__(self, name: typing_extensions.Literal["latency"]) -> MetaOapg.properties.latency: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["from"]) -> 'Endpoint': ...
+    def __getitem__(self, name: typing_extensions.Literal["fr"]) -> 'Endpoint': ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["to"]) -> 'Endpoint': ...
     
     @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["private_key"]) -> MetaOapg.properties.private_key: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["public_key"]) -> MetaOapg.properties.public_key: ...
+    
+    @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "latency", "from", "to", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["tunnel_id", "min_rate", "max_rate", "burst_rate", "latency", "fr", "to", "private_key", "public_key", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["id"]) -> typing.Union[MetaOapg.properties.id, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["tunnel_id"]) -> typing.Union[MetaOapg.properties.tunnel_id, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["min_rate"]) -> typing.Union[MetaOapg.properties.min_rate, schemas.Unset]: ...
@@ -104,39 +114,51 @@ class Tunnel(
     def get_item_oapg(self, name: typing_extensions.Literal["latency"]) -> typing.Union[MetaOapg.properties.latency, schemas.Unset]: ...
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["from"]) -> typing.Union['Endpoint', schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["fr"]) -> typing.Union['Endpoint', schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["to"]) -> typing.Union['Endpoint', schemas.Unset]: ...
     
     @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["private_key"]) -> typing.Union[MetaOapg.properties.private_key, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["public_key"]) -> typing.Union[MetaOapg.properties.public_key, schemas.Unset]: ...
+    
+    @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["id", "min_rate", "max_rate", "burst_rate", "latency", "from", "to", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["tunnel_id", "min_rate", "max_rate", "burst_rate", "latency", "fr", "to", "private_key", "public_key", ], str]):
         return super().get_item_oapg(name)
     
 
     def __new__(
         cls,
         *_args: typing.Union[dict, frozendict.frozendict, ],
-        id: typing.Union[MetaOapg.properties.id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        tunnel_id: typing.Union[MetaOapg.properties.tunnel_id, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         min_rate: typing.Union[MetaOapg.properties.min_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         max_rate: typing.Union[MetaOapg.properties.max_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         burst_rate: typing.Union[MetaOapg.properties.burst_rate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
         latency: typing.Union[MetaOapg.properties.latency, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        fr: typing.Union['Endpoint', schemas.Unset] = schemas.unset,
         to: typing.Union['Endpoint', schemas.Unset] = schemas.unset,
+        private_key: typing.Union[MetaOapg.properties.private_key, str, schemas.Unset] = schemas.unset,
+        public_key: typing.Union[MetaOapg.properties.public_key, str, schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
         **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
     ) -> 'Tunnel':
         return super().__new__(
             cls,
             *_args,
-            id=id,
+            tunnel_id=tunnel_id,
             min_rate=min_rate,
             max_rate=max_rate,
             burst_rate=burst_rate,
             latency=latency,
+            fr=fr,
             to=to,
+            private_key=private_key,
+            public_key=public_key,
             _configuration=_configuration,
             **kwargs,
         )

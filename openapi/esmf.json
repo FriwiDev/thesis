@@ -25,7 +25,7 @@
       "slice": {
         "type": "object",
         "properties": {
-          "id": {
+          "slice_id": {
             "type": "integer",
             "format": "int32",
             "description": "The slice identifier"
@@ -50,7 +50,20 @@
             "format": "int16",
             "description": "The required maximum latency"
           },
-          "from": {
+          "tunnel_id": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The tunnel identifier"
+          },
+          "transport_protocol": {
+            "type": "string",
+            "enum": [
+              "UDP",
+              "TCP"
+            ],
+            "description": "The protocol to be expected"
+          },
+          "fr": {
             "$ref": "#/components/schemas/endpoint"
           },
           "to": {
@@ -61,7 +74,7 @@
       "tunnel": {
         "type": "object",
         "properties": {
-          "id": {
+          "tunnel_id": {
             "type": "integer",
             "format": "int32",
             "description": "The tunnel identifier"
@@ -86,11 +99,19 @@
             "format": "int16",
             "description": "The required maximum latency"
           },
-          "from": {
+          "fr": {
             "$ref": "#/components/schemas/endpoint"
           },
           "to": {
             "$ref": "#/components/schemas/endpoint"
+          },
+          "private_key": {
+            "type": "string",
+            "description": "The tunnel private key"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "The tunnel public key (of the other side)"
           }
         }
       },
@@ -98,22 +119,9 @@
         "type": "object",
         "description": "Specifying an endpoint to be matched for source or target",
         "properties": {
-          "transport_protocol": {
-            "type": "string",
-            "enum": [
-              "UDP",
-              "TCP"
-            ],
-            "description": "The protocol to be expected"
-          },
           "ip": {
             "type": "string",
             "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
-            "default": null
-          },
-          "mac": {
-            "type": "string",
-            "description": "Specifies the source or target mac to be matched. Leave empty for no matching. We currently can not match the destination mac address, it will be ignored.",
             "default": null
           },
           "port": {
@@ -121,6 +129,143 @@
             "format": "i16",
             "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
             "default": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "Specifies the name of this entry to look up in our configuration.",
+            "default": null
+          },
+          "network": {
+            "type": "string",
+            "description": "Specifies the network name of this endpoint.",
+            "default": null
+          }
+        }
+      },
+      "domain_configuration": {
+        "type": "object",
+        "description": "The configuration for this service",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ESMF",
+              "CTMF"
+            ],
+            "description": "The service type to be used"
+          },
+          "network": {
+            "type": "string",
+            "description": "Our network name"
+          },
+          "vpn_gateways": {
+            "type": "array",
+            "description": "The vpn gateways known to us",
+            "items": {
+              "$ref": "#/components/schemas/device_configuration"
+            }
+          },
+          "networks": {
+            "type": "array",
+            "description": "The other networks known to us",
+            "items": {
+              "$ref": "#/components/schemas/network_configuration"
+            }
+          },
+          "coordinators": {
+            "type": "array",
+            "description": "A list of the other ESMF/CTMF services",
+            "items": {
+              "$ref": "#/components/schemas/device_configuration"
+            }
+          },
+          "domain_controller": {
+            "$ref": "#/components/schemas/device_configuration"
+          },
+          "reservable_bitrate": {
+            "type": "integer",
+            "format": "i64",
+            "description": "The bitrate that can be reserved by hosts on our network",
+            "default": 1000000000
+          }
+        }
+      },
+      "device_configuration": {
+        "type": "object",
+        "description": "A device/switch configuration element",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "description": "The ip or name the device can be reached on",
+            "default": "localhost"
+          },
+          "port": {
+            "type": "integer",
+            "format": "i16",
+            "description": "The port that the device REST API can be reached on",
+            "default": 8082
+          },
+          "connections": {
+            "type": "array",
+            "description": "The (relevant) interface definitions for this device",
+            "items": {
+              "$ref": "#/components/schemas/connection_configuration"
+            }
+          },
+          "network": {
+            "type": "string",
+            "description": "The network name this device is assigned to"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the device"
+          }
+        }
+      },
+      "connection_configuration": {
+        "type": "object",
+        "description": "A connection configuration element",
+        "properties": {
+          "intf_name": {
+            "type": "string",
+            "description": "The name of the interface on a switch"
+          },
+          "intf_id": {
+            "type": "integer",
+            "format": "i16",
+            "description": "The id of the interface"
+          },
+          "other_end": {
+            "type": "string",
+            "description": "The name of the device on the other side"
+          }
+        }
+      },
+      "network_configuration": {
+        "type": "object",
+        "description": "A network configuration element",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the network"
+          },
+          "reachable": {
+            "type": "array",
+            "description": "Networks reachable from this network",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preferred_vpn": {
+            "type": "array",
+            "description": "VPN gateways to use (in order) to connect to this network",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subnet": {
+            "type": "string",
+            "description": "Subnet of this network"
           }
         }
       }
@@ -185,6 +330,9 @@
           },
           "403": {
             "description": "Invalid authentication provided"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           }
         }
       },
@@ -234,6 +382,12 @@
           "417": {
             "description": "No slices were requested"
           },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "Internal error"
+          },
           "507": {
             "description": "Insufficient resources by participating domain or requester"
           }
@@ -278,16 +432,24 @@
           },
           "417": {
             "description": "No slice ids were provided."
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
     },
-    "/slice_reservation": {
-      "summary": "Manages slice reservations within the two-phase commit protocol between ESMFs",
-      "description": "Endpoint to reserve slice capacity on this domain",
+    "/configuration": {
+      "summary": "Manages the configuration of this service",
+      "description": "Endpoint to manage service configuration",
       "get": {
-        "tags": ["Slice Synchronization"],
-        "description": "Lists all current slice reservations issued by the requesting ESMF. Used for synchronization purposes.",
+        "tags": [
+          "Configuration"
+        ],
+        "description": "Fetch the current configuration of this service",
         "parameters": [
           {
             "name": "auth",
@@ -301,7 +463,87 @@
         ],
         "responses": {
           "200": {
-            "description": "The current list of slice reservations assigned to this ESMF.",
+            "description": "The current configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/domain_configuration"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Configuration"
+        ],
+        "description": "Installs a new configuration for this service",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The configuration to install. Will check for issues.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/domain_configuration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The configuration has been installed"
+          },
+          "403": {
+            "description": "Invalid authentication provided"
+          },
+          "406": {
+            "description": "A value exceeds the allowed range"
+          },
+          "409": {
+            "description": "There are slices currently running. Reconfiguring is not supported while slices are open."
+          },
+          "412": {
+            "description": "The provided configuration is invalid"
+          }
+        }
+      }
+    },
+    "/slice_reservation": {
+      "summary": "Manages slice reservations on the current domain",
+      "description": "Endpoint to manage slice reservations",
+      "get": {
+        "tags": [
+          "Slice Synchronization"
+        ],
+        "description": "Lists all current slice reservations",
+        "parameters": [
+          {
+            "name": "auth",
+            "in": "query",
+            "description": "The authentication token issued by prior login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current list of slice reservations",
             "content": {
               "application/json": {
                 "schema": {
@@ -315,12 +557,17 @@
           },
           "403": {
             "description": "Invalid authentication provided"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           }
         }
       },
       "put": {
-        "tags": ["Slice Synchronization"],
-        "description": "Creates a new slice reservation on this domain",
+        "tags": [
+          "Slice Synchronization"
+        ],
+        "description": "Creates a new slice reservation",
         "parameters": [
           {
             "name": "auth",
@@ -333,7 +580,7 @@
           }
         ],
         "requestBody": {
-          "description": "The slice to reserve.",
+          "description": "The slice to reserve. Will check for issues.",
           "content": {
             "application/json": {
               "schema": {
@@ -344,19 +591,31 @@
         },
         "responses": {
           "200": {
-            "description": "The slice has been reserved."
+            "description": "The slice has been reserved"
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided"
+            "description": "Invalid authentication provided"
           },
           "404": {
             "description": "The input or output could not be found"
           },
+          "406": {
+            "description": "A value exceeds the allowed range"
+          },
           "409": {
             "description": "A slice with this id is already known"
           },
+          "412": {
+            "description": "A value does not match the schema"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "Internal error"
+          },
           "507": {
-            "description": "Insufficient resources by participating domain or requester"
+            "description": "Insufficient resources"
           }
         }
       },
@@ -389,20 +648,28 @@
             "description": "The slice reservation was successfully deleted."
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided."
+            "description": "Invalid authentication provided."
           },
           "404": {
             "description": "The slice reservation could not be found."
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
     },
     "/slice_deployment": {
-      "summary": "Manages slice deployments within the two-phase commit protocol between ESMFs",
-      "description": "Endpoint to deploy slices on this domain",
+      "summary": "Manages slices on the current domain",
+      "description": "Endpoint to manage slices",
       "get": {
-        "tags": ["Slice Synchronization"],
-        "description": "Lists all current slices issued by the requesting ESMF. Used for synchronization purposes.",
+        "tags": [
+          "Slice Synchronization"
+        ],
+        "description": "Lists all current slices",
         "parameters": [
           {
             "name": "auth",
@@ -416,7 +683,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The current list of slices assigned to this ESMF.",
+            "description": "The current list of slices",
             "content": {
               "application/json": {
                 "schema": {
@@ -430,12 +697,17 @@
           },
           "403": {
             "description": "Invalid authentication provided"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           }
         }
       },
       "put": {
-        "tags": ["Slice Synchronization"],
-        "description": "Creates a new slice on this domain",
+        "tags": [
+          "Slice Synchronization"
+        ],
+        "description": "Creates a new slice from a reservation",
         "parameters": [
           {
             "name": "auth",
@@ -449,7 +721,7 @@
           {
             "name": "slice_id",
             "in": "query",
-            "description": "The id of the slice to be deployed.",
+            "description": "The slice to create from the corresponding reservation id",
             "required": true,
             "schema": {
               "type": "integer",
@@ -459,19 +731,30 @@
         ],
         "responses": {
           "200": {
-            "description": "The slice has been deployed"
+            "description": "The slice has been created"
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided"
+            "description": "Invalid authentication provided"
           },
           "404": {
-            "description": "The slice reservation could not be found"
+            "description": "The slice reservation could not be found."
+          },
+          "412": {
+            "description": "The tunnel referenced by this slice has not been deployed yet"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       },
       "delete": {
-        "tags": ["Slice Synchronization"],
-        "description": "Deletes a slice from this domain",
+        "tags": [
+          "Slice Synchronization"
+        ],
+        "description": "Deletes a slice",
         "parameters": [
           {
             "name": "auth",
@@ -498,20 +781,28 @@
             "description": "The slice was successfully deleted."
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided."
+            "description": "Invalid authentication provided."
           },
           "404": {
             "description": "The slice could not be found."
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       }
     },
     "/tunnel_reservation": {
-      "summary": "Manages tunnel reservations within the two-phase commit protocol between ESMFs and CTMFs",
-      "description": "Endpoint to reserve tunnel capacity on this domain",
+      "summary": "Manages tunnel reservations on the current domain",
+      "description": "Endpoint to manage tunnel reservations",
       "get": {
-        "tags": ["Tunnel Synchronization"],
-        "description": "Lists all current tunnel reservations issued by the requesting ESMF. Used for synchronization purposes.",
+        "tags": [
+          "Tunnel Synchronization"
+        ],
+        "description": "Lists all current tunnel reservations",
         "parameters": [
           {
             "name": "auth",
@@ -525,7 +816,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The current list of tunnel reservations assigned to this ESMF.",
+            "description": "The current list of tunnel reservations",
             "content": {
               "application/json": {
                 "schema": {
@@ -543,8 +834,10 @@
         }
       },
       "put": {
-        "tags": ["Tunnel Synchronization"],
-        "description": "Creates a new tunnel reservation on this domain",
+        "tags": [
+          "Tunnel Synchronization"
+        ],
+        "description": "Creates a new tunnel reservation or stages changes to an existing deployed tunnel, as long as source and target of the tunnel match.",
         "parameters": [
           {
             "name": "auth",
@@ -557,7 +850,7 @@
           }
         ],
         "requestBody": {
-          "description": "The tunnel to reserve or alter.",
+          "description": "The tunnel to reserve. Will check for issues.",
           "content": {
             "application/json": {
               "schema": {
@@ -568,19 +861,28 @@
         },
         "responses": {
           "200": {
-            "description": "The tunnel has been reserved."
+            "description": "The tunnel has been reserved"
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided"
+            "description": "Invalid authentication provided"
           },
           "404": {
             "description": "The input or output could not be found"
           },
+          "406": {
+            "description": "A value exceeds the allowed range"
+          },
           "409": {
-            "description": "A tunnel with this id already exists and source or target do not match"
+            "description": "A tunnel with this id is already known and does not match current source and target"
+          },
+          "412": {
+            "description": "A value does not match the schema"
+          },
+          "500": {
+            "description": "Internal error"
           },
           "507": {
-            "description": "Insufficient resources by participating domain or requester"
+            "description": "Insufficient resources"
           }
         }
       },
@@ -613,20 +915,25 @@
             "description": "The tunnel reservation was successfully deleted."
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided."
+            "description": "Invalid authentication provided."
           },
           "404": {
             "description": "The tunnel reservation could not be found."
+          },
+          "500": {
+            "description": "Internal error"
           }
         }
       }
     },
     "/tunnel_deployment": {
-      "summary": "Manages tunnel deployments within the two-phase commit protocol between ESMFs",
-      "description": "Endpoint to deploy tunnels on this domain",
+      "summary": "Manages tunnels on the current domain",
+      "description": "Endpoint to manage tunnels",
       "get": {
-        "tags": ["Tunnel Synchronization"],
-        "description": "Lists all current tunnels issued by the requesting ESMF. Used for synchronization purposes.",
+        "tags": [
+          "Tunnel Synchronization"
+        ],
+        "description": "Lists all current tunnels",
         "parameters": [
           {
             "name": "auth",
@@ -640,7 +947,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The current list of tunnels assigned to this ESMF.",
+            "description": "The current list of tunnels",
             "content": {
               "application/json": {
                 "schema": {
@@ -658,8 +965,10 @@
         }
       },
       "put": {
-        "tags": ["Tunnel Synchronization"],
-        "description": "Creates a new tunnel on this domain",
+        "tags": [
+          "Tunnel Synchronization"
+        ],
+        "description": "Creates a new tunnel or modifies a tunnel from a reservation",
         "parameters": [
           {
             "name": "auth",
@@ -673,7 +982,7 @@
           {
             "name": "tunnel_id",
             "in": "query",
-            "description": "The id of the tunnel to be deployed.",
+            "description": "The tunnel to create from the corresponding reservation id",
             "required": true,
             "schema": {
               "type": "integer",
@@ -683,19 +992,24 @@
         ],
         "responses": {
           "200": {
-            "description": "The tunnel has been deployed or altered"
+            "description": "The tunnel has been created"
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided"
+            "description": "Invalid authentication provided"
           },
           "404": {
-            "description": "The tunnel reservation could not be found"
+            "description": "The tunnel reservation could not be found."
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       },
       "delete": {
-        "tags": ["Tunnel Synchronization"],
-        "description": "Deletes a tunnel from this domain",
+        "tags": [
+          "Tunnel Synchronization"
+        ],
+        "description": "Deletes a tunnel",
         "parameters": [
           {
             "name": "auth",
@@ -722,10 +1036,16 @@
             "description": "The tunnel was successfully deleted."
           },
           "403": {
-            "description": "Invalid or insufficient authentication provided."
+            "description": "Invalid authentication provided."
           },
           "404": {
             "description": "The tunnel could not be found."
+          },
+          "412": {
+            "description": "The tunnel is still being referenced by a deployed slice"
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       }

@@ -1,6 +1,6 @@
 from esmf_server.configuration_util import ConfigurationUtil
 
-from esmf_server.models import Tunnel, Slice, NetworkConfiguration
+from esmf_server.models import Tunnel, Slice, NetworkConfiguration, DeviceConfiguration
 
 
 class DomainState(object):
@@ -15,4 +15,22 @@ class DomainState(object):
         for net in cls.config.networks:
             if net.name == name:
                 return net
+        return None
+
+    @classmethod
+    def get_coordinator_by_network(cls, name: str) -> DeviceConfiguration or None:
+        for coordinator in cls.config.coordinators:
+            if coordinator.network == name:
+                return coordinator
+        return None
+
+    @classmethod
+    def get_vpn_by_network(cls, fr: str, to: str) -> DeviceConfiguration or None:
+        # TODO-FW consider multiple vpn devices per network -> more complex routing
+        for net in cls.config.networks:
+            if net.name == fr:
+                for dev in cls.config.vpn_gateways:
+                    if dev.name == net.preferable_vpn[0]:
+                        return dev
+                break
         return None

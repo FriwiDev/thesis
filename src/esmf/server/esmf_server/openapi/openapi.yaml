@@ -786,6 +786,12 @@ components:
     domain_configuration:
       description: The configuration for this service
       example:
+        tunnel_id_range:
+          to: 7
+          fr: 2
+        slice_id_range:
+          to: 5
+          fr: 5
         coordinators:
         - port: 0
           ip: localhost
@@ -902,6 +908,10 @@ components:
           format: i64
           title: reservable_bitrate
           type: integer
+        slice_id_range:
+          $ref: '#/components/schemas/domain_configuration_slice_id_range'
+        tunnel_id_range:
+          $ref: '#/components/schemas/domain_configuration_tunnel_id_range'
       title: domain_configuration
       type: object
     device_configuration:
@@ -1001,4 +1011,40 @@ components:
           title: subnet
           type: string
       title: network_configuration
+      type: object
+    domain_configuration_slice_id_range:
+      description: The range of slice ids that are assigned by this service
+      example:
+        to: 5
+        fr: 5
+      properties:
+        fr:
+          description: Lower bound of this range (inclusive)
+          format: i16
+          title: fr
+          type: integer
+        to:
+          description: Higher bound of this range (exclusive)
+          format: i16
+          title: to
+          type: integer
+      title: domain_configuration_slice_id_range
+      type: object
+    domain_configuration_tunnel_id_range:
+      description: The range of tunnel ids that are assigned by this service
+      example:
+        to: 7
+        fr: 2
+      properties:
+        fr:
+          description: Lower bound of this range (inclusive)
+          format: i16
+          title: fr
+          type: integer
+        to:
+          description: Higher bound of this range (exclusive)
+          format: i16
+          title: to
+          type: integer
+      title: domain_configuration_tunnel_id_range
       type: object

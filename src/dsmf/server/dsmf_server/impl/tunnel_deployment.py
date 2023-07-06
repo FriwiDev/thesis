@@ -14,6 +14,7 @@ class TunnelDeployment(object):
     def deploy_tunnel(cls, tunnel: Tunnel, queue_pool: dict[str, (Queue, Queue or None)]) -> \
             dict[str, (Queue, Queue or None)]:
         # Build a route across networks
+        # TODO-FW The ESMF/CTMF could also tell us this information to make this more robust for alternative routes
         networks = DomainUtil.route_network(tunnel.fr.network, tunnel.to.network)
         # Find our network in the list of networks
         i = 0

@@ -181,6 +181,14 @@ with esmf_client.ApiClient(configuration) as api_client:
         ],
         domain_controller=DeviceConfiguration(),
         reservable_bitrate=1000000000,
+        slice_id_range=dict(
+            fr=1,
+            to=1,
+        ),
+        tunnel_id_range=dict(
+            fr=1,
+            to=1,
+        ),
     )
     try:
         api_response = api_instance.configuration_put(

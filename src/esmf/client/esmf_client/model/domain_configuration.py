@@ -143,6 +143,126 @@ class DomainConfiguration(
             def domain_controller() -> typing.Type['DeviceConfiguration']:
                 return DeviceConfiguration
             reservable_bitrate = schemas.IntSchema
+            
+            
+            class slice_id_range(
+                schemas.DictSchema
+            ):
+            
+            
+                class MetaOapg:
+                    
+                    class properties:
+                        fr = schemas.IntSchema
+                        to = schemas.IntSchema
+                        __annotations__ = {
+                            "fr": fr,
+                            "to": to,
+                        }
+                
+                @typing.overload
+                def __getitem__(self, name: typing_extensions.Literal["fr"]) -> MetaOapg.properties.fr: ...
+                
+                @typing.overload
+                def __getitem__(self, name: typing_extensions.Literal["to"]) -> MetaOapg.properties.to: ...
+                
+                @typing.overload
+                def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
+                
+                def __getitem__(self, name: typing.Union[typing_extensions.Literal["fr", "to", ], str]):
+                    # dict_instance[name] accessor
+                    return super().__getitem__(name)
+                
+                
+                @typing.overload
+                def get_item_oapg(self, name: typing_extensions.Literal["fr"]) -> typing.Union[MetaOapg.properties.fr, schemas.Unset]: ...
+                
+                @typing.overload
+                def get_item_oapg(self, name: typing_extensions.Literal["to"]) -> typing.Union[MetaOapg.properties.to, schemas.Unset]: ...
+                
+                @typing.overload
+                def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
+                
+                def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["fr", "to", ], str]):
+                    return super().get_item_oapg(name)
+                
+            
+                def __new__(
+                    cls,
+                    *_args: typing.Union[dict, frozendict.frozendict, ],
+                    fr: typing.Union[MetaOapg.properties.fr, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+                    to: typing.Union[MetaOapg.properties.to, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+                    _configuration: typing.Optional[schemas.Configuration] = None,
+                    **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
+                ) -> 'slice_id_range':
+                    return super().__new__(
+                        cls,
+                        *_args,
+                        fr=fr,
+                        to=to,
+                        _configuration=_configuration,
+                        **kwargs,
+                    )
+            
+            
+            class tunnel_id_range(
+                schemas.DictSchema
+            ):
+            
+            
+                class MetaOapg:
+                    
+                    class properties:
+                        fr = schemas.IntSchema
+                        to = schemas.IntSchema
+                        __annotations__ = {
+                            "fr": fr,
+                            "to": to,
+                        }
+                
+                @typing.overload
+                def __getitem__(self, name: typing_extensions.Literal["fr"]) -> MetaOapg.properties.fr: ...
+                
+                @typing.overload
+                def __getitem__(self, name: typing_extensions.Literal["to"]) -> MetaOapg.properties.to: ...
+                
+                @typing.overload
+                def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
+                
+                def __getitem__(self, name: typing.Union[typing_extensions.Literal["fr", "to", ], str]):
+                    # dict_instance[name] accessor
+                    return super().__getitem__(name)
+                
+                
+                @typing.overload
+                def get_item_oapg(self, name: typing_extensions.Literal["fr"]) -> typing.Union[MetaOapg.properties.fr, schemas.Unset]: ...
+                
+                @typing.overload
+                def get_item_oapg(self, name: typing_extensions.Literal["to"]) -> typing.Union[MetaOapg.properties.to, schemas.Unset]: ...
+                
+                @typing.overload
+                def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
+                
+                def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["fr", "to", ], str]):
+                    return super().get_item_oapg(name)
+                
+            
+                def __new__(
+                    cls,
+                    *_args: typing.Union[dict, frozendict.frozendict, ],
+                    fr: typing.Union[MetaOapg.properties.fr, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+                    to: typing.Union[MetaOapg.properties.to, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+                    _configuration: typing.Optional[schemas.Configuration] = None,
+                    **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
+                ) -> 'tunnel_id_range':
+                    return super().__new__(
+                        cls,
+                        *_args,
+                        fr=fr,
+                        to=to,
+                        _configuration=_configuration,
+                        **kwargs,
+                    )
             __annotations__ = {
                 "type": type,
                 "network": network,
@@ -151,6 +271,8 @@ class DomainConfiguration(
                 "coordinators": coordinators,
                 "domain_controller": domain_controller,
                 "reservable_bitrate": reservable_bitrate,
+                "slice_id_range": slice_id_range,
+                "tunnel_id_range": tunnel_id_range,
             }
     
     @typing.overload
@@ -175,9 +297,15 @@ class DomainConfiguration(
     def __getitem__(self, name: typing_extensions.Literal["reservable_bitrate"]) -> MetaOapg.properties.reservable_bitrate: ...
     
     @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["slice_id_range"]) -> MetaOapg.properties.slice_id_range: ...
+    
+    @typing.overload
+    def __getitem__(self, name: typing_extensions.Literal["tunnel_id_range"]) -> MetaOapg.properties.tunnel_id_range: ...
+    
+    @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["type", "network", "vpn_gateways", "networks", "coordinators", "domain_controller", "reservable_bitrate", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["type", "network", "vpn_gateways", "networks", "coordinators", "domain_controller", "reservable_bitrate", "slice_id_range", "tunnel_id_range", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
@@ -204,9 +332,15 @@ class DomainConfiguration(
     def get_item_oapg(self, name: typing_extensions.Literal["reservable_bitrate"]) -> typing.Union[MetaOapg.properties.reservable_bitrate, schemas.Unset]: ...
     
     @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["slice_id_range"]) -> typing.Union[MetaOapg.properties.slice_id_range, schemas.Unset]: ...
+    
+    @typing.overload
+    def get_item_oapg(self, name: typing_extensions.Literal["tunnel_id_range"]) -> typing.Union[MetaOapg.properties.tunnel_id_range, schemas.Unset]: ...
+    
+    @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["type", "network", "vpn_gateways", "networks", "coordinators", "domain_controller", "reservable_bitrate", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["type", "network", "vpn_gateways", "networks", "coordinators", "domain_controller", "reservable_bitrate", "slice_id_range", "tunnel_id_range", ], str]):
         return super().get_item_oapg(name)
     
 
@@ -220,6 +354,8 @@ class DomainConfiguration(
         coordinators: typing.Union[MetaOapg.properties.coordinators, list, tuple, schemas.Unset] = schemas.unset,
         domain_controller: typing.Union['DeviceConfiguration', schemas.Unset] = schemas.unset,
         reservable_bitrate: typing.Union[MetaOapg.properties.reservable_bitrate, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        slice_id_range: typing.Union[MetaOapg.properties.slice_id_range, dict, frozendict.frozendict, schemas.Unset] = schemas.unset,
+        tunnel_id_range: typing.Union[MetaOapg.properties.tunnel_id_range, dict, frozendict.frozendict, schemas.Unset] = schemas.unset,
         _configuration: typing.Optional[schemas.Configuration] = None,
         **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
     ) -> 'DomainConfiguration':
@@ -233,6 +369,8 @@ class DomainConfiguration(
             coordinators=coordinators,
             domain_controller=domain_controller,
             reservable_bitrate=reservable_bitrate,
+            slice_id_range=slice_id_range,
+            tunnel_id_range=tunnel_id_range,
             _configuration=_configuration,
             **kwargs,
         )

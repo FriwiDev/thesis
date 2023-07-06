@@ -6,6 +6,8 @@ from typing import List, Dict, Type
 
 from esmf_server.models.base_model_ import Model
 from esmf_server.models.device_configuration import DeviceConfiguration
+from esmf_server.models.domain_configuration_slice_id_range import DomainConfigurationSliceIdRange
+from esmf_server.models.domain_configuration_tunnel_id_range import DomainConfigurationTunnelIdRange
 from esmf_server.models.network_configuration import NetworkConfiguration
 from esmf_server import util
 
@@ -16,7 +18,7 @@ class DomainConfiguration(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, type: str=None, network: str=None, vpn_gateways: List[DeviceConfiguration]=None, networks: List[NetworkConfiguration]=None, coordinators: List[DeviceConfiguration]=None, domain_controller: DeviceConfiguration=None, reservable_bitrate: int=1000000000):
+    def __init__(self, type: str=None, network: str=None, vpn_gateways: List[DeviceConfiguration]=None, networks: List[NetworkConfiguration]=None, coordinators: List[DeviceConfiguration]=None, domain_controller: DeviceConfiguration=None, reservable_bitrate: int=1000000000, slice_id_range: DomainConfigurationSliceIdRange=None, tunnel_id_range: DomainConfigurationTunnelIdRange=None):
         """DomainConfiguration - a model defined in OpenAPI
 
         :param type: The type of this DomainConfiguration.
@@ -26,6 +28,8 @@ class DomainConfiguration(Model):
         :param coordinators: The coordinators of this DomainConfiguration.
         :param domain_controller: The domain_controller of this DomainConfiguration.
         :param reservable_bitrate: The reservable_bitrate of this DomainConfiguration.
+        :param slice_id_range: The slice_id_range of this DomainConfiguration.
+        :param tunnel_id_range: The tunnel_id_range of this DomainConfiguration.
         """
         self.openapi_types = {
             'type': str,
@@ -34,7 +38,9 @@ class DomainConfiguration(Model):
             'networks': List[NetworkConfiguration],
             'coordinators': List[DeviceConfiguration],
             'domain_controller': DeviceConfiguration,
-            'reservable_bitrate': int
+            'reservable_bitrate': int,
+            'slice_id_range': DomainConfigurationSliceIdRange,
+            'tunnel_id_range': DomainConfigurationTunnelIdRange
         }
 
         self.attribute_map = {
@@ -44,7 +50,9 @@ class DomainConfiguration(Model):
             'networks': 'networks',
             'coordinators': 'coordinators',
             'domain_controller': 'domain_controller',
-            'reservable_bitrate': 'reservable_bitrate'
+            'reservable_bitrate': 'reservable_bitrate',
+            'slice_id_range': 'slice_id_range',
+            'tunnel_id_range': 'tunnel_id_range'
         }
 
         self._type = type
@@ -54,6 +62,8 @@ class DomainConfiguration(Model):
         self._coordinators = coordinators
         self._domain_controller = domain_controller
         self._reservable_bitrate = reservable_bitrate
+        self._slice_id_range = slice_id_range
+        self._tunnel_id_range = tunnel_id_range
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'DomainConfiguration':
@@ -228,3 +238,45 @@ class DomainConfiguration(Model):
         """
 
         self._reservable_bitrate = reservable_bitrate
+
+    @property
+    def slice_id_range(self):
+        """Gets the slice_id_range of this DomainConfiguration.
+
+
+        :return: The slice_id_range of this DomainConfiguration.
+        :rtype: DomainConfigurationSliceIdRange
+        """
+        return self._slice_id_range
+
+    @slice_id_range.setter
+    def slice_id_range(self, slice_id_range):
+        """Sets the slice_id_range of this DomainConfiguration.
+
+
+        :param slice_id_range: The slice_id_range of this DomainConfiguration.
+        :type slice_id_range: DomainConfigurationSliceIdRange
+        """
+
+        self._slice_id_range = slice_id_range
+
+    @property
+    def tunnel_id_range(self):
+        """Gets the tunnel_id_range of this DomainConfiguration.
+
+
+        :return: The tunnel_id_range of this DomainConfiguration.
+        :rtype: DomainConfigurationTunnelIdRange
+        """
+        return self._tunnel_id_range
+
+    @tunnel_id_range.setter
+    def tunnel_id_range(self, tunnel_id_range):
+        """Sets the tunnel_id_range of this DomainConfiguration.
+
+
+        :param tunnel_id_range: The tunnel_id_range of this DomainConfiguration.
+        :type tunnel_id_range: DomainConfigurationTunnelIdRange
+        """
+
+        self._tunnel_id_range = tunnel_id_range

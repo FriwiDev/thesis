@@ -15,6 +15,8 @@ esmf_server/models/base_model_.py
 esmf_server/models/connection_configuration.py
 esmf_server/models/device_configuration.py
 esmf_server/models/domain_configuration.py
+esmf_server/models/domain_configuration_slice_id_range.py
+esmf_server/models/domain_configuration_tunnel_id_range.py
 esmf_server/models/endpoint.py
 esmf_server/models/network_configuration.py
 esmf_server/models/slice.py

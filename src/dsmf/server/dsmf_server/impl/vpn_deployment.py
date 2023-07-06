@@ -1,12 +1,7 @@
-import ipaddress
-
-import switch_client
 import vpn_gateway_client
-from dsmf_server.impl.domain_state import DeviceType, DomainState
-from dsmf_server.impl.domain_util import DomainUtil
 from dsmf_server.models import DeviceConfiguration
 from vpn_gateway_client.apis.tags import authentication_api, tunnel_entry_management_api
-from vpn_gateway_server.models import TunnelEntry
+from vpn_gateway_client.model.tunnel_entry import TunnelEntry
 
 
 class VPNDeployment(object):

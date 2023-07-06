@@ -11,4 +11,8 @@ async def auth_post(request: web.Request, ) -> web.Response:
 
 
     """
-    return web.Response(status=200)
+    return web.Response(status=200, body="token")
+
+
+def check_auth(token: str) -> bool:
+    return token == "token"

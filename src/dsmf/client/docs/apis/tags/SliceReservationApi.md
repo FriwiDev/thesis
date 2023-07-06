@@ -86,6 +86,7 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 200 | [ApiResponseFor200](#slice_reservation_delete.ApiResponseFor200) | The slice reservation was successfully deleted.
 403 | [ApiResponseFor403](#slice_reservation_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#slice_reservation_delete.ApiResponseFor404) | The slice reservation could not be found.
+421 | [ApiResponseFor421](#slice_reservation_delete.ApiResponseFor421) | Slice management is not supported by this service
 
 #### slice_reservation_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -102,6 +103,13 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_reservation_delete.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_delete.ApiResponseFor421
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -184,6 +192,7 @@ Code | Class | Description
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_reservation_get.ApiResponseFor200) | The current list of slice reservations
 403 | [ApiResponseFor403](#slice_reservation_get.ApiResponseFor403) | Invalid authentication provided
+421 | [ApiResponseFor421](#slice_reservation_get.ApiResponseFor421) | Slice management is not supported by this service
 
 #### slice_reservation_get.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -205,6 +214,13 @@ Class Name | Input Type | Accessed Type | Description | Notes
 [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) |  | 
 
 #### slice_reservation_get.ApiResponseFor403
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_get.ApiResponseFor421
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -327,6 +343,7 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 406 | [ApiResponseFor406](#slice_reservation_put.ApiResponseFor406) | A value exceeds the allowed range
 409 | [ApiResponseFor409](#slice_reservation_put.ApiResponseFor409) | A slice with this id is already known
 412 | [ApiResponseFor412](#slice_reservation_put.ApiResponseFor412) | A value does not match the schema
+421 | [ApiResponseFor421](#slice_reservation_put.ApiResponseFor421) | Slice management is not supported by this service
 507 | [ApiResponseFor507](#slice_reservation_put.ApiResponseFor507) | Insufficient resources
 
 #### slice_reservation_put.ApiResponseFor200
@@ -365,6 +382,13 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_reservation_put.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_reservation_put.ApiResponseFor421
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

@@ -4,7 +4,7 @@ from dsmf_server.impl.domain_state import DomainState, DeviceType
 from dsmf_server.impl.domain_util import DomainUtil
 from dsmf_server.impl.switch_deployment import SwitchDeployment
 from dsmf_server.impl.vpn_deployment import VPNDeployment
-from dsmf_server.models import Tunnel, DeviceConfiguration
+from dsmf_server.models import Tunnel
 from switch_client.model.queue import Queue
 from vpn_gateway_client.model.tunnel_entry import TunnelEntry
 
@@ -139,4 +139,3 @@ class TunnelDeployment(object):
             VPNDeployment.delete_tunnel_entry(vpn=vpn,
                                               tunnel_entry_id=tunnel.tunnel_id
                                               )
-

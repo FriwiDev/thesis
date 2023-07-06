@@ -86,6 +86,8 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 200 | [ApiResponseFor200](#tunnel_deployment_delete.ApiResponseFor200) | The tunnel was successfully deleted.
 403 | [ApiResponseFor403](#tunnel_deployment_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#tunnel_deployment_delete.ApiResponseFor404) | The tunnel could not be found.
+412 | [ApiResponseFor412](#tunnel_deployment_delete.ApiResponseFor412) | The tunnel is still being referenced by a deployed slice
+500 | [ApiResponseFor500](#tunnel_deployment_delete.ApiResponseFor500) | The deployment to the network failed
 
 #### tunnel_deployment_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -102,6 +104,20 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### tunnel_deployment_delete.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_deployment_delete.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### tunnel_deployment_delete.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

@@ -86,6 +86,8 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 200 | [ApiResponseFor200](#slice_deployment_delete.ApiResponseFor200) | The slice was successfully deleted.
 403 | [ApiResponseFor403](#slice_deployment_delete.ApiResponseFor403) | Invalid authentication provided.
 404 | [ApiResponseFor404](#slice_deployment_delete.ApiResponseFor404) | The slice could not be found.
+421 | [ApiResponseFor421](#slice_deployment_delete.ApiResponseFor421) | Slice management is not supported by this service
+500 | [ApiResponseFor500](#slice_deployment_delete.ApiResponseFor500) | The deployment to the network failed
 
 #### slice_deployment_delete.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -102,6 +104,20 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_deployment_delete.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_delete.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_delete.ApiResponseFor500
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -184,6 +200,7 @@ Code | Class | Description
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_deployment_get.ApiResponseFor200) | The current list of slices
 403 | [ApiResponseFor403](#slice_deployment_get.ApiResponseFor403) | Invalid authentication provided
+421 | [ApiResponseFor421](#slice_deployment_get.ApiResponseFor421) | Slice management is not supported by this service
 
 #### slice_deployment_get.ApiResponseFor200
 Name | Type | Description  | Notes
@@ -205,6 +222,13 @@ Class Name | Input Type | Accessed Type | Description | Notes
 [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) |  | 
 
 #### slice_deployment_get.ApiResponseFor403
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_get.ApiResponseFor421
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -294,6 +318,8 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 200 | [ApiResponseFor200](#slice_deployment_put.ApiResponseFor200) | The slice has been created
 403 | [ApiResponseFor403](#slice_deployment_put.ApiResponseFor403) | Invalid authentication provided
 404 | [ApiResponseFor404](#slice_deployment_put.ApiResponseFor404) | The slice reservation could not be found.
+412 | [ApiResponseFor412](#slice_deployment_put.ApiResponseFor412) | The tunnel referenced by this slice has not been deployed yet
+421 | [ApiResponseFor421](#slice_deployment_put.ApiResponseFor421) | Slice management is not supported by this service
 500 | [ApiResponseFor500](#slice_deployment_put.ApiResponseFor500) | The deployment to the network failed
 
 #### slice_deployment_put.ApiResponseFor200
@@ -311,6 +337,20 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_deployment_put.ApiResponseFor404
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_put.ApiResponseFor412
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_deployment_put.ApiResponseFor421
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

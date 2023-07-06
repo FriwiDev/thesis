@@ -616,6 +616,12 @@
           },
           "404": {
             "description": "The tunnel could not be found."
+          },
+          "412": {
+            "description": "The tunnel is still being referenced by a deployed slice"
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       }

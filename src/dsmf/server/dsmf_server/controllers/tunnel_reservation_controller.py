@@ -1,6 +1,8 @@
 from typing import List, Dict
 from aiohttp import web
 
+from dsmf_server.controllers.authentication_controller import check_auth
+from dsmf_server.impl.domain_state import DomainState
 from dsmf_server.models.tunnel import Tunnel
 from dsmf_server import util
 
@@ -16,7 +18,12 @@ async def tunnel_reservation_delete(request: web.Request, auth, tunnel_id) -> we
     :type tunnel_id: int
 
     """
-    return web.Response(status=200)
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
+    if tunnel_id not in DomainState.tunnel_reservations.keys():
+        return web.Response(status=404, reason="The tunnel reservation could not be found")
+    del DomainState.tunnel_reservations[tunnel_id]
+    return web.Response(status=200, reason="The tunnel reservation was successfully deleted")
 
 
 async def tunnel_reservation_get(request: web.Request, auth) -> web.Response:
@@ -28,7 +35,9 @@ async def tunnel_reservation_get(request: web.Request, auth) -> web.Response:
     :type auth: str
 
     """
-    return web.Response(status=200)
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
+    return web.Response(status=200, body=DomainState.tunnel_reservations.values())
 
 
 async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.Response:
@@ -42,5 +51,14 @@ async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.R
     :type body: dict | bytes
 
     """
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
     body = Tunnel.from_dict(body)
-    return web.Response(status=200)
+    # TODO Validation
+    if body.tunnel_id in DomainState.tunnel_deployments.keys():
+        # TODO Check source and target matching for update
+        return web.Response(status=409, reason="A tunnel with this id is already known "
+                                               "and does not match current source and target")
+    # TODO Resource validation (do we have enough resources?)
+    DomainState.tunnel_reservations[body.tunnel_id] = body
+    return web.Response(status=200, reason="The tunnel has been reserved")

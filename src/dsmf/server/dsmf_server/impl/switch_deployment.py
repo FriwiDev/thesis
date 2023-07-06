@@ -7,7 +7,7 @@ from dsmf_server.impl.domain_state import DeviceType, DomainState
 from dsmf_server.impl.domain_util import DomainUtil
 from dsmf_server.models import DeviceConfiguration
 from switch_client.apis.tags import queue_management_api, authentication_api, traffic_shaping_api
-from switch_server.models import Queue
+from switch_client.model.queue import Queue
 
 
 class SwitchDeployment(object):

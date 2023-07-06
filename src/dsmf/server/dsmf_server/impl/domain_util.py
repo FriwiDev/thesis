@@ -1,8 +1,8 @@
 import heapq as hq
 import math
 
-from dsmf_server.models import DeviceConfiguration, ConnectionConfiguration
 from dsmf_server.impl.domain_state import DomainState, DeviceType
+from dsmf_server.models import DeviceConfiguration, ConnectionConfiguration
 
 
 class DomainUtil(object):

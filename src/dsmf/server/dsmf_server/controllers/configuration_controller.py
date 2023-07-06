@@ -1,6 +1,7 @@
 from typing import List, Dict
 from aiohttp import web
 
+from dsmf_server.controllers.authentication_controller import check_auth
 from dsmf_server.models.domain_configuration import DomainConfiguration
 from dsmf_server import util
 
@@ -14,6 +15,8 @@ async def configuration_get(request: web.Request, auth) -> web.Response:
     :type auth: str
 
     """
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
     return web.Response(status=200)
 
 
@@ -28,5 +31,7 @@ async def configuration_put(request: web.Request, auth, body=None) -> web.Respon
     :type body: dict | bytes
 
     """
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
     body = DomainConfiguration.from_dict(body)
     return web.Response(status=200)

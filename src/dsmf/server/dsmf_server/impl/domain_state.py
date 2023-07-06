@@ -2,6 +2,7 @@ from enum import Enum
 
 from dsmf_server.configuration_util import ConfigurationUtil
 from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfiguration
+from switch_client.model.queue import Queue
 
 DeviceType = Enum('SwitchType',
                   ['SRC', 'DST', 'TUN_ENTRY', 'TUN_EXIT', 'SRC_ALL', 'SRC_ENTRY', 'SRC_TP', 'SRC_EXIT', 'BN_ALL',
@@ -15,6 +16,8 @@ class DomainState(object):
     tunnel_deployments: dict[int, Tunnel] = {}
     slice_reservations: dict[int, Slice] = {}
     slice_deployments: dict[int, Slice] = {}
+    tunnel_queue_pools: dict[int, dict[str, (Queue, Queue or None)]] = {}
+    slice_queue_pools: dict[int, dict[str, Queue]] = {}
 
     @classmethod
     def get_device(cls, name: str) -> DeviceConfiguration or None:

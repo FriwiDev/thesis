@@ -469,6 +469,9 @@
           },
           "403": {
             "description": "Invalid authentication provided"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           }
         }
       },
@@ -515,6 +518,9 @@
           "412": {
             "description": "A value does not match the schema"
           },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
           "507": {
             "description": "Insufficient resources"
           }
@@ -553,6 +559,9 @@
           },
           "404": {
             "description": "The slice reservation could not be found."
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           }
         }
       }
@@ -590,6 +599,9 @@
           },
           "403": {
             "description": "Invalid authentication provided"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           }
         }
       },
@@ -626,6 +638,12 @@
           },
           "404": {
             "description": "The slice reservation could not be found."
+          },
+          "412": {
+            "description": "The tunnel referenced by this slice has not been deployed yet"
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
           },
           "500": {
             "description": "The deployment to the network failed"
@@ -665,6 +683,12 @@
           },
           "404": {
             "description": "The slice could not be found."
+          },
+          "421": {
+            "description": "Slice management is not supported by this service"
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       }
@@ -898,6 +922,12 @@
           },
           "404": {
             "description": "The tunnel could not be found."
+          },
+          "412": {
+            "description": "The tunnel is still being referenced by a deployed slice"
+          },
+          "500": {
+            "description": "The deployment to the network failed"
           }
         }
       }

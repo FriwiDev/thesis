@@ -30,7 +30,7 @@ from . import path
 AuthSchema = schemas.StrSchema
 
 
-class IdsSchema(
+class SliceIdsSchema(
     schemas.ListSchema
 ):
 
@@ -42,7 +42,7 @@ class IdsSchema(
         cls,
         _arg: typing.Union[typing.Tuple[typing.Union[MetaOapg.items, decimal.Decimal, int, ]], typing.List[typing.Union[MetaOapg.items, decimal.Decimal, int, ]]],
         _configuration: typing.Optional[schemas.Configuration] = None,
-    ) -> 'IdsSchema':
+    ) -> 'SliceIdsSchema':
         return super().__new__(
             cls,
             _arg,
@@ -55,7 +55,7 @@ RequestRequiredQueryParams = typing_extensions.TypedDict(
     'RequestRequiredQueryParams',
     {
         'auth': typing.Union[AuthSchema, str, ],
-        'ids': typing.Union[IdsSchema, list, tuple, ],
+        'slice_ids': typing.Union[SliceIdsSchema, list, tuple, ],
     }
 )
 RequestOptionalQueryParams = typing_extensions.TypedDict(
@@ -77,10 +77,10 @@ request_query_auth = api_client.QueryParameter(
     required=True,
     explode=True,
 )
-request_query_ids = api_client.QueryParameter(
-    name="ids",
+request_query_slice_ids = api_client.QueryParameter(
+    name="slice_ids",
     style=api_client.ParameterStyle.FORM,
-    schema=IdsSchema,
+    schema=SliceIdsSchema,
     required=True,
     explode=True,
 )
@@ -217,7 +217,7 @@ class BaseApi(api_client.Api):
         prefix_separator_iterator = None
         for parameter in (
             request_query_auth,
-            request_query_ids,
+            request_query_slice_ids,
         ):
             parameter_data = query_params.get(parameter.name, schemas.unset)
             if parameter_data is schemas.unset:

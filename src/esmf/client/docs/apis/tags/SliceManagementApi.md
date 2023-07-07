@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 # **slice_delete**
 <a id="slice_delete"></a>
-> slice_delete(authids)
+> slice_delete(authslice_ids)
 
 
 
@@ -37,7 +37,7 @@ with esmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'ids': [
+        'slice_ids': [
         1
     ],
     }
@@ -63,7 +63,7 @@ skip_deserialization | bool | default is False | when True, headers and body wil
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 auth | AuthSchema | | 
-ids | IdsSchema | | 
+slice_ids | SliceIdsSchema | | 
 
 
 # AuthSchema
@@ -73,7 +73,7 @@ Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 str,  | str,  |  | 
 
-# IdsSchema
+# SliceIdsSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -360,6 +360,7 @@ n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization i
 404 | [ApiResponseFor404](#slice_put.ApiResponseFor404) | The input or output of one or multiple of the slices could not be found
 417 | [ApiResponseFor417](#slice_put.ApiResponseFor417) | No slices were requested
 421 | [ApiResponseFor421](#slice_put.ApiResponseFor421) | Slice management is not supported by this service
+422 | [ApiResponseFor422](#slice_put.ApiResponseFor422) | Can not handle slices not originating from or to our network
 500 | [ApiResponseFor500](#slice_put.ApiResponseFor500) | Internal error
 507 | [ApiResponseFor507](#slice_put.ApiResponseFor507) | Insufficient resources by participating domain or requester
 
@@ -398,6 +399,13 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_put.ApiResponseFor421
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_put.ApiResponseFor422
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

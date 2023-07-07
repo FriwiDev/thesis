@@ -160,6 +160,18 @@ _response_for_421 = api_client.OpenApiResponse(
 
 
 @dataclass
+class ApiResponseFor422(api_client.ApiResponse):
+    response: urllib3.HTTPResponse
+    body: schemas.Unset = schemas.unset
+    headers: schemas.Unset = schemas.unset
+
+
+_response_for_422 = api_client.OpenApiResponse(
+    response_cls=ApiResponseFor422,
+)
+
+
+@dataclass
 class ApiResponseFor500(api_client.ApiResponse):
     response: urllib3.HTTPResponse
     body: schemas.Unset = schemas.unset
@@ -187,6 +199,7 @@ _status_code_to_response = {
     '404': _response_for_404,
     '417': _response_for_417,
     '421': _response_for_421,
+    '422': _response_for_422,
     '500': _response_for_500,
     '507': _response_for_507,
 }

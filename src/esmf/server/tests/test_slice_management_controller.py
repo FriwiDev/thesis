@@ -13,7 +13,7 @@ async def test_slice_delete(client):
     
     """
     params = [('auth', 'auth_example'),
-                    ('ids', [56])]
+                    ('slice_ids', [56])]
     headers = { 
     }
     response = await client.request(

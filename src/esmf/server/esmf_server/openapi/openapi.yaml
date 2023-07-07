@@ -116,7 +116,7 @@ paths:
       - description: The ids of the slices to be deleted.
         explode: true
         in: query
-        name: ids
+        name: slice_ids
         required: true
         schema:
           items:
@@ -209,6 +209,8 @@ paths:
           description: No slices were requested
         "421":
           description: Slice management is not supported by this service
+        "422":
+          description: Can not handle slices not originating from or to our network
         "500":
           description: Internal error
         "507":

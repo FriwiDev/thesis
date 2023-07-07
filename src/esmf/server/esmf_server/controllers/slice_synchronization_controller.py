@@ -22,6 +22,8 @@ async def slice_deployment_delete(request: web.Request, auth, slice_id) -> web.R
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     if slice_id not in DomainState.slice_deployments.keys():
         return web.Response(status=404, reason="The slice could not be found.")
     # Forward to domain controller
@@ -55,6 +57,8 @@ async def slice_deployment_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     return web.Response(status=200, body=DomainState.slice_deployments.values())
 
 
@@ -71,6 +75,8 @@ async def slice_deployment_put(request: web.Request, auth, slice_id) -> web.Resp
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     # TODO-Thesis Validation
     # Forward to domain controller
     api_client, auth = get_controller_client()
@@ -112,6 +118,8 @@ async def slice_reservation_delete(request: web.Request, auth, slice_id) -> web.
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     if slice_id not in DomainState.slice_reservations.keys():
         return web.Response(status=404, reason="The slice reservation could not be found.")
     # Forward to domain controller
@@ -145,6 +153,8 @@ async def slice_reservation_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     return web.Response(status=200, body=DomainState.slice_reservations.values())
 
 
@@ -161,6 +171,8 @@ async def slice_reservation_put(request: web.Request, auth, body=None) -> web.Re
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     body = Slice.from_dict(body)
     # TODO-Thesis Validation
     if body.slice_id in DomainState.slice_reservations.keys() + DomainState.slice_deployments.keys():

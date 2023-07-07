@@ -138,6 +138,22 @@
             "format": "i64",
             "description": "The bitrate that can be reserved by hosts on our network",
             "default": 1000000000
+          },
+          "slice_id_range": {
+            "type": "object",
+            "description": "The range of slice ids that are assigned by this service",
+            "properties": {
+              "fr": {
+                "type": "integer",
+                "description": "Lower bound of this range (inclusive)",
+                "format": "i16"
+              },
+              "to": {
+                "type": "integer",
+                "description": "Higher bound of this range (exclusive)",
+                "format": "i16"
+              }
+            }
           }
         }
       },

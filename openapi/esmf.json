@@ -417,6 +417,9 @@
           "421": {
             "description": "Slice management is not supported by this service"
           },
+          "422": {
+            "description": "Can not handle slices not originating from or to our network"
+          },
           "500": {
             "description": "Internal error"
           },
@@ -439,7 +442,7 @@
             }
           },
           {
-            "name": "ids",
+            "name": "slice_ids",
             "in": "query",
             "description": "The ids of the slices to be deleted.",
             "required": true,

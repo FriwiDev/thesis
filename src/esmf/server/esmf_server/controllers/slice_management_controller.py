@@ -1,22 +1,38 @@
 from typing import List, Dict
 from aiohttp import web
 
+from esmf_server.controllers.authentication_controller import check_auth
+from esmf_server.impl.domain_state import DomainState
+
+from esmf_server.impl.edge_state import EdgeState
 from esmf_server.models.slice import Slice
 from esmf_server import util
 
 
-async def slice_delete(request: web.Request, auth, ids) -> web.Response:
+async def slice_delete(request: web.Request, auth, slice_ids) -> web.Response:
     """slice_delete
 
     Deletes one or multiple slices
 
     :param auth: The authentication token issued by prior login
     :type auth: str
-    :param ids: The ids of the slices to be deleted.
-    :type ids: List[int]
+    :param slice_ids: The ids of the slices to be deleted.
+    :type slice_ids: List[int]
 
     """
-    return web.Response(status=200)
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice management is not supported by this service")
+    if len(slice_ids) == 0:
+        return web.Response(status=417, reason="No slice ids were provided.")
+    ret = EdgeState.handle_slice_revoke(slice_ids, get_owner(auth))
+    if ret == 404:
+        return web.Response(status=404, reason="One or multiple of the slices could not be found.")
+    elif ret == 500:
+        return web.Response(status=500, reason="Internal error")
+    else:
+        return web.Response(status=200, reason="The slices were successfully deleted.")
 
 
 async def slice_get(request: web.Request, auth) -> web.Response:
@@ -28,7 +44,11 @@ async def slice_get(request: web.Request, auth) -> web.Response:
     :type auth: str
 
     """
-    return web.Response(status=200)
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice management is not supported by this service")
+    return web.Response(status=200, body=EdgeState.get_slices_by_owner(get_owner(auth)))
 
 
 async def slice_put(request: web.Request, auth, slices) -> web.Response:
@@ -42,5 +62,25 @@ async def slice_put(request: web.Request, auth, slices) -> web.Response:
     :type slices: list | bytes
 
     """
+    if not check_auth(auth):
+        return web.Response(status=403, reason="Invalid authentication provided.")
+    if DomainState.config.type.upper() != "ESMF":
+        return web.Response(status=421, reason="Slice management is not supported by this service")
     slices = [Slice.from_dict(d) for d in slices]
-    return web.Response(status=200)
+    if len(slices) == 0:
+        return web.Response(status=417, reason="No slices were requested")
+    # TODO-Thesis validation
+    ret = EdgeState.handle_slice_request(slices, get_owner(auth))
+    if ret == 404:
+        return web.Response(status=404, reason="The input or output of one or multiple of the slices could not be found")
+    elif ret == 500:
+        return web.Response(status=500, reason="Internal error")
+    elif ret == 507:
+        return web.Response(status=507, reason="Insufficient resources by participating domain or requester")
+    else:
+        return web.Response(status=200, body=ret)
+
+
+def get_owner(auth: str):
+    # TODO-FW real authentication system
+    return "default"

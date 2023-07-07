@@ -1,22 +1,37 @@
-from dsmf_server.impl.domain_state import DomainState
+from esmf_server.impl.domain_state import DomainState
 from esmf_server.impl.domain_util import DomainUtil
+
+from esmf_server.impl.dsmf_communicator import DSMFCommunicator
+
+from esmf_server.impl.esmf_communicator import ESMFCommunicator
 from esmf_server.models import Tunnel, Slice, NetworkConfiguration, Endpoint
 
 
-class EdgeState(object):
-    slices: dict[int, Slice] = {}
-    slices_per_owner: dict[str, [Slice]] = {}
-    tunnels: dict[int, Tunnel] = {}
-    tunnels_per_src_net: dict[str, [Tunnel]] = {}
-    tunnels_per_dst_net: dict[str, [Tunnel]] = {}
+class DeployedSlice(object):
+    def __init__(self, sl: Slice, owner: str, networks: [str]):
+        self.sl = sl
+        self.owner = owner
+        self.networks = networks
 
+
+class DeployedTunnel(object):
+    def __init__(self, tunnel: Tunnel, networks: [str]):
+        self.tunnel = tunnel
+        self.networks = networks
+
+
+class EdgeState(object):
+    current_slice_id = DomainState.config.slice_id_range.fr
+    current_tunnel_id = DomainState.config.tunnel_id_range.fr
+    slices: dict[int, DeployedSlice] = {}
+    tunnels: dict[int, DeployedTunnel] = {}
 
     @classmethod
-    def handle_slice_request(cls, slices: [Slice], owner: str) -> bool:
+    def handle_slice_request(cls, slices: [Slice], owner: str) -> int or [Slice]:
         # TODO-FW Resource limits per owner?
         for sl in slices:
             if sl.fr.network != DomainState.config.network and sl.to.network != DomainState.config.network:
-                return False
+                return 422
         # Calculate the required capacity per target (to and from)
         to_cap = {}  # network -> min_rate, max_rate, burst_rate, latency
         from_cap = {}  # network -> min_rate, max_rate, burst_rate, latency
@@ -48,7 +63,8 @@ class EdgeState(object):
         # FROM tunnels
         for fr, values in from_cap.items():
             min_rate, max_rate, burst_rate, latency = values
-            tunnel_id = 3  # TODO-NOW
+            tunnel_id = cls.current_tunnel_id
+            cls.current_tunnel_id += 1
             vpn_fr = DomainState.get_vpn_by_network(fr, DomainState.config.network)
             vpn_to = DomainState.get_vpn_by_network(DomainState.config.network, fr)
             networks = DomainUtil.route_network(fr, DomainState.config.network)
@@ -78,12 +94,13 @@ class EdgeState(object):
                 # Roll back everything if we failed
                 for t, nets in staged_tunnels:
                     cls.delete_reserved_tunnel(t, nets)
-                return False
+                return 500
 
         # TO tunnels
         for to, values in to_cap.items():
             min_rate, max_rate, burst_rate, latency = values
-            tunnel_id = 3  # TODO-NOW
+            tunnel_id = cls.current_tunnel_id
+            cls.current_tunnel_id += 1
             vpn_fr = DomainState.get_vpn_by_network(DomainState.config.network, to)
             vpn_to = DomainState.get_vpn_by_network(to, DomainState.config.network)
             networks = DomainUtil.route_network(DomainState.config.network, to)
@@ -113,7 +130,7 @@ class EdgeState(object):
                 # Roll back everything if we failed
                 for t, nets in staged_tunnels:
                     cls.delete_reserved_tunnel(t, nets)
-                return False
+                return 500
 
         staged_slices = []  # slice, [networks]
         # Slices
@@ -124,7 +141,8 @@ class EdgeState(object):
             elif sl.to.network != DomainState.config.network:
                 tunnel = to_tunnels[sl.to.network]
             networks = DomainUtil.route_network(sl.fr.network, sl.to.network)
-            slice_id = 3  # TODO-NOW
+            slice_id = cls.current_slice_id
+            cls.current_slice_id += 1
             sl.slice_id = slice_id
             sl.tunnel_id = tunnel.tunnel_id
             staged_slices.append((sl, networks))
@@ -134,7 +152,7 @@ class EdgeState(object):
                     cls.delete_reserved_slice(s, nets)
                 for t, nets in staged_tunnels:
                     cls.delete_reserved_tunnel(t, nets)
-                return False
+                return 500
 
         # Now everything is reserved. Let us deploy everything - tunnels first
         deployed_tunnels = []  # tunnel, [networks]
@@ -168,46 +186,146 @@ class EdgeState(object):
             staged_slices.remove((sl, netws))
             deployed_slices.append((sl, netws))
 
-        # TODO-NOW Integrate new tunnels and slices into data structure above
+        # Add to our state
+        for t, nets in deployed_tunnels:
+            cls.tunnels[t.tunnel_id] = DeployedTunnel(t, nets)
+        for sl, nets in deployed_slices:
+            cls.slices[sl.slice_id] = DeployedSlice(sl, owner, nets)
 
-        return True
+        # Return the deployed slices
+        ret = []
+        for sl, nets in deployed_slices:
+            ret.append(sl)
+
+        return ret
+
+    @classmethod
+    def get_slices_by_owner(cls, owner: str) -> [Slice]:
+        ret = []
+        for sl in cls.slices.values():
+            if sl.owner == owner:
+                ret.append(sl.sl)
+        return ret
+
+    @classmethod
+    def handle_slice_revoke(cls, slice_ids: [int], owner: str) -> int:
+        sd = []
+        # Find all requested slices
+        for i in slice_ids:
+            if i not in cls.slices.keys() or cls.slices[i].owner != owner:
+                return 404
+            sd.append(cls.slices[i])
+
+        # Delete all found slices
+        for s in sd:
+            if not cls.delete_deployed_slice(s.sl, s.networks):
+                return 500
+            del cls.slices[s.sl.slice_id]
+
+        # Delete all unused tunnels
+        for t in cls.tunnels.copy().values():
+            if not cls.is_used(t.tunnel.tunnel_id):
+                if not cls.delete_deployed_tunnel(t.tunnel, t.networks):
+                    return 500
+                del cls.tunnels[t.tunnel.tunnel_id]
+
+        return 200
+
+    @classmethod
+    def is_used(cls, tunnel_id: int) -> bool:
+        for sl in cls.slices.values():
+            if sl.sl.tunnel_id == tunnel_id:
+                return True
+        return False
 
     @classmethod
     def reserve_tunnel(cls, tunnel: Tunnel, networks: [str]) -> bool:
-        # TODO-NOW implement
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.reserve_tunnel(tunnel):
+                    return False
+            else:
+                if not ESMFCommunicator.reserve_tunnel(tunnel, net):
+                    return False
         return True
 
     @classmethod
     def delete_reserved_tunnel(cls, tunnel: Tunnel, networks: [str]) -> bool:
-        # TODO-NOW implement
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.delete_reserved_tunnel(tunnel):
+                    return False
+            else:
+                if not ESMFCommunicator.delete_reserved_tunnel(tunnel, net):
+                    return False
         return True
 
     @classmethod
     def deploy_tunnel(cls, tunnel: Tunnel, networks: [str]) -> bool:
-        # TODO-NOW implement
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.deploy_tunnel(tunnel):
+                    return False
+            else:
+                if not ESMFCommunicator.deploy_tunnel(tunnel, net):
+                    return False
         return True
 
     @classmethod
     def delete_deployed_tunnel(cls, tunnel: Tunnel, networks: [str]) -> bool:
-        # TODO-NOW implement
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.delete_deployed_tunnel(tunnel):
+                    return False
+            else:
+                if not ESMFCommunicator.delete_deployed_tunnel(tunnel, net):
+                    return False
         return True
 
     @classmethod
     def reserve_slice(cls, sl: Slice, networks: [str]) -> bool:
-        # TODO-NOW implement
+        networks = [networks[0], networks[len(networks)-1]]
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.reserve_slice(sl):
+                    return False
+            else:
+                if not ESMFCommunicator.reserve_slice(sl, net):
+                    return False
         return True
 
     @classmethod
     def delete_reserved_slice(cls, sl: Slice, networks: [str]) -> bool:
-        # TODO-NOW implement
+        networks = [networks[0], networks[len(networks) - 1]]
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.delete_reserved_slice(sl):
+                    return False
+            else:
+                if not ESMFCommunicator.delete_reserved_slice(sl, net):
+                    return False
         return True
 
     @classmethod
     def deploy_slice(cls, sl: Slice, networks: [str]) -> bool:
-        # TODO-NOW implement
+        networks = [networks[0], networks[len(networks) - 1]]
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.deploy_slice(sl):
+                    return False
+            else:
+                if not ESMFCommunicator.deploy_slice(sl, net):
+                    return False
         return True
 
     @classmethod
     def delete_deployed_slice(cls, sl: Slice, networks: [str]) -> bool:
-        # TODO-NOW implement
+        networks = [networks[0], networks[len(networks) - 1]]
+        for net in networks:
+            if net == DomainState.config.network:
+                if not DSMFCommunicator.delete_deployed_slice(sl):
+                    return False
+            else:
+                if not ESMFCommunicator.delete_deployed_slice(sl, net):
+                    return False
         return True

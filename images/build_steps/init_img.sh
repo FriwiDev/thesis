@@ -2,6 +2,7 @@
 
 rm -f "export/$1.tar.gz"
 lxc rm -f "$1"
+lxc image delete "$1"
 lxc remote add --protocol simplestreams ubuntu-minimal https://cloud-images.ubuntu.com/minimal/releases/ || true
 lxc init ubuntu-minimal:focal "$1" --profile default --profile macvlan
 lxc start "$1"

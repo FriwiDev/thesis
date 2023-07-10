@@ -11,7 +11,7 @@ bash setup.sh
 bash build_steps/init_img.sh "$IMAGE_NAME"
 
 # Install ryu and other dependencies
-lxc exec "$IMAGE_NAME" -- apt install -y iputils-ping net-tools iperf3 wireguard tcpdump ifstat python3 python3-pip python3-ryu
+lxc exec "$IMAGE_NAME" -- apt install -y iputils-ping net-tools iperf3 wireguard tcpdump ifstat python3 python3-pip
 lxc exec "$IMAGE_NAME" -- apt clean
 lxc exec "$IMAGE_NAME" -- apt autoremove -y
 

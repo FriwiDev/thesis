@@ -1,4 +1,4 @@
-from esmf_server.configuration_util import ConfigurationUtil
+from esmf_server.impl.configuration_util import ConfigurationUtil
 
 from esmf_server.models import Tunnel, Slice, NetworkConfiguration, DeviceConfiguration
 

@@ -57,10 +57,11 @@ async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.R
     # TODO-Thesis Validation
     if body.tunnel_id in DomainState.tunnel_deployments.keys():
         old_tunnel = DomainState.tunnel_deployments[body.tunnel_id]
-        if old_tunnel.fr != body.fr or old_tunnel.to != body.to \
-                or old_tunnel.private_key != body.private_key or old_tunnel.public_key != body.public_key:
+        if old_tunnel.fr != body.fr or old_tunnel.to != body.to:
             return web.Response(status=409, reason="A tunnel with this id is already known "
                                                    "and does not match current source and target")
+        body.private_key = old_tunnel.private_key
+        body.public_key = old_tunnel.public_key
     # TODO-Thesis Resource validation (do we have enough resources?)
     DomainState.tunnel_reservations[body.tunnel_id] = body
     return web.Response(status=200, reason="The tunnel has been reserved")

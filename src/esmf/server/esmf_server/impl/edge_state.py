@@ -4,6 +4,7 @@ from esmf_server.impl.domain_util import DomainUtil
 from esmf_server.impl.dsmf_communicator import DSMFCommunicator
 
 from esmf_server.impl.esmf_communicator import ESMFCommunicator
+from esmf_server.impl.wireguard_keygen import WireguardKeygen
 from esmf_server.models import Tunnel, Slice, NetworkConfiguration, Endpoint
 
 
@@ -85,8 +86,8 @@ class EdgeState(object):
                                 name=vpn_to.name,
                                 network=vpn_to.network
                             ),
-                            private_key=None,  # TODO-NOW
-                            public_key=None  # TODO-NOW
+                            private_key=None,
+                            public_key=None
                             )
             staged_tunnels.append((tunnel, networks))
             from_tunnels[fr] = tunnel
@@ -121,8 +122,8 @@ class EdgeState(object):
                                 name=vpn_to.name,
                                 network=vpn_to.network
                             ),
-                            private_key=None,  # TODO-NOW
-                            public_key=None  # TODO-NOW
+                            private_key=None,
+                            public_key=None
                             )
             staged_tunnels.append((tunnel, networks))
             to_tunnels[to] = tunnel
@@ -240,11 +241,17 @@ class EdgeState(object):
 
     @classmethod
     def reserve_tunnel(cls, tunnel: Tunnel, networks: [str]) -> bool:
+        our_private, our_public = WireguardKeygen.gen_keys()
+        their_private, their_public = WireguardKeygen.gen_keys()
         for net in networks:
             if net == DomainState.config.network:
+                tunnel.private_key = our_private
+                tunnel.public_key = their_public
                 if not DSMFCommunicator.reserve_tunnel(tunnel):
                     return False
             else:
+                tunnel.private_key = their_private
+                tunnel.public_key = our_public
                 if not ESMFCommunicator.reserve_tunnel(tunnel, net):
                     return False
         return True

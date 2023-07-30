@@ -25,14 +25,14 @@ import frozendict  # noqa: F401
 
 from vpn_gateway_client import schemas  # noqa: F401
 
-SchemaFor200ResponseBodyTextPlain = schemas.StrSchema
+SchemaFor200ResponseBodyApplicationJson = schemas.StrSchema
 
 
 @dataclass
 class ApiResponseFor200(api_client.ApiResponse):
     response: urllib3.HTTPResponse
     body: typing.Union[
-        SchemaFor200ResponseBodyTextPlain,
+        SchemaFor200ResponseBodyApplicationJson,
     ]
     headers: schemas.Unset = schemas.unset
 
@@ -40,8 +40,8 @@ class ApiResponseFor200(api_client.ApiResponse):
 _response_for_200 = api_client.OpenApiResponse(
     response_cls=ApiResponseFor200,
     content={
-        'text/plain': api_client.MediaType(
-            schema=SchemaFor200ResponseBodyTextPlain),
+        'application/json': api_client.MediaType(
+            schema=SchemaFor200ResponseBodyApplicationJson),
     },
 )
 
@@ -57,7 +57,7 @@ _response_for_403 = api_client.OpenApiResponse(
     response_cls=ApiResponseFor403,
 )
 _all_accept_content_types = (
-    'text/plain',
+    'application/json',
 )
 
 

@@ -8,7 +8,7 @@ async def auth_post(request: web.Request, ) -> web.Response:
 
 
     """
-    return web.Response(status=200, body="token")
+    return web.Response(status=200, content_type="application/json", body="\"token\"")
 
 
 def check_auth(token: str) -> bool:

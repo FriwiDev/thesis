@@ -1,6 +1,6 @@
 import subprocess
 
-GLOBAL_PREFIX: [str] = ['ssh', 'root@localhost', 'lxc', 'exec', 'switch1', '--']
+GLOBAL_PREFIX: [str] = []  # ['ssh', 'root@localhost', 'lxc', 'exec', 'switch1', '--']
 
 
 def run_command(cmd: [str]) -> (int, str):

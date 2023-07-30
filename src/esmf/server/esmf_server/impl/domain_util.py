@@ -1,8 +1,8 @@
 import heapq as hq
 import math
+from typing import List, Tuple
 
-from dsmf_server.impl.domain_state import DomainState, DeviceType
-from dsmf_server.models import DeviceConfiguration, ConnectionConfiguration
+from esmf_server.impl.domain_state import DomainState
 
 
 class DomainUtil(object):
@@ -39,7 +39,7 @@ class DomainUtil(object):
 
     @classmethod
     # https://stackoverflow.com/a/56740241
-    def dijkstra(cls, graph: list[list[(int, int)]], s: int):
+    def dijkstra(cls, graph: List[List[Tuple[int, int]]], s: int):
         n = len(graph)
         visited = [False] * n
         weights = [math.inf] * n

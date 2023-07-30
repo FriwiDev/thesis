@@ -1,6 +1,9 @@
+from typing import Dict
+
 from dsmf_server.impl.domain_state import DomainState
 from dsmf_server.impl.domain_util import DomainUtil
 from dsmf_server.impl.switch_deployment import SwitchDeployment
+from dsmf_server.impl.tunnel_deployment import TunnelDeployment
 from dsmf_server.models import Tunnel, Slice
 from switch_client.model.queue import Queue
 
@@ -8,7 +11,7 @@ from switch_client.model.queue import Queue
 class SliceDeployment(object):
     @classmethod
     def deploy_slice(cls, slice_value: Slice, tunnel: Tunnel) -> \
-            dict[str, Queue]:
+            Dict[str, Queue]:
         from_device = DomainState.get_device(slice_value.fr.name)
         to_device = DomainState.get_device(slice_value.to.name)
         begin = None
@@ -50,10 +53,18 @@ class SliceDeployment(object):
                                                          queue=queue
                                                          )
                 ret[device.name] = queue
+
+        # Update tunnel matches
+        DomainState.tunnel_queue_pools[tunnel.tunnel_id] = \
+            TunnelDeployment.deploy_tunnel(tunnel,
+                                           DomainState.tunnel_queue_pools[
+                                               tunnel.tunnel_id] if tunnel.tunnel_id in DomainState.tunnel_queue_pools.keys() else {}
+                                           )
+
         return ret
 
     @classmethod
-    def remove_slice(cls, slice_value: Slice, queue_pool: dict[str, Queue]):
+    def remove_slice(cls, slice_value: Slice, queue_pool: Dict[str, Queue]):
         # Remove switch infra
         for switch_name, queue in queue_pool:
             SwitchDeployment.uninstall_switch(switch=DomainState.get_device(switch_name),

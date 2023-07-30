@@ -251,7 +251,7 @@
           "200": {
             "description": "The authentication token as string",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }

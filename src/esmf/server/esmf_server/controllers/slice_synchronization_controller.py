@@ -59,7 +59,7 @@ async def slice_deployment_get(request: web.Request, auth) -> web.Response:
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice synchronization is not supported by this service")
-    return web.Response(status=200, body=DomainState.slice_deployments.values())
+    return web.Response(status=200, content_type="application/json", body=DomainState.slice_deployments.values())
 
 
 async def slice_deployment_put(request: web.Request, auth, slice_id) -> web.Response:
@@ -155,7 +155,7 @@ async def slice_reservation_get(request: web.Request, auth) -> web.Response:
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice synchronization is not supported by this service")
-    return web.Response(status=200, body=DomainState.slice_reservations.values())
+    return web.Response(status=200, content_type="application/json", body=DomainState.slice_reservations.values())
 
 
 async def slice_reservation_put(request: web.Request, auth, body=None) -> web.Response:

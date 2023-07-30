@@ -10,8 +10,8 @@ from vpn_gateway_server.models import TunnelEntryMatchesInner
 from vpn_gateway_server.models.tunnel_entry import TunnelEntry
 from vpn_gateway_server import util
 
-INTF_PATTERN = re.compile("([A-Za-z0-9_\\-])*")
-KEY_PATTERN = re.compile("([A-Za-z0-9/\\+=])*")
+INTF_PATTERN = re.compile("[A-Za-z0-9_-]+")
+KEY_PATTERN = re.compile("[A-Za-z0-9/\\+=]+")
 MAC_PATTERN = re.compile("[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]"
                          ":[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]:[0-9A-Fa-f][0-9A-Fa-f]")
 
@@ -20,7 +20,7 @@ MAX_PORT = 65535
 
 
 class TunnelEntryData:
-    tunnel_entries: dict[int, TunnelEntry] = {}
+    tunnel_entries: Dict[int, TunnelEntry] = {}
 
 
 async def tunnel_entry_delete(request: web.Request, auth, tunnel_entry_id) -> web.Response:
@@ -66,7 +66,7 @@ async def tunnel_entry_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
-    return web.Response(status=200, body=pprint.pformat(TunnelEntryData.tunnel_entries.values()))
+    return web.Response(status=200, content_type="application/json", body=pprint.pformat(TunnelEntryData.tunnel_entries.values()))
 
 
 async def tunnel_entry_put(request: web.Request, auth, body=None) -> web.Response:

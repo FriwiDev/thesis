@@ -1,7 +1,5 @@
-from typing import List, Dict
 from aiohttp import web
 
-from switch_server import util
 from switch_server.command_util import run_command
 from switch_server.controllers.authentication_controller import check_auth
 from switch_server.controllers.queue_management_controller import check_port, MAX_RATE

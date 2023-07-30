@@ -1,4 +1,5 @@
 import ipaddress
+from typing import Dict, Tuple
 
 from dsmf_server.impl.domain_state import DomainState, DeviceType
 from dsmf_server.impl.domain_util import DomainUtil
@@ -11,8 +12,8 @@ from vpn_gateway_client.model.tunnel_entry import TunnelEntry
 
 class TunnelDeployment(object):
     @classmethod
-    def deploy_tunnel(cls, tunnel: Tunnel, queue_pool: dict[str, (Queue, Queue or None)]) -> \
-            dict[str, (Queue, Queue or None)]:
+    def deploy_tunnel(cls, tunnel: Tunnel, queue_pool: Dict[str, Tuple[Queue, Queue or None]]) -> \
+            Dict[str, Tuple[Queue, Queue or None]]:
         # Build a route across networks
         # TODO-FW The ESMF/CTMF could also tell us this information to make this more robust for alternative routes
         networks = DomainUtil.route_network(tunnel.fr.network, tunnel.to.network)
@@ -111,7 +112,7 @@ class TunnelDeployment(object):
         return ret
 
     @classmethod
-    def remove_tunnel(cls, tunnel: Tunnel, queue_pool: dict[str, (Queue, Queue or None)]):
+    def remove_tunnel(cls, tunnel: Tunnel, queue_pool: Dict[str, Tuple[Queue, Queue or None]]):
         # Remove switch infra
         for switch_name, queue_def in queue_pool:
             queue, reverse_queue = queue_def

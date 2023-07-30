@@ -1,5 +1,7 @@
 import heapq as hq
+import json
 import math
+from typing import List, Tuple
 
 from dsmf_server.impl.domain_state import DomainState, DeviceType
 from dsmf_server.models import DeviceConfiguration, ConnectionConfiguration
@@ -116,7 +118,7 @@ class DomainUtil(object):
                     last_dev = border.device_name
                     dst = border.connection.other_end
                     break
-            if not first_dev:
+            if not last_dev:
                 raise Exception("Could not reach network " + next_network + " from our POV - please adjust config")
 
         # Build a device list using first and last out of view devices, along with our available switches
@@ -243,7 +245,7 @@ class DomainUtil(object):
 
     @classmethod
     # https://stackoverflow.com/a/56740241
-    def dijkstra(cls, graph: list[list[(int, int)]], s: int):
+    def dijkstra(cls, graph: List[List[Tuple[int, int]]], s: int):
         n = len(graph)
         visited = [False] * n
         weights = [math.inf] * n

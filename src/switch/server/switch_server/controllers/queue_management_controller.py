@@ -1,3 +1,4 @@
+import pprint
 import re
 from typing import List, Dict
 from aiohttp import web
@@ -9,12 +10,12 @@ from switch_server.models.queue import Queue
 MAX_QUEUE = 65535
 MAX_RATE = 1000000000000
 MAX_PRIORITY = 65535
-PORT_PATTERN = re.compile("([A-Z][a-z][0-9]_-)*")
+PORT_PATTERN = re.compile("[A-Za-z0-9_-]+")
 
 
 class QueueData:
     current_queue_id = 1
-    queues: dict[int, Queue] = {}
+    queues: Dict[int, Queue] = {}
 
 
 async def queue_delete(request: web.Request, auth, queue_id, port) -> web.Response:
@@ -71,7 +72,7 @@ async def queue_put(request: web.Request, auth, body=None) -> web.Response:
     QueueData.queues[QueueData.current_queue_id] = queue
     QueueData.current_queue_id += 1
     flush_queues(queue.port)
-    return web.Response(status=200, content_type="application/json", body=queue.to_str())
+    return web.Response(status=200, content_type="application/json", body=pprint.pformat(queue))
 
 
 def flush_queues(port: str):

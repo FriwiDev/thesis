@@ -106,7 +106,7 @@ class SwitchPortDescription(
                 "hw_addr": hw_addr,
                 "name": name,
                 "config": config,
-                "impl": state,
+                "state": state,
                 "curr": curr,
                 "advertised": advertised,
                 "supported": supported,
@@ -130,7 +130,7 @@ class SwitchPortDescription(
     def __getitem__(self, name: typing_extensions.Literal["config"]) -> MetaOapg.properties.config: ...
     
     @typing.overload
-    def __getitem__(self, name: typing_extensions.Literal["impl"]) -> MetaOapg.properties.state: ...
+    def __getitem__(self, name: typing_extensions.Literal["state"]) -> MetaOapg.properties.state: ...
     
     @typing.overload
     def __getitem__(self, name: typing_extensions.Literal["curr"]) -> MetaOapg.properties.curr: ...
@@ -159,7 +159,7 @@ class SwitchPortDescription(
     @typing.overload
     def __getitem__(self, name: str) -> schemas.UnsetAnyTypeSchema: ...
     
-    def __getitem__(self, name: typing.Union[typing_extensions.Literal["port_no", "hw_addr", "name", "config", "impl", "curr", "advertised", "supported", "peer", "curr_speed", "max_speed", "length", "properties", ], str]):
+    def __getitem__(self, name: typing.Union[typing_extensions.Literal["port_no", "hw_addr", "name", "config", "state", "curr", "advertised", "supported", "peer", "curr_speed", "max_speed", "length", "properties", ], str]):
         # dict_instance[name] accessor
         return super().__getitem__(name)
     
@@ -177,7 +177,7 @@ class SwitchPortDescription(
     def get_item_oapg(self, name: typing_extensions.Literal["config"]) -> typing.Union[MetaOapg.properties.config, schemas.Unset]: ...
     
     @typing.overload
-    def get_item_oapg(self, name: typing_extensions.Literal["impl"]) -> typing.Union[MetaOapg.properties.state, schemas.Unset]: ...
+    def get_item_oapg(self, name: typing_extensions.Literal["state"]) -> typing.Union[MetaOapg.properties.state, schemas.Unset]: ...
     
     @typing.overload
     def get_item_oapg(self, name: typing_extensions.Literal["curr"]) -> typing.Union[MetaOapg.properties.curr, schemas.Unset]: ...
@@ -206,7 +206,7 @@ class SwitchPortDescription(
     @typing.overload
     def get_item_oapg(self, name: str) -> typing.Union[schemas.UnsetAnyTypeSchema, schemas.Unset]: ...
     
-    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["port_no", "hw_addr", "name", "config", "impl", "curr", "advertised", "supported", "peer", "curr_speed", "max_speed", "length", "properties", ], str]):
+    def get_item_oapg(self, name: typing.Union[typing_extensions.Literal["port_no", "hw_addr", "name", "config", "state", "curr", "advertised", "supported", "peer", "curr_speed", "max_speed", "length", "properties", ], str]):
         return super().get_item_oapg(name)
     
 

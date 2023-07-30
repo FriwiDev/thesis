@@ -1,3 +1,5 @@
+from typing import Dict
+
 from esmf_server.impl.domain_state import DomainState
 from esmf_server.impl.domain_util import DomainUtil
 
@@ -24,8 +26,8 @@ class DeployedTunnel(object):
 class EdgeState(object):
     current_slice_id = DomainState.config.slice_id_range.fr
     current_tunnel_id = DomainState.config.tunnel_id_range.fr
-    slices: dict[int, DeployedSlice] = {}
-    tunnels: dict[int, DeployedTunnel] = {}
+    slices: Dict[int, DeployedSlice] = {}
+    tunnels: Dict[int, DeployedTunnel] = {}
 
     @classmethod
     def handle_slice_request(cls, slices: [Slice], owner: str) -> int or [Slice]:

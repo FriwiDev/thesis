@@ -48,7 +48,7 @@ async def slice_get(request: web.Request, auth) -> web.Response:
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice management is not supported by this service")
-    return web.Response(status=200, body=EdgeState.get_slices_by_owner(get_owner(auth)))
+    return web.Response(status=200, content_type="application/json", body=EdgeState.get_slices_by_owner(get_owner(auth)))
 
 
 async def slice_put(request: web.Request, auth, slices) -> web.Response:
@@ -78,7 +78,7 @@ async def slice_put(request: web.Request, auth, slices) -> web.Response:
     elif ret == 507:
         return web.Response(status=507, reason="Insufficient resources by participating domain or requester")
     else:
-        return web.Response(status=200, body=ret)
+        return web.Response(status=200, content_type="application/json", body=ret)
 
 
 def get_owner(auth: str):

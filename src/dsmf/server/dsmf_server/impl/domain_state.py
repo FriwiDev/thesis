@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Dict, Tuple
 
 from dsmf_server.impl.configuration_util import ConfigurationUtil
 from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfiguration
@@ -12,12 +13,12 @@ DeviceType = Enum('SwitchType',
 
 class DomainState(object):
     config = ConfigurationUtil.load_configuration_from_disk()
-    tunnel_reservations: dict[int, Tunnel] = {}
-    tunnel_deployments: dict[int, Tunnel] = {}
-    slice_reservations: dict[int, Slice] = {}
-    slice_deployments: dict[int, Slice] = {}
-    tunnel_queue_pools: dict[int, dict[str, (Queue, Queue or None)]] = {}
-    slice_queue_pools: dict[int, dict[str, Queue]] = {}
+    tunnel_reservations: Dict[int, Tunnel] = {}
+    tunnel_deployments: Dict[int, Tunnel] = {}
+    slice_reservations: Dict[int, Slice] = {}
+    slice_deployments: Dict[int, Slice] = {}
+    tunnel_queue_pools: Dict[int, Dict[str, Tuple[Queue, Queue or None]]] = {}
+    slice_queue_pools: Dict[int, Dict[str, Queue]] = {}
 
     @classmethod
     def get_device(cls, name: str) -> DeviceConfiguration or None:

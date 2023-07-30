@@ -1,3 +1,5 @@
+from typing import Dict
+
 from esmf_server.impl.configuration_util import ConfigurationUtil
 
 from esmf_server.models import Tunnel, Slice, NetworkConfiguration, DeviceConfiguration
@@ -5,10 +7,10 @@ from esmf_server.models import Tunnel, Slice, NetworkConfiguration, DeviceConfig
 
 class DomainState(object):
     config = ConfigurationUtil.load_configuration_from_disk()
-    tunnel_reservations: dict[int, Tunnel] = {}
-    tunnel_deployments: dict[int, Tunnel] = {}
-    slice_reservations: dict[int, Slice] = {}
-    slice_deployments: dict[int, Slice] = {}
+    tunnel_reservations: Dict[int, Tunnel] = {}
+    tunnel_deployments: Dict[int, Tunnel] = {}
+    slice_reservations: Dict[int, Slice] = {}
+    slice_deployments: Dict[int, Slice] = {}
 
     @classmethod
     def get_network(cls, name: str) -> NetworkConfiguration or None:

@@ -28,7 +28,7 @@ paths:
       responses:
         "200":
           content:
-            application/json:
+           text/plain:
               schema:
                 type: string
           description: The authentication token as string

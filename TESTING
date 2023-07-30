@@ -1,0 +1,61 @@
+DSMF:
+
+sudo lxc exec DSMF1 -- curl -X 'PUT' \
+  'http://localhost:8081/v1/tunnel_reservation?auth=token' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "tunnel_id": 0,
+  "min_rate": 10000,
+  "max_rate": 100000,
+  "burst_rate": 100000,
+  "latency": 0,
+  "fr": {
+    "ip": "10.0.0.6",
+    "port": 873,
+    "name": "vpn1",
+    "network": "net1"
+  },
+  "to": {
+    "ip": "10.0.0.9",
+    "port": 874,
+    "name": "vpn2",
+    "network": "net2"
+  },
+  "private_key": "SP06+AC4NyLXJF7ctLa9ZbJqrcST7JGiksOnfafuYXY=",
+  "public_key": "sfxNcDVY7LijUQZR80hvngNDCqUlgfTQL9xrNVRpzDU="
+}' -v
+
+sudo lxc exec DSMF1 -- curl -X 'PUT' \
+  'http://localhost:8081/v1/tunnel_deployment?auth=token&tunnel_id=0' \
+  -H 'accept: */*' -v
+
+sudo lxc exec DSMF1 -- curl -X 'PUT' \
+  'http://localhost:8081/v1/slice_reservation?auth=token' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slice_id": 0,
+  "min_rate": 10000,
+  "max_rate": 100000,
+  "burst_rate": 100000,
+  "latency": 0,
+  "tunnel_id": 0,
+  "transport_protocol": "UDP",
+  "fr": {
+    "ip": "10.0.0.2",
+    "port": 0,
+    "name": "h1",
+    "network": "net1"
+  },
+  "to": {
+    "ip": "10.0.0.13",
+    "port": 888,
+    "name": "h2",
+    "network": "net2"
+  }
+}' -v
+
+sudo lxc exec DSMF1 -- curl -X 'PUT' \
+  'http://localhost:8081/v1/slice_deployment?auth=token&slice_id=0' \
+  -H 'accept: */*' -v

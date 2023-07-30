@@ -55,7 +55,7 @@ async def tunnel_deployment_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
-    return web.Response(status=200, body=DomainState.tunnel_deployments.values())
+    return web.Response(status=200, content_type="application/json", body=DomainState.tunnel_deployments.values())
 
 
 async def tunnel_deployment_put(request: web.Request, auth, tunnel_id) -> web.Response:
@@ -142,7 +142,7 @@ async def tunnel_reservation_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
-    return web.Response(status=200, body=DomainState.tunnel_reservations.values())
+    return web.Response(status=200, content_type="application/json", body=DomainState.tunnel_reservations.values())
 
 
 async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.Response:

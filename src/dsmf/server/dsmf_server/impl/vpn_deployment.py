@@ -8,6 +8,7 @@ class VPNDeployment(object):
 
     @classmethod
     def create_or_update_tunnel_entry(cls, vpn: DeviceConfiguration, tunnel_entry: TunnelEntry) -> bool:
+        print(tunnel_entry)
         # Create an instance of the API class
         api_client, auth = VPNDeployment.vpn_api_client(vpn)
         api_instance = tunnel_entry_management_api.TunnelEntryManagementApi(api_client)

@@ -129,9 +129,5 @@ sudo lxc exec ESMF1 -- curl -X 'PUT' \
 
 
 sudo lxc exec ESMF1 -- curl -X 'DELETE' \
-  'http://localhost:8080/v1/slice?auth=token' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '[
-  0
-]' -v
+  'http://localhost:8080/v1/slice?auth=token&slice_ids=0' \
+  -H 'accept: */*' -v

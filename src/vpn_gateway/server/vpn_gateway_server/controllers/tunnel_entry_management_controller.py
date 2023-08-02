@@ -49,9 +49,9 @@ async def tunnel_entry_delete(request: web.Request, auth, tunnel_entry_id) -> we
     if ret != 200:
         return web.Response(status=500, reason="Internal Server Error")
     # Delete the tunnel entry from our local deployment
-    if run_command(['ip', 'link', 'del', 'dev', wg_intf]) != 0:
+    if run_command(['ip', 'link', 'del', 'dev', wg_intf])[0] != 0:
         return web.Response(status=500, reason="Internal Server Error")
-    if run_command(['rm', '-f', 'pk_wg' + str(tunnel_entry.local_port)]) != 0:
+    if run_command(['rm', '-f', 'pk_wg' + str(tunnel_entry.local_port)])[0] != 0:
         return web.Response(status=500, reason="Internal Server Error")
     return web.Response(status=200, reason="The tunnel entry was successfully deleted.")
 

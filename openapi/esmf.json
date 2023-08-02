@@ -380,20 +380,21 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "slices",
-            "in": "query",
-            "description": "The slices to reserve. The service will set the slice ids.",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/slice"
+          }
+        ],
+        "requestBody": {
+          "description": "The slices to reserve. The service will set the slice ids.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/slice"
+                }
               }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "The slices have been deployed. Returns the parameters of the deployed slices, including the fresh ids.",
@@ -440,21 +441,22 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "slice_ids",
-            "in": "query",
-            "description": "The ids of the slices to be deleted.",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer",
-                "format": "int32"
+          }
+        ],
+        "requestBody": {
+          "description": "The ids of the slices to be deleted.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int32"
+                }
               }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "The slices were successfully deleted."

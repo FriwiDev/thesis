@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 # **slice_delete**
 <a id="slice_delete"></a>
-> slice_delete(authslice_ids)
+> slice_delete(auth)
 
 
 
@@ -37,13 +37,25 @@ with esmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'slice_ids': [
-        1
-    ],
     }
     try:
         api_response = api_instance.slice_delete(
             query_params=query_params,
+        )
+    except esmf_client.ApiException as e:
+        print("Exception when calling SliceManagementApi->slice_delete: %s\n" % e)
+
+    # example passing only optional values
+    query_params = {
+        'auth': "auth_example",
+    }
+    body = [
+        1
+    ]
+    try:
+        api_response = api_instance.slice_delete(
+            query_params=query_params,
+            body=body,
         )
     except esmf_client.ApiException as e:
         print("Exception when calling SliceManagementApi->slice_delete: %s\n" % e)
@@ -52,28 +64,16 @@ with esmf_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+body | typing.Union[SchemaForRequestBodyApplicationJson, Unset] | optional, default is unset |
 query_params | RequestQueryParams | |
+content_type | str | optional, default is 'application/json' | Selects the schema and serialization of the request body
 stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
 timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
 skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
 
-### query_params
-#### RequestQueryParams
+### body
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-auth | AuthSchema | | 
-slice_ids | SliceIdsSchema | | 
-
-
-# AuthSchema
-
-## Model Type Info
-Input Type | Accessed Type | Description | Notes
------------- | ------------- | ------------- | -------------
-str,  | str,  |  | 
-
-# SliceIdsSchema
+# SchemaForRequestBodyApplicationJson
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -84,6 +84,21 @@ list, tuple,  | tuple,  |  |
 Class Name | Input Type | Accessed Type | Description | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 items | decimal.Decimal, int,  | decimal.Decimal,  |  | value must be a 32 bit integer
+
+### query_params
+#### RequestQueryParams
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+auth | AuthSchema | | 
+
+
+# AuthSchema
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+str,  | str,  |  | 
 
 ### Return Types, Responses
 
@@ -258,7 +273,7 @@ No authorization required
 
 # **slice_put**
 <a id="slice_put"></a>
-> Slice slice_put(authslices)
+> Slice slice_put(auth)
 
 
 
@@ -285,7 +300,20 @@ with esmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-        'slices': [
+    }
+    try:
+        api_response = api_instance.slice_put(
+            query_params=query_params,
+        )
+        pprint(api_response)
+    except esmf_client.ApiException as e:
+        print("Exception when calling SliceManagementApi->slice_put: %s\n" % e)
+
+    # example passing only optional values
+    query_params = {
+        'auth': "auth_example",
+    }
+    body = [
         Slice(
             slice_id=1,
             min_rate=1,
@@ -302,11 +330,11 @@ with esmf_client.ApiClient(configuration) as api_client:
             ),
 ,
         )
-    ],
-    }
+    ]
     try:
         api_response = api_instance.slice_put(
             query_params=query_params,
+            body=body,
         )
         pprint(api_response)
     except esmf_client.ApiException as e:
@@ -316,29 +344,17 @@ with esmf_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+body | typing.Union[SchemaForRequestBodyApplicationJson, Unset] | optional, default is unset |
 query_params | RequestQueryParams | |
+content_type | str | optional, default is 'application/json' | Selects the schema and serialization of the request body
 accept_content_types | typing.Tuple[str] | default is ('application/json', ) | Tells the server the content type(s) that are accepted by the client
 stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
 timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
 skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
 
-### query_params
-#### RequestQueryParams
+### body
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-auth | AuthSchema | | 
-slices | SlicesSchema | | 
-
-
-# AuthSchema
-
-## Model Type Info
-Input Type | Accessed Type | Description | Notes
------------- | ------------- | ------------- | -------------
-str,  | str,  |  | 
-
-# SlicesSchema
+# SchemaForRequestBodyApplicationJson
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -349,6 +365,21 @@ list, tuple,  | tuple,  |  |
 Class Name | Input Type | Accessed Type | Description | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) |  | 
+
+### query_params
+#### RequestQueryParams
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+auth | AuthSchema | | 
+
+
+# AuthSchema
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+str,  | str,  |  | 
 
 ### Return Types, Responses
 

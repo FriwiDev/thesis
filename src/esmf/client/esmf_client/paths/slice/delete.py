@@ -9,6 +9,7 @@
 from dataclasses import dataclass
 import typing_extensions
 import urllib3
+from urllib3._collections import HTTPHeaderDict
 
 from esmf_client import api_client, exceptions
 from datetime import date, datetime  # noqa: F401
@@ -28,34 +29,10 @@ from . import path
 
 # Query params
 AuthSchema = schemas.StrSchema
-
-
-class SliceIdsSchema(
-    schemas.ListSchema
-):
-
-
-    class MetaOapg:
-        items = schemas.Int32Schema
-
-    def __new__(
-        cls,
-        _arg: typing.Union[typing.Tuple[typing.Union[MetaOapg.items, decimal.Decimal, int, ]], typing.List[typing.Union[MetaOapg.items, decimal.Decimal, int, ]]],
-        _configuration: typing.Optional[schemas.Configuration] = None,
-    ) -> 'SliceIdsSchema':
-        return super().__new__(
-            cls,
-            _arg,
-            _configuration=_configuration,
-        )
-
-    def __getitem__(self, i: int) -> MetaOapg.items:
-        return super().__getitem__(i)
 RequestRequiredQueryParams = typing_extensions.TypedDict(
     'RequestRequiredQueryParams',
     {
         'auth': typing.Union[AuthSchema, str, ],
-        'slice_ids': typing.Union[SliceIdsSchema, list, tuple, ],
     }
 )
 RequestOptionalQueryParams = typing_extensions.TypedDict(
@@ -77,12 +54,37 @@ request_query_auth = api_client.QueryParameter(
     required=True,
     explode=True,
 )
-request_query_slice_ids = api_client.QueryParameter(
-    name="slice_ids",
-    style=api_client.ParameterStyle.FORM,
-    schema=SliceIdsSchema,
-    required=True,
-    explode=True,
+# body param
+
+
+class SchemaForRequestBodyApplicationJson(
+    schemas.ListSchema
+):
+
+
+    class MetaOapg:
+        items = schemas.Int32Schema
+
+    def __new__(
+        cls,
+        _arg: typing.Union[typing.Tuple[typing.Union[MetaOapg.items, decimal.Decimal, int, ]], typing.List[typing.Union[MetaOapg.items, decimal.Decimal, int, ]]],
+        _configuration: typing.Optional[schemas.Configuration] = None,
+    ) -> 'SchemaForRequestBodyApplicationJson':
+        return super().__new__(
+            cls,
+            _arg,
+            _configuration=_configuration,
+        )
+
+    def __getitem__(self, i: int) -> MetaOapg.items:
+        return super().__getitem__(i)
+
+
+request_body_request_body = api_client.RequestBody(
+    content={
+        'application/json': api_client.MediaType(
+            schema=SchemaForRequestBodyApplicationJson),
+    },
 )
 
 
@@ -170,6 +172,8 @@ class BaseApi(api_client.Api):
     @typing.overload
     def _slice_delete_oapg(
         self,
+        content_type: typing_extensions.Literal["application/json"] = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -181,7 +185,23 @@ class BaseApi(api_client.Api):
     @typing.overload
     def _slice_delete_oapg(
         self,
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
+        query_params: RequestQueryParams = frozendict.frozendict(),
+        stream: bool = False,
+        timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
+        skip_deserialization: typing_extensions.Literal[False] = ...,
+    ) -> typing.Union[
+        ApiResponseFor200,
+    ]: ...
+
+
+    @typing.overload
+    def _slice_delete_oapg(
+        self,
         skip_deserialization: typing_extensions.Literal[True],
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -190,6 +210,8 @@ class BaseApi(api_client.Api):
     @typing.overload
     def _slice_delete_oapg(
         self,
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -201,6 +223,8 @@ class BaseApi(api_client.Api):
 
     def _slice_delete_oapg(
         self,
+        content_type: str = 'application/json',
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -217,7 +241,6 @@ class BaseApi(api_client.Api):
         prefix_separator_iterator = None
         for parameter in (
             request_query_auth,
-            request_query_slice_ids,
         ):
             parameter_data = query_params.get(parameter.name, schemas.unset)
             if parameter_data is schemas.unset:
@@ -227,11 +250,25 @@ class BaseApi(api_client.Api):
             serialized_data = parameter.serialize(parameter_data, prefix_separator_iterator)
             for serialized_value in serialized_data.values():
                 used_path += serialized_value
+
+        _headers = HTTPHeaderDict()
         # TODO add cookie handling
 
+        _fields = None
+        _body = None
+        if body is not schemas.unset:
+            serialized_data = request_body_request_body.serialize(body, content_type)
+            _headers.add('Content-Type', content_type)
+            if 'fields' in serialized_data:
+                _fields = serialized_data['fields']
+            elif 'body' in serialized_data:
+                _body = serialized_data['body']
         response = self.api_client.call_api(
             resource_path=used_path,
             method='delete'.upper(),
+            headers=_headers,
+            fields=_fields,
+            body=_body,
             stream=stream,
             timeout=timeout,
         )
@@ -261,6 +298,8 @@ class SliceDelete(BaseApi):
     @typing.overload
     def slice_delete(
         self,
+        content_type: typing_extensions.Literal["application/json"] = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -272,7 +311,23 @@ class SliceDelete(BaseApi):
     @typing.overload
     def slice_delete(
         self,
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
+        query_params: RequestQueryParams = frozendict.frozendict(),
+        stream: bool = False,
+        timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
+        skip_deserialization: typing_extensions.Literal[False] = ...,
+    ) -> typing.Union[
+        ApiResponseFor200,
+    ]: ...
+
+
+    @typing.overload
+    def slice_delete(
+        self,
         skip_deserialization: typing_extensions.Literal[True],
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -281,6 +336,8 @@ class SliceDelete(BaseApi):
     @typing.overload
     def slice_delete(
         self,
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -292,13 +349,17 @@ class SliceDelete(BaseApi):
 
     def slice_delete(
         self,
+        content_type: str = 'application/json',
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = False,
     ):
         return self._slice_delete_oapg(
+            body=body,
             query_params=query_params,
+            content_type=content_type,
             stream=stream,
             timeout=timeout,
             skip_deserialization=skip_deserialization
@@ -311,6 +372,8 @@ class ApiFordelete(BaseApi):
     @typing.overload
     def delete(
         self,
+        content_type: typing_extensions.Literal["application/json"] = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -322,7 +385,23 @@ class ApiFordelete(BaseApi):
     @typing.overload
     def delete(
         self,
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
+        query_params: RequestQueryParams = frozendict.frozendict(),
+        stream: bool = False,
+        timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
+        skip_deserialization: typing_extensions.Literal[False] = ...,
+    ) -> typing.Union[
+        ApiResponseFor200,
+    ]: ...
+
+
+    @typing.overload
+    def delete(
+        self,
         skip_deserialization: typing_extensions.Literal[True],
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -331,6 +410,8 @@ class ApiFordelete(BaseApi):
     @typing.overload
     def delete(
         self,
+        content_type: str = ...,
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
@@ -342,13 +423,17 @@ class ApiFordelete(BaseApi):
 
     def delete(
         self,
+        content_type: str = 'application/json',
+        body: typing.Union[SchemaForRequestBodyApplicationJson, list, tuple, schemas.Unset] = schemas.unset,
         query_params: RequestQueryParams = frozendict.frozendict(),
         stream: bool = False,
         timeout: typing.Optional[typing.Union[int, typing.Tuple]] = None,
         skip_deserialization: bool = False,
     ):
         return self._slice_delete_oapg(
+            body=body,
             query_params=query_params,
+            content_type=content_type,
             stream=stream,
             timeout=timeout,
             skip_deserialization=skip_deserialization

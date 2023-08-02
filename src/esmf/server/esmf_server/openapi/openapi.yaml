@@ -28,7 +28,7 @@ paths:
       responses:
         "200":
           content:
-           application/json:
+            application/json:
               schema:
                 type: string
           description: The authentication token as string
@@ -113,17 +113,16 @@ paths:
         schema:
           type: string
         style: form
-      - description: The ids of the slices to be deleted.
-        explode: true
-        in: query
-        name: slice_ids
-        required: true
-        schema:
-          items:
-            format: int32
-            type: integer
-          type: array
-        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                format: int32
+                type: integer
+              type: array
+        description: The ids of the slices to be deleted.
+        x-body-name: body
       responses:
         "200":
           description: The slices were successfully deleted.
@@ -140,6 +139,7 @@ paths:
       tags:
       - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
+      x-codegen-request-body-name: body
     description: Endpoint to manage slices by requesters
     get:
       description: Lists all current slices by this requester
@@ -182,16 +182,15 @@ paths:
         schema:
           type: string
         style: form
-      - description: The slices to reserve. The service will set the slice ids.
-        explode: true
-        in: query
-        name: slices
-        required: true
-        schema:
-          items:
-            $ref: '#/components/schemas/slice'
-          type: array
-        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/slice'
+              type: array
+        description: The slices to reserve. The service will set the slice ids.
+        x-body-name: body
       responses:
         "200":
           content:
@@ -218,6 +217,7 @@ paths:
       tags:
       - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
+      x-codegen-request-body-name: body
     summary: Manages slices for requesters
   /slice_deployment:
     delete:

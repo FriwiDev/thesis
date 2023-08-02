@@ -12,14 +12,16 @@ async def test_slice_delete(client):
 
     
     """
-    params = [('auth', 'auth_example'),
-                    ('slice_ids', [56])]
+    body = [56]
+    params = [('auth', 'auth_example')]
     headers = { 
+        'Content-Type': 'application/json',
     }
     response = await client.request(
         method='DELETE',
         path='/v1/slice',
         headers=headers,
+        json=body,
         params=params,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')
@@ -48,15 +50,17 @@ async def test_slice_put(client):
 
     
     """
-    params = [('auth', 'auth_example'),
-                    ('slices', [esmf_server.Slice()])]
+    body = [esmf_server.Slice()]
+    params = [('auth', 'auth_example')]
     headers = { 
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
     }
     response = await client.request(
         method='PUT',
         path='/v1/slice',
         headers=headers,
+        json=body,
         params=params,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')

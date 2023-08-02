@@ -62,11 +62,11 @@ sudo lxc exec DSMF1 -- curl -X 'PUT' \
 
 
 
-sudo lxc exec DSMF1 -- curl -X 'DELETE' \                                                                                                    ✔
+sudo lxc exec DSMF1 -- curl -X 'DELETE' \
   'http://localhost:8081/v1/slice_deployment?auth=token&slice_id=0' \
   -H 'accept: */*' -v
 
-sudo lxc exec DSMF1 -- curl -X 'DELETE' \                                                                                                    ✔
+sudo lxc exec DSMF1 -- curl -X 'DELETE' \
   'http://localhost:8081/v1/tunnel_deployment?auth=token&tunnel_id=0' \
   -H 'accept: */*' -v
 

@@ -113,16 +113,17 @@ paths:
         schema:
           type: string
         style: form
-      requestBody:
-        content:
-          application/json:
-            schema:
-              items:
-                format: int32
-                type: integer
-              type: array
-        description: The ids of the slices to be deleted.
-        x-body-name: body
+      - description: The ids of the slices to be deleted.
+        explode: true
+        in: query
+        name: slice_ids
+        required: true
+        schema:
+          items:
+            format: int32
+            type: integer
+          type: array
+        style: form
       responses:
         "200":
           description: The slices were successfully deleted.
@@ -139,7 +140,6 @@ paths:
       tags:
       - Slice Management
       x-openapi-router-controller: esmf_server.controllers.slice_management_controller
-      x-codegen-request-body-name: body
     description: Endpoint to manage slices by requesters
     get:
       description: Lists all current slices by this requester

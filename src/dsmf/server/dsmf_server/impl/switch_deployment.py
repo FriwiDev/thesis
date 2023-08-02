@@ -23,8 +23,8 @@ class SwitchDeployment(object):
                      ) -> (Queue, Queue or None):  # Returns the queue and the potential reverse queue
         # One of the ports will be 0, indicating our direction (we only know the port on one side)
         # TODO-Thesis: Traffic shaping
-        if switch_type == DeviceType.SRC_ENTRY or switch_type == DeviceType.SRC_TP \
-                or switch_type == DeviceType.SRC_EXIT or switch_type == DeviceType.SRC_ALL:
+        if switch_type == DeviceType.SRC_BEGIN or switch_type == DeviceType.SRC_TP \
+                or switch_type == DeviceType.SRC_END or switch_type == DeviceType.SRC_ALL:
             intf_out = DomainUtil.port_name_of_switch(switch, next_name)
             print("Intf-out: " + str(intf_out))
             # Add our slice queue
@@ -46,7 +46,7 @@ class SwitchDeployment(object):
             if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
                 raise Exception("Error while removing old flows")
             print("Creating new flows...")
-            if switch_type == DeviceType.SRC_ENTRY or switch_type == DeviceType.SRC_ALL:
+            if switch_type == DeviceType.SRC_BEGIN or switch_type == DeviceType.SRC_ALL:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
@@ -54,7 +54,7 @@ class SwitchDeployment(object):
                                                     mpls=slice_id, push_mpls=True,
                                                     queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
-            elif switch_type == DeviceType.SRC_TP or switch_type == DeviceType.SRC_EXIT:
+            elif switch_type == DeviceType.SRC_TP or switch_type == DeviceType.SRC_END:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
@@ -63,8 +63,8 @@ class SwitchDeployment(object):
                     raise Exception("Error while installing flow")
             print("Done")
             return queue, None
-        elif switch_type == DeviceType.BN_ENTRY or switch_type == DeviceType.BN_TP \
-                or switch_type == DeviceType.BN_EXIT or switch_type == DeviceType.BN_ALL:
+        elif switch_type == DeviceType.BN_BEGIN or switch_type == DeviceType.BN_TP \
+                or switch_type == DeviceType.BN_END or switch_type == DeviceType.BN_ALL:
             intf_in = DomainUtil.port_name_of_switch(switch, prev_name)
             # Add our tunnel queue
             queue = Queue(queue_id=SwitchDeployment.create_queue(switch, queue),
@@ -92,7 +92,7 @@ class SwitchDeployment(object):
             # Remove old flows
             if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
                 raise Exception("Error while removing old flows")
-            if switch_type == DeviceType.BN_ENTRY:
+            if switch_type == DeviceType.BN_BEGIN:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
@@ -120,7 +120,7 @@ class SwitchDeployment(object):
                                                     in_port=port_out,
                                                     queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
-            elif switch_type == DeviceType.BN_EXIT:
+            elif switch_type == DeviceType.BN_END:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
@@ -151,8 +151,8 @@ class SwitchDeployment(object):
                                                     queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
             return queue, reverse_queue
-        if switch_type == DeviceType.DST_ENTRY or switch_type == DeviceType.DST_TP \
-                or switch_type == DeviceType.DST_EXIT or switch_type == DeviceType.DST_ALL:
+        if switch_type == DeviceType.DST_BEGIN or switch_type == DeviceType.DST_TP \
+                or switch_type == DeviceType.DST_END or switch_type == DeviceType.DST_ALL:
             # Add our slice queue
             queue = Queue(queue_id=SwitchDeployment.create_queue(switch, queue),
                           min_rate=queue["min_rate"],
@@ -168,14 +168,14 @@ class SwitchDeployment(object):
             # Remove old flows
             if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
                 raise Exception("Error while removing old flows")
-            if switch_type == DeviceType.DST_ENTRY or switch_type == DeviceType.DST_TP:
+            if switch_type == DeviceType.DST_BEGIN or switch_type == DeviceType.DST_TP:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
                                                     in_port=port_in,
                                                     queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
-            elif switch_type == DeviceType.DST_EXIT or switch_type == DeviceType.DST_ALL:
+            elif switch_type == DeviceType.DST_END or switch_type == DeviceType.DST_ALL:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
@@ -220,6 +220,8 @@ class SwitchDeployment(object):
         # Build matches
         m = {}
 
+        if in_port != -1:
+            m['in_port'] = in_port
         if mpls_match == 0:
             m['ipv4_src'] = str(src_ip)
             m['ipv4_dst'] = str(dst_ip)
@@ -227,8 +229,6 @@ class SwitchDeployment(object):
                 m[protocol.lower() + "_src"] = src_port
             if dst_port != 0:
                 m[protocol.lower() + "_dst"] = dst_port
-            if in_port != -1:
-                m['in_port'] = in_port
             m['eth_type'] = 2048
             m['ip_proto'] = 17
         else:

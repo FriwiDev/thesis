@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 # **slice_delete**
 <a id="slice_delete"></a>
-> slice_delete(auth)
+> slice_delete(authslice_ids)
 
 
 
@@ -37,25 +37,13 @@ with esmf_client.ApiClient(configuration) as api_client:
     # example passing only required values which don't have defaults set
     query_params = {
         'auth': "auth_example",
-    }
-    try:
-        api_response = api_instance.slice_delete(
-            query_params=query_params,
-        )
-    except esmf_client.ApiException as e:
-        print("Exception when calling SliceManagementApi->slice_delete: %s\n" % e)
-
-    # example passing only optional values
-    query_params = {
-        'auth': "auth_example",
-    }
-    body = [
+        'slice_ids': [
         1
-    ]
+    ],
+    }
     try:
         api_response = api_instance.slice_delete(
             query_params=query_params,
-            body=body,
         )
     except esmf_client.ApiException as e:
         print("Exception when calling SliceManagementApi->slice_delete: %s\n" % e)
@@ -64,16 +52,28 @@ with esmf_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
-body | typing.Union[SchemaForRequestBodyApplicationJson, Unset] | optional, default is unset |
 query_params | RequestQueryParams | |
-content_type | str | optional, default is 'application/json' | Selects the schema and serialization of the request body
 stream | bool | default is False | if True then the response.content will be streamed and loaded from a file like object. When downloading a file, set this to True to force the code to deserialize the content to a FileSchema file
 timeout | typing.Optional[typing.Union[int, typing.Tuple]] | default is None | the timeout used by the rest client
 skip_deserialization | bool | default is False | when True, headers and body will be unset and an instance of api_client.ApiResponseWithoutDeserialization will be returned
 
-### body
+### query_params
+#### RequestQueryParams
 
-# SchemaForRequestBodyApplicationJson
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+auth | AuthSchema | | 
+slice_ids | SliceIdsSchema | | 
+
+
+# AuthSchema
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+str,  | str,  |  | 
+
+# SliceIdsSchema
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
@@ -84,21 +84,6 @@ list, tuple,  | tuple,  |  |
 Class Name | Input Type | Accessed Type | Description | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 items | decimal.Decimal, int,  | decimal.Decimal,  |  | value must be a 32 bit integer
-
-### query_params
-#### RequestQueryParams
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
-auth | AuthSchema | | 
-
-
-# AuthSchema
-
-## Model Type Info
-Input Type | Accessed Type | Description | Notes
------------- | ------------- | ------------- | -------------
-str,  | str,  |  | 
 
 ### Return Types, Responses
 

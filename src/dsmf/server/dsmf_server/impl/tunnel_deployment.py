@@ -84,7 +84,7 @@ class TunnelDeployment(object):
                                   max_rate=tunnel.max_rate,
                                   burst_rate=tunnel.burst_rate,
                                   priority=1,
-                                  port=-1  # Will be set by setup_switch()
+                                  port=DomainUtil.port_name_of_switch(device, devices[i + 1])
                                   )
                     old_queue = None
                     reverse_queue = None

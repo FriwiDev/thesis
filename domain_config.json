@@ -1,30 +1,30 @@
 {
   "type": "DSMF",
-  "network": "net1",
+  "network": "net2",
   "controllers": [
     {
-      "ip": "10.0.0.13",
+      "ip": "10.0.0.14",
       "port": 8080,
       "connections": [
         {
-          "intf_name": "testnode-eth29",
+          "intf_name": "testnode-eth33",
           "intf_id": 0,
-          "other_end": "DSMF1"
+          "other_end": "DSMF2"
         },
         {
-          "intf_name": "testnode-eth31",
+          "intf_name": "testnode-eth35",
           "intf_id": 1,
-          "other_end": "switch1"
+          "other_end": "switch2"
         }
       ],
-      "network": "net1",
-      "name": "controller1",
+      "network": "net2",
+      "name": "controller2",
       "dpid": null
     }
   ],
   "vpn_gateways": [
     {
-      "ip": "10.0.0.4",
+      "ip": null,
       "port": 8083,
       "connections": [
         {
@@ -48,7 +48,7 @@
       "dpid": null
     },
     {
-      "ip": null,
+      "ip": "10.0.0.6",
       "port": 8083,
       "connections": [
         {
@@ -74,50 +74,50 @@
   ],
   "switches": [
     {
-      "ip": "10.0.0.3",
+      "ip": "10.0.0.7",
       "port": 8082,
       "connections": [
         {
-          "intf_name": "testnode-eth1",
+          "intf_name": "testnode-eth9",
           "intf_id": 0,
-          "other_end": "h1"
+          "other_end": "vpn2"
         },
         {
-          "intf_name": "testnode-eth2",
+          "intf_name": "testnode-eth10",
           "intf_id": 1,
-          "other_end": "vpn1"
+          "other_end": "h2"
         },
         {
-          "intf_name": "testnode-eth16",
+          "intf_name": "testnode-eth22",
           "intf_id": 2,
-          "other_end": "DSMF1"
+          "other_end": "DSMF2"
         },
         {
-          "intf_name": "testnode-eth30",
+          "intf_name": "testnode-eth34",
           "intf_id": 3,
-          "other_end": "controller1"
+          "other_end": "controller2"
         }
       ],
-      "network": "net1",
-      "name": "switch1",
-      "dpid": null
+      "network": "net2",
+      "name": "switch2",
+      "dpid": "0000000000000002"
     }
   ],
   "network_borders": [
     {
       "network_name": "bn",
-      "device_name": "vpn1",
+      "device_name": "vpn2",
       "device_type": "VPN",
       "connection": [
         {
-          "intf_name": "testnode-eth3",
+          "intf_name": "testnode-eth7",
           "intf_id": 0,
-          "other_end": "switch1"
+          "other_end": "switchbn"
         },
         {
-          "intf_name": "testnode-eth4",
+          "intf_name": "testnode-eth8",
           "intf_id": 1,
-          "other_end": "switchbn"
+          "other_end": "switch2"
         }
       ]
     }

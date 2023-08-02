@@ -9,6 +9,9 @@ class ESMFCommunicator(object):
     @classmethod
     def reserve_tunnel(cls, body: Tunnel, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = tunnel_synchronization_api.TunnelSynchronizationApi(api_client)
 
         query_params = {
@@ -18,7 +21,7 @@ class ESMFCommunicator(object):
         try:
             api_instance.tunnel_reservation_put(
                 query_params=query_params,
-                body=body
+                body=body.to_dict()
             )
             return True
         except esmf_client.ApiException as e:
@@ -28,6 +31,9 @@ class ESMFCommunicator(object):
     @classmethod
     def delete_reserved_tunnel(cls, body: Tunnel, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = tunnel_synchronization_api.TunnelSynchronizationApi(api_client)
 
         query_params = {
@@ -47,6 +53,9 @@ class ESMFCommunicator(object):
     @classmethod
     def deploy_tunnel(cls, body: Tunnel, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = tunnel_synchronization_api.TunnelSynchronizationApi(api_client)
 
         query_params = {
@@ -66,6 +75,9 @@ class ESMFCommunicator(object):
     @classmethod
     def delete_deployed_tunnel(cls, body: Tunnel, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = tunnel_synchronization_api.TunnelSynchronizationApi(api_client)
 
         query_params = {
@@ -85,6 +97,9 @@ class ESMFCommunicator(object):
     @classmethod
     def reserve_slice(cls, body: Slice, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = slice_synchronization_api.SliceSynchronizationApi(api_client)
 
         query_params = {
@@ -94,7 +109,7 @@ class ESMFCommunicator(object):
         try:
             api_instance.slice_reservation_put(
                 query_params=query_params,
-                body=body
+                body=body.to_dict()
             )
             return True
         except esmf_client.ApiException as e:
@@ -104,6 +119,9 @@ class ESMFCommunicator(object):
     @classmethod
     def delete_reserved_slice(cls, body: Slice, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = slice_synchronization_api.SliceSynchronizationApi(api_client)
 
         query_params = {
@@ -123,6 +141,9 @@ class ESMFCommunicator(object):
     @classmethod
     def deploy_slice(cls, body: Slice, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = slice_synchronization_api.SliceSynchronizationApi(api_client)
 
         query_params = {
@@ -142,6 +163,9 @@ class ESMFCommunicator(object):
     @classmethod
     def delete_deployed_slice(cls, body: Slice, net: str) -> bool:
         api_client, auth = get_coordinator_client(net)
+        # Support unmanaged networks
+        if not api_client:
+            return True
         api_instance = slice_synchronization_api.SliceSynchronizationApi(api_client)
 
         query_params = {
@@ -159,8 +183,10 @@ class ESMFCommunicator(object):
             return False
 
 
-def get_coordinator_client(net: str) -> (esmf_client.ApiClient, str):
+def get_coordinator_client(net: str) -> (esmf_client.ApiClient or None, str):
     coord = DomainState.get_coordinator_by_network(net)
+    if not coord:
+        return (None, "")
     configuration = esmf_client.Configuration(
         host="http://" + coord.ip + ":" + str(coord.port) + "/v1"
     )

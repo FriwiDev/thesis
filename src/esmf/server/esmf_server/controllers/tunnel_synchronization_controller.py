@@ -1,3 +1,5 @@
+import json
+
 from aiohttp import web
 from esmf_server.impl.domain_state import DomainState
 
@@ -55,7 +57,7 @@ async def tunnel_deployment_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
-    return web.Response(status=200, content_type="application/json", body=DomainState.tunnel_deployments.values())
+    return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in DomainState.tunnel_deployments.values()]))
 
 
 async def tunnel_deployment_put(request: web.Request, auth, tunnel_id) -> web.Response:
@@ -142,7 +144,7 @@ async def tunnel_reservation_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
-    return web.Response(status=200, content_type="application/json", body=DomainState.tunnel_reservations.values())
+    return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in DomainState.tunnel_reservations.values()]))
 
 
 async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.Response:
@@ -177,7 +179,7 @@ async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.R
     try:
         api_instance.tunnel_reservation_put(
             query_params=query_params,
-            body=body
+            body=body.to_dict()
         )
         DomainState.tunnel_reservations[body.tunnel_id] = body
         return web.Response(status=200, reason="The tunnel reservation was successfully deleted.")
@@ -188,7 +190,7 @@ async def tunnel_reservation_put(request: web.Request, auth, body=None) -> web.R
 
 def get_controller_client() -> (dsmf_client.ApiClient, str):
     configuration = dsmf_client.Configuration(
-        host="http://" + DomainState.domain_controller.ip + ":" + str(DomainState.domain_controller.port) + "/v1"
+        host="http://" + DomainState.config.domain_controller.ip + ":" + str(DomainState.config.domain_controller.port) + "/v1"
     )
 
     # Enter a context with an instance of the API client

@@ -32,7 +32,7 @@ class DomainState(object):
         for net in cls.config.networks:
             if net.name == fr:
                 for dev in cls.config.vpn_gateways:
-                    if dev.name == net.preferable_vpn[0]:
+                    if dev.name == net.preferred_vpn[0]:
                         return dev
                 break
         return None

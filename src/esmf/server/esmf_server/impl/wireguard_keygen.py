@@ -1,3 +1,5 @@
+import subprocess
+
 from esmf_server.impl.command_util import run_command
 
 
@@ -7,7 +9,6 @@ class WireguardKeygen(object):
         ec, private_key = run_command(["wg", "genkey"])
         if ec != 0:
             raise Exception(f"Error while generating key: {ec} - {private_key}")
-        ec, public_key = run_command(["sh", "-c", f"\"echo \\\"{private_key}\\\" | wg pubkey\""])
-        if ec != 0:
-            raise Exception(f"Error while exporting public key from private key: {ec} - {public_key}")
+        private_key = private_key.replace("\n", "")
+        public_key = subprocess.getoutput(f'echo "{private_key}" | wg pubkey').replace("\n", "")
         return private_key, public_key

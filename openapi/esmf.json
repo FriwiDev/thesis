@@ -441,22 +441,21 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "requestBody": {
-          "description": "The ids of the slices to be deleted.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
+          },
+          {
+            "name": "slice_ids",
+            "in": "query",
+            "description": "The ids of the slices to be deleted.",
+            "required": true,
+            "schema": {
+              "type": "array",
                 "items": {
                   "type": "integer",
                   "format": "int32"
                 }
-              }
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "The slices were successfully deleted."

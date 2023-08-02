@@ -12,16 +12,14 @@ async def test_slice_delete(client):
 
     
     """
-    body = [56]
-    params = [('auth', 'auth_example')]
+    params = [('auth', 'auth_example'),
+                    ('slice_ids', [56])]
     headers = { 
-        'Content-Type': 'application/json',
     }
     response = await client.request(
         method='DELETE',
         path='/v1/slice',
         headers=headers,
-        json=body,
         params=params,
         )
     assert response.status == 200, 'Response body is : ' + (await response.read()).decode('utf-8')

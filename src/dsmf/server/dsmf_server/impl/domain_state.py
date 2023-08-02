@@ -6,9 +6,9 @@ from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfig
 from switch_client.model.queue import Queue
 
 DeviceType = Enum('SwitchType',
-                  ['SRC', 'DST', 'TUN_ENTRY', 'TUN_EXIT', 'SRC_ALL', 'SRC_ENTRY', 'SRC_TP', 'SRC_EXIT', 'BN_ALL',
+                  ['SRC', 'DST', 'TUN_ENTRY', 'TUN_EXIT', 'SRC_ALL', 'SRC_BEGIN', 'SRC_TP', 'SRC_END', 'BN_ALL',
                    'BN_BEGIN', 'BN_TP', 'BN_END', 'DST_ALL',
-                   'DST_BEGIN', 'DST_TP', 'DST_EXIT'])
+                   'DST_BEGIN', 'DST_TP', 'DST_END'])
 
 
 class DomainState(object):

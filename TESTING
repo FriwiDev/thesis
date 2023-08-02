@@ -99,6 +99,39 @@ sudo lxc exec vpn1 -- curl -X 'DELETE' \
 
 ESMF:
 
-curl -X 'PUT' \
-  'http://localhost:8080/v1/slice?auth=token&slices=%7B%0A%20%20%22slice_id%22%3A%200%2C%0A%20%20%22min_rate%22%3A%2010000%2C%0A%20%20%22max_rate%22%3A%20100000%2C%0A%20%20%22burst_rate%22%3A%20100000%2C%0A%20%20%22latency%22%3A%203%2C%0A%20%20%22tunnel_id%22%3A%200%2C%0A%20%20%22transport_protocol%22%3A%20%22UDP%22%2C%0A%20%20%22fr%22%3A%20%7B%0A%20%20%20%20%22ip%22%3A%20%2210.0.0.2%22%2C%0A%20%20%20%20%22port%22%3A%200%2C%0A%20%20%20%20%22name%22%3A%20%22h1%22%2C%0A%20%20%20%20%22network%22%3A%20%22net1%22%0A%20%20%7D%2C%0A%20%20%22to%22%3A%20%7B%0A%20%20%20%20%22ip%22%3A%20%2210.0.0.8%22%2C%0A%20%20%20%20%22port%22%3A%20888%2C%0A%20%20%20%20%22name%22%3A%20%22h2%22%2C%0A%20%20%20%20%22network%22%3A%20%22net2%22%0A%20%20%7D%0A%7D' \
-  -H 'accept: application/json'
+sudo lxc exec ESMF1 -- curl -X 'PUT' \
+  'http://localhost:8080/v1/slice?auth=token' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '[
+{
+  "slice_id": 0,
+  "min_rate": 10000,
+  "max_rate": 100000,
+  "burst_rate": 100000,
+  "latency": 3,
+  "tunnel_id": 0,
+  "transport_protocol": "UDP",
+  "fr": {
+    "ip": "10.0.0.2",
+    "port": 0,
+    "name": "h1",
+    "network": "net1"
+  },
+  "to": {
+    "ip": "10.0.0.8",
+    "port": 888,
+    "name": "h2",
+    "network": "net2"
+  }
+}
+]' -v
+
+
+sudo lxc exec ESMF1 -- curl -X 'DELETE' \
+  'http://localhost:8080/v1/slice?auth=token' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '[
+  0
+]' -v

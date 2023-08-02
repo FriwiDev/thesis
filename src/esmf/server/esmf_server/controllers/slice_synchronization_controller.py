@@ -1,3 +1,5 @@
+import json
+
 from aiohttp import web
 from esmf_server.impl.domain_state import DomainState
 
@@ -59,7 +61,7 @@ async def slice_deployment_get(request: web.Request, auth) -> web.Response:
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice synchronization is not supported by this service")
-    return web.Response(status=200, content_type="application/json", body=DomainState.slice_deployments.values())
+    return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in DomainState.slice_deployments.values()]))
 
 
 async def slice_deployment_put(request: web.Request, auth, slice_id) -> web.Response:
@@ -155,7 +157,7 @@ async def slice_reservation_get(request: web.Request, auth) -> web.Response:
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice synchronization is not supported by this service")
-    return web.Response(status=200, content_type="application/json", body=DomainState.slice_reservations.values())
+    return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in DomainState.slice_reservations.values()]))
 
 
 async def slice_reservation_put(request: web.Request, auth, body=None) -> web.Response:
@@ -175,7 +177,7 @@ async def slice_reservation_put(request: web.Request, auth, body=None) -> web.Re
         return web.Response(status=421, reason="Slice synchronization is not supported by this service")
     body = Slice.from_dict(body)
     # TODO-Thesis Validation
-    if body.slice_id in DomainState.slice_reservations.keys() + DomainState.slice_deployments.keys():
+    if body.slice_id in list(DomainState.slice_reservations.keys()) + list(DomainState.slice_deployments.keys()):
         return web.Response(status=409, reason="A slice with this id is already known")
     # Forward to domain controller
     api_client, auth = get_controller_client()
@@ -188,7 +190,7 @@ async def slice_reservation_put(request: web.Request, auth, body=None) -> web.Re
     try:
         api_instance.slice_reservation_put(
             query_params=query_params,
-            body=body
+            body=body.to_dict()
         )
         DomainState.slice_reservations[body.slice_id] = body
         return web.Response(status=200, reason="The slice reservation was successfully deleted.")
@@ -199,7 +201,7 @@ async def slice_reservation_put(request: web.Request, auth, body=None) -> web.Re
 
 def get_controller_client() -> (dsmf_client.ApiClient, str):
     configuration = dsmf_client.Configuration(
-        host="http://" + DomainState.domain_controller.ip + ":" + str(DomainState.domain_controller.port) + "/v1"
+        host="http://" + DomainState.config.domain_controller.ip + ":" + str(DomainState.config.domain_controller.port) + "/v1"
     )
 
     # Enter a context with an instance of the API client

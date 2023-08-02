@@ -12,22 +12,21 @@ def get_owner(auth: str):
     # TODO-FW real authentication system
     return "default"
 
-async def slice_delete(request: web.Request, auth, body=None) -> web.Response:
+async def slice_delete(request: web.Request, auth, slice_ids) -> web.Response:
     """slice_delete
 
     Deletes one or multiple slices
 
     :param auth: The authentication token issued by prior login
     :type auth: str
-    :param body: The ids of the slices to be deleted.
-    :type body: List[int]
+    :param slice_ids: The ids of the slices to be deleted.
+    :type slice_ids: List[int]
 
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice management is not supported by this service")
-    slice_ids = body
     if len(slice_ids) == 0:
         return web.Response(status=417, reason="No slice ids were provided.")
     ret = EdgeState.handle_slice_revoke(slice_ids, get_owner(auth))
@@ -52,7 +51,7 @@ async def slice_get(request: web.Request, auth) -> web.Response:
         return web.Response(status=403, reason="Invalid authentication provided.")
     if DomainState.config.type.upper() != "ESMF":
         return web.Response(status=421, reason="Slice management is not supported by this service")
-    return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in EdgeState.get_slices_by_owner(get_owner(auth))])
+    return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in EdgeState.get_slices_by_owner(get_owner(auth))]))
 
 
 async def slice_put(request: web.Request, auth, body=None) -> web.Response:
@@ -82,4 +81,4 @@ async def slice_put(request: web.Request, auth, body=None) -> web.Response:
     elif ret == 507:
         return web.Response(status=507, reason="Insufficient resources by participating domain or requester")
     else:
-        return web.Response(status=200, content_type="application/json", body=ret)
+        return web.Response(status=200, content_type="application/json", body=json.dumps([x.to_dict() for x in ret]))

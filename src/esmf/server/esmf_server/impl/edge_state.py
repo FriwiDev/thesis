@@ -78,13 +78,13 @@ class EdgeState(object):
                             latency=latency,
                             fr=Endpoint(
                                 ip=vpn_fr.ip,
-                                port=0,
+                                port=tunnel_id + 2000,
                                 name=vpn_fr.name,
                                 network=vpn_fr.network
                             ),
                             to=Endpoint(
                                 ip=vpn_to.ip,
-                                port=0,
+                                port=tunnel_id + 2000,
                                 name=vpn_to.name,
                                 network=vpn_to.network
                             ),
@@ -114,13 +114,13 @@ class EdgeState(object):
                             latency=latency,
                             fr=Endpoint(
                                 ip=vpn_fr.ip,
-                                port=0,
+                                port=tunnel_id + 2000,
                                 name=vpn_fr.name,
                                 network=vpn_fr.network
                             ),
                             to=Endpoint(
                                 ip=vpn_to.ip,
-                                port=0,
+                                port=tunnel_id + 2000,
                                 name=vpn_to.name,
                                 network=vpn_to.network
                             ),
@@ -170,7 +170,7 @@ class EdgeState(object):
                     cls.delete_reserved_slice(s, nets)
                 for t, nets in staged_tunnels:
                     cls.delete_reserved_tunnel(t, nets)
-                return False
+                return 500
             staged_tunnels.remove((tu, netws))
             deployed_tunnels.append((tu, netws))
 
@@ -185,7 +185,7 @@ class EdgeState(object):
                     cls.delete_reserved_slice(s, nets)
                 for t, nets in staged_tunnels:
                     cls.delete_reserved_tunnel(t, nets)
-                return False
+                return 500
             staged_slices.remove((sl, netws))
             deployed_slices.append((sl, netws))
 

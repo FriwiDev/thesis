@@ -72,15 +72,15 @@ class DomainUtil(object):
         else:
             # Generate a switch cascade with <SRC/DST>_ENTRY -> <SRC/DST>_TP* -> <SRC/DST>_EXIT
             if begin:
-                roles.append(DeviceType.SRC_ENTRY)
+                roles.append(DeviceType.SRC_BEGIN)
                 for i in range(len(ret) - 4):
                     roles.append(DeviceType.SRC_TP)
-                roles.append(DeviceType.SRC_EXIT)
+                roles.append(DeviceType.SRC_END)
             else:
-                roles.append(DeviceType.DST_ENTRY)
+                roles.append(DeviceType.DST_BEGIN)
                 for i in range(len(ret) - 4):
                     roles.append(DeviceType.DST_TP)
-                roles.append(DeviceType.DST_EXIT)
+                roles.append(DeviceType.DST_END)
         # Add our ending devices
         if begin:
             roles.append(DeviceType.TUN_ENTRY)
@@ -95,6 +95,7 @@ class DomainUtil(object):
     def route_tunnel(cls, tun_entry: str, tun_exit: str, previous_network: str, next_network: str) -> (
             [str], [DeviceType]):
         # Builds the route from vpn entry to exit
+        print(f"Building tunnel {tun_entry} -> {tun_exit} | {previous_network} -> {next_network}")
 
         # Determine our actual source and target (we have partial view)
         src = tun_entry
@@ -163,6 +164,15 @@ class DomainUtil(object):
             roles.append(DeviceType.TUN_ENTRY)
             roles.append(DeviceType.BN_ALL)
             roles.append(DeviceType.TUN_EXIT)
+        elif len(ret) == 2:
+            if src == tun_entry:
+                # Our first device is a vpn then the tunnel begins (switch out of scope)
+                roles.append(DeviceType.TUN_ENTRY)
+                roles.append(DeviceType.BN_BEGIN)
+            else:
+                # Our first device is our tunnel exit (switch out of scope)
+                roles.append(DeviceType.BN_END)  # We do not care if it is a END or ALL Switch
+                roles.append(DeviceType.TUN_EXIT)
         else:
             if src == tun_entry:
                 # Our first device is a begin switch
@@ -190,6 +200,7 @@ class DomainUtil(object):
         # a) The previous or next device in another network
         # b) The tunnel entry or exit themselves if on our network (or matching a)
         # The second array will contain the roles with same indexes
+        print("Route: "+"->".join(ret)+" | Roles: "+"->".join([str(x) for x in roles]))
         return ret, roles
 
     @classmethod

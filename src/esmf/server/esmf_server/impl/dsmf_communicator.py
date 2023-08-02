@@ -18,7 +18,7 @@ class DSMFCommunicator(object):
         try:
             api_instance.tunnel_reservation_put(
                 query_params=query_params,
-                body=body
+                body=body.to_dict()
             )
             return True
         except dsmf_client.ApiException as e:
@@ -94,7 +94,7 @@ class DSMFCommunicator(object):
         try:
             api_instance.slice_reservation_put(
                 query_params=query_params,
-                body=body
+                body=body.to_dict()
             )
             return True
         except dsmf_client.ApiException as e:
@@ -161,7 +161,7 @@ class DSMFCommunicator(object):
 
 def get_controller_client() -> (dsmf_client.ApiClient, str):
     configuration = dsmf_client.Configuration(
-        host="http://" + DomainState.domain_controller.ip + ":" + str(DomainState.domain_controller.port) + "/v1"
+        host="http://" + DomainState.config.domain_controller.ip + ":" + str(DomainState.config.domain_controller.port) + "/v1"
     )
 
     # Enter a context with an instance of the API client

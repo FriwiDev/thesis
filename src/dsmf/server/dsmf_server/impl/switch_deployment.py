@@ -1,4 +1,5 @@
 import ipaddress
+import pprint
 
 import controller_client
 import switch_client
@@ -25,45 +26,66 @@ class SwitchDeployment(object):
         if switch_type == DeviceType.SRC_ENTRY or switch_type == DeviceType.SRC_TP \
                 or switch_type == DeviceType.SRC_EXIT or switch_type == DeviceType.SRC_ALL:
             intf_out = DomainUtil.port_name_of_switch(switch, next_name)
+            print("Intf-out: " + str(intf_out))
             # Add our slice queue
-            queue.port = intf_out
-            queue.queue_id = SwitchDeployment.create_queue(switch, queue)
-            if queue.queue_id == -1:
+            queue = Queue(queue_id=SwitchDeployment.create_queue(switch, queue),
+                          min_rate=queue["min_rate"],
+                          max_rate=queue["max_rate"],
+                          burst_rate=queue["burst_rate"],
+                          priority=queue["priority"],
+                          port=queue["port"]
+                          )
+            print("Queue created!")
+            if queue["queue_id"] == -1:
                 raise Exception("Error while installing queue")
             port_out = DomainUtil.port_index_of_switch(switch, next_name)
             port_in = DomainUtil.port_index_of_switch(switch, prev_name)
+            print("Ports: " + str(port_in) + " -> " + str(port_out))
             # Remove old flows
+            print("Deleting old flows...")
             if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
                 raise Exception("Error while removing old flows")
+            print("Creating new flows...")
             if switch_type == DeviceType.SRC_ENTRY or switch_type == DeviceType.SRC_ALL:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
                                                     src_ip=src_ip, src_port=src_port, dst_ip=dst_ip, dst_port=dst_port,
                                                     mpls=slice_id, push_mpls=True,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.SRC_TP or switch_type == DeviceType.SRC_EXIT:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
                                                     in_port=port_in,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
+            print("Done")
             return queue, None
         elif switch_type == DeviceType.BN_ENTRY or switch_type == DeviceType.BN_TP \
                 or switch_type == DeviceType.BN_EXIT or switch_type == DeviceType.BN_ALL:
-            intf_out = DomainUtil.port_name_of_switch(switch, next_name)
             intf_in = DomainUtil.port_name_of_switch(switch, prev_name)
             # Add our tunnel queue
-            queue.port = intf_out
-            queue.queue_id = SwitchDeployment.create_queue(switch, queue)
-            if queue.queue_id == -1:
+            queue = Queue(queue_id=SwitchDeployment.create_queue(switch, queue),
+                          min_rate=queue["min_rate"],
+                          max_rate=queue["max_rate"],
+                          burst_rate=queue["burst_rate"],
+                          priority=queue["priority"],
+                          port=queue["port"]
+                          )
+            if queue["queue_id"] == -1:
                 raise Exception("Error while installing queue")
             if not reverse_queue:
-                reverse_queue = Queue(0, 10000, 10000, 10000, 1, intf_in)
-                reverse_queue.queue_id = SwitchDeployment.create_queue(switch, reverse_queue)
-                if reverse_queue.queue_id == -1:
+                reverse_queue = Queue(queue_id=0, min_rate=10000, max_rate=10000, burst_rate=10000, priority=1, port=intf_in)
+                reverse_queue = Queue(queue_id=SwitchDeployment.create_queue(switch, reverse_queue),
+                                      min_rate=reverse_queue["min_rate"],
+                                      max_rate=reverse_queue["max_rate"],
+                                      burst_rate=reverse_queue["burst_rate"],
+                                      priority=reverse_queue["priority"],
+                                      port=reverse_queue["port"]
+                                      )
+                if reverse_queue["queue_id"] == -1:
                     raise Exception("Error while installing queue")
             port_out = DomainUtil.port_index_of_switch(switch, next_name)
             port_in = DomainUtil.port_index_of_switch(switch, prev_name)
@@ -76,27 +98,27 @@ class SwitchDeployment(object):
                                                     in_port=port_in,
                                                     src_ip=src_ip, dst_ip=dst_ip, dst_port=dst_port,
                                                     mpls=slice_id, push_mpls=True,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
                                                     in_port=port_out,
                                                     mpls=slice_id, pop_mpls=True,
-                                                    queue_id=reverse_queue.queue_id, out_port=port_in):
+                                                    queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.BN_TP:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
                                                     in_port=port_in,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
                                                     in_port=port_out,
-                                                    queue_id=reverse_queue.queue_id, out_port=port_in):
+                                                    queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.BN_EXIT:
                 # Add our flow
@@ -104,7 +126,7 @@ class SwitchDeployment(object):
                                                     mpls_match=slice_id,
                                                     in_port=port_in,
                                                     mpls=slice_id, pop_mpls=True,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
@@ -112,30 +134,34 @@ class SwitchDeployment(object):
                                                     src_ip=dst_ip, dst_ip=src_ip, dst_port=src_port,
                                                     # TODO-Thesis Verify if this is correct - might need another 2 flows for other combinations
                                                     mpls=slice_id, push_mpls=True,
-                                                    queue_id=reverse_queue.queue_id, out_port=port_in):
+                                                    queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.BN_ALL:
                 # Add our flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_in,
                                                     src_ip=src_ip, dst_ip=dst_ip, dst_port=dst_port,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
                 # And our reverse flow
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_out,
                                                     src_ip=dst_ip, dst_ip=src_ip, dst_port=src_port,
                                                     # TODO-Thesis Verify if this is correct - might need another 2 flows for other combinations
-                                                    queue_id=reverse_queue.queue_id, out_port=port_in):
+                                                    queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
             return queue, reverse_queue
         if switch_type == DeviceType.DST_ENTRY or switch_type == DeviceType.DST_TP \
                 or switch_type == DeviceType.DST_EXIT or switch_type == DeviceType.DST_ALL:
-            intf_out = DomainUtil.port_name_of_switch(switch, next_name)
             # Add our slice queue
-            queue.port = intf_out
-            queue.queue_id = SwitchDeployment.create_queue(switch, queue)
-            if queue.queue_id == -1:
+            queue = Queue(queue_id=SwitchDeployment.create_queue(switch, queue),
+                          min_rate=queue["min_rate"],
+                          max_rate=queue["max_rate"],
+                          burst_rate=queue["burst_rate"],
+                          priority=queue["priority"],
+                          port=queue["port"]
+                          )
+            if queue["queue_id"] == -1:
                 raise Exception("Error while installing queue")
             port_out = DomainUtil.port_index_of_switch(switch, next_name)
             port_in = DomainUtil.port_index_of_switch(switch, prev_name)
@@ -147,7 +173,7 @@ class SwitchDeployment(object):
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id,
                                                     mpls_match=slice_id,
                                                     in_port=port_in,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
             elif switch_type == DeviceType.DST_EXIT or switch_type == DeviceType.DST_ALL:
                 # Add our flow
@@ -155,20 +181,24 @@ class SwitchDeployment(object):
                                                     mpls_match=slice_id,
                                                     in_port=port_in,
                                                     mpls=slice_id, pop_mpls=True,
-                                                    queue_id=queue.queue_id, out_port=port_out):
+                                                    queue_id=queue["queue_id"], out_port=port_out):
                     raise Exception("Error while installing flow")
             return queue, None
 
     @classmethod
     def uninstall_switch(cls, switch: DeviceConfiguration, slice_id: int, queues: [Queue], queues_reversed: [Queue]):
+        print("Deleting slice from switch "+switch.name)
         if not SwitchDeployment.delete_flows(switch, cookie=slice_id):
             raise Exception("Error while removing flows")
+        print("Flows removed")
         for queue in queues:
             if not SwitchDeployment.delete_queue(switch, queue=queue):
                 raise Exception("Error while removing queue")
+        print("Queues removed")
         for queue_reversed in queues_reversed:
             if not SwitchDeployment.delete_queue(switch, queue=queue_reversed):
                 raise Exception("Error while removing queue")
+        print("Reverse queues removed")
 
     @classmethod
     def create_flow(cls, switch: DeviceConfiguration,
@@ -184,7 +214,7 @@ class SwitchDeployment(object):
                     mpls: int = 0, push_mpls: bool = False, pop_mpls: bool = False,
                     queue_id: int = 0) -> bool:
         # Create an instance of the API class
-        api_client, auth = SwitchDeployment.controller_api_client(switch)
+        api_client = SwitchDeployment.controller_api_client(switch)
         api_instance = flow_management_api.FlowManagementApi(api_client)
 
         # Build matches
@@ -199,15 +229,19 @@ class SwitchDeployment(object):
                 m[protocol.lower() + "_dst"] = dst_port
             if in_port != -1:
                 m['in_port'] = in_port
+            m['eth_type'] = 2048
+            m['ip_proto'] = 17
         else:
             m['mpls_label'] = mpls_match
+            m['eth_type'] = 34888
 
         # Build actions
         actions = []
         if pop_mpls:
-            actions.append({"type": "POP_MPLS", "ethertype": mpls})
+            actions.append({"type": "POP_MPLS", "ethertype": 34888})  # MPLS ether type
         if push_mpls:
-            actions.append({"type": "PUSH_MPLS", "ethertype": mpls})
+            actions.append({"type": "PUSH_MPLS", "ethertype": 34888})  # MPLS ether type
+            actions.append({"type": "SET_FIELD", "field": "mpls_label", "value": mpls})
         if queue_id != 0:
             actions.append({"type": "SET_QUEUE", "queue_id": queue_id})
         actions.append({"type": "OUTPUT", "port": out_port})
@@ -226,6 +260,8 @@ class SwitchDeployment(object):
             ]
         }
 
+        print("Switch flow add "+pprint.pformat(body))
+
         # Perform request
         try:
             api_instance.flowentry_add_post(
@@ -240,7 +276,7 @@ class SwitchDeployment(object):
     def delete_flows(cls, switch: DeviceConfiguration,
                      cookie: int) -> bool:
         # Create an instance of the API class
-        api_client, auth = SwitchDeployment.controller_api_client(switch)
+        api_client = SwitchDeployment.controller_api_client(switch)
         api_instance = flow_management_api.FlowManagementApi(api_client)
 
         # Build body
@@ -249,6 +285,8 @@ class SwitchDeployment(object):
             'table_id': 0,
             'cookie': cookie
         }
+
+        print("Switch flow delete " + pprint.pformat(body))
 
         # Perform request
         try:
@@ -274,7 +312,7 @@ class SwitchDeployment(object):
                 query_params=query_params,
                 body=queue
             )
-            return api_response.body.queue_id
+            return api_response.body["queue_id"]
         except switch_client.ApiException as e:
             print("Exception when calling QueueManagementApi->queue_put: %s\n" % e)
             return -1
@@ -287,8 +325,8 @@ class SwitchDeployment(object):
 
         query_params = {
             'auth': auth,
-            'queue_id': queue.queue_id,
-            'port': queue.port
+            'queue_id': queue["queue_id"],
+            'port': queue["port"]
         }
         try:
             api_instance.queue_delete(

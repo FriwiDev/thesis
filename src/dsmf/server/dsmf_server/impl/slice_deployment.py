@@ -12,24 +12,32 @@ class SliceDeployment(object):
     @classmethod
     def deploy_slice(cls, slice_value: Slice, tunnel: Tunnel) -> \
             Dict[str, Queue]:
+        print("Get from device")
         from_device = DomainState.get_device(slice_value.fr.name)
+        print("Get to device")
         to_device = DomainState.get_device(slice_value.to.name)
+        print("Search for our side")
         begin = None
         if from_device and from_device.network == DomainState.config.network:
             begin = True
         elif to_device and to_device.network == DomainState.config.network:
             begin = False
+        print("Begin?")
         if begin is None:
             raise Exception("Could not find source and target of slice")
         # Build a local route
+        print("Building route...")
         devices, device_types = DomainUtil.route_slice(slice_value.fr.name if begin else slice_value.to.name,
                                                        tunnel.fr.name if begin else tunnel.to.name,
                                                        begin)
+        print("Route: "+" ".join([x for x in devices]))
+        print("Types: " + " ".join([x.name for x in device_types]))
         # Create return dict
         ret = {}
         # Set up all devices we know of (except first and last device, those are host and vpn gateway)
         for i in range(1, len(devices) - 1):
             device = DomainState.get_device(devices[i])
+            print("Deploying "+device.name)
             if device and device.network == DomainState.config.network:
                 # We know this device and it is on our network
                 device_type = device_types[i]
@@ -38,8 +46,9 @@ class SliceDeployment(object):
                               max_rate=tunnel.max_rate,
                               burst_rate=tunnel.burst_rate,
                               priority=1,
-                              port=-1  # Will be set by setup_switch()
+                              port=DomainUtil.port_name_of_switch(device, devices[i + 1])
                               )
+                print("Queue initialized")
                 queue, _ = SwitchDeployment.setup_switch(switch=device,
                                                          switch_type=device_type,
                                                          prev_name=devices[i - 1],
@@ -53,6 +62,7 @@ class SliceDeployment(object):
                                                          queue=queue
                                                          )
                 ret[device.name] = queue
+            print("Deployed "+device.name)
 
         # Update tunnel matches
         DomainState.tunnel_queue_pools[tunnel.tunnel_id] = \
@@ -66,7 +76,7 @@ class SliceDeployment(object):
     @classmethod
     def remove_slice(cls, slice_value: Slice, queue_pool: Dict[str, Queue]):
         # Remove switch infra
-        for switch_name, queue in queue_pool:
+        for switch_name, queue in queue_pool.items():
             SwitchDeployment.uninstall_switch(switch=DomainState.get_device(switch_name),
                                               slice_id=slice_value.slice_id,
                                               queues=[queue],

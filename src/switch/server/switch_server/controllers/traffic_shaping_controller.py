@@ -34,5 +34,6 @@ async def policy_put(request: web.Request, auth, port, ingress_policing_rate=Non
         cmd += ['ingress_policing_rate='+str(ingress_policing_rate)]
     if ingress_policing_rate:
         cmd += ['ingress_policing_burst=' + str(ingress_policing_burst)]
-    run_command(cmd)
+    if run_command(cmd)[0] != 0:
+        return web.Response(status=500, reason="Internal Server Error")
     return web.Response(status=200, reason="Traffic policy updated")

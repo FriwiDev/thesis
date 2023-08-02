@@ -60,8 +60,7 @@ class TunnelDeployment(object):
                                         public_key=tunnel.public_key,
                                         matches=matches)
                     # Send to vpn endpoint
-                    ret = VPNDeployment.create_or_update_tunnel_entry(device, entry)
-                    if not ret:
+                    if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
                         raise Exception("Error while deploying tunnel entry")
                 elif device_type == DeviceType.TUN_EXIT:
                     # Build a list of all traffic that should traverse our tunnel
@@ -76,8 +75,7 @@ class TunnelDeployment(object):
                                         public_key=tunnel.public_key,
                                         matches=matches)
                     # Send to vpn endpoint
-                    ret = VPNDeployment.create_or_update_tunnel_entry(device, entry)
-                    if not ret:
+                    if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
                         raise Exception("Error while deploying tunnel exit")
                 else:
                     # We set up a BN switch
@@ -90,7 +88,7 @@ class TunnelDeployment(object):
                                   )
                     old_queue = None
                     reverse_queue = None
-                    if device.name in queue_pool:
+                    if device.name in queue_pool.keys():
                         old_queue, reverse_queue = queue_pool[device.name]
                     res = SwitchDeployment.setup_switch(switch=device,
                                                         switch_type=device_type,
@@ -114,12 +112,12 @@ class TunnelDeployment(object):
     @classmethod
     def remove_tunnel(cls, tunnel: Tunnel, queue_pool: Dict[str, Tuple[Queue, Queue or None]]):
         # Remove switch infra
-        for switch_name, queue_def in queue_pool:
+        for switch_name, queue_def in queue_pool.items():
             queue, reverse_queue = queue_def
             SwitchDeployment.uninstall_switch(switch=DomainState.get_device(switch_name),
                                               slice_id=tunnel.tunnel_id,
                                               queues=[queue],
-                                              queues_reversed=[reverse_queue]
+                                              queues_reversed=[reverse_queue] if reverse_queue else []
                                               )
         # Delete vpn entry if we manage it
         vpn = DomainState.get_device(tunnel.fr.name)

@@ -1,3 +1,4 @@
+import traceback
 from typing import List, Dict
 from aiohttp import web
 
@@ -28,7 +29,7 @@ async def slice_deployment_delete(request: web.Request, auth, slice_id) -> web.R
     try:
         SliceDeployment.remove_slice(DomainState.slice_deployments[slice_id], DomainState.slice_queue_pools[slice_id])
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         return web.Response(status=500, reason="The deployment to the network failed")
     finally:
         del DomainState.slice_deployments[slice_id]
@@ -80,7 +81,7 @@ async def slice_deployment_put(request: web.Request, auth, slice_id) -> web.Resp
                                          DomainState.tunnel_deployments[body.tunnel_id]
                                          )
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         del DomainState.slice_deployments[slice_id]
         return web.Response(status=500, reason="The deployment to the network failed")
     return web.Response(status=200, reason="The slice has been created")

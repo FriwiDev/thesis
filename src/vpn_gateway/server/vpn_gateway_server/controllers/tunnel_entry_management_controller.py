@@ -1,4 +1,5 @@
 import ipaddress
+import json
 import pprint
 import re
 from typing import List, Dict
@@ -66,7 +67,7 @@ async def tunnel_entry_get(request: web.Request, auth) -> web.Response:
     """
     if not check_auth(auth):
         return web.Response(status=403, reason="Invalid authentication provided.")
-    return web.Response(status=200, content_type="application/json", body=pprint.pformat(TunnelEntryData.tunnel_entries.values()))
+    return web.Response(status=200, content_type="application/json", body=json.dumps([json.dumps(e.to_dict()) for e in TunnelEntryData.tunnel_entries.values()]))
 
 
 async def tunnel_entry_put(request: web.Request, auth, body=None) -> web.Response:
@@ -134,22 +135,23 @@ async def tunnel_entry_put(request: web.Request, auth, body=None) -> web.Respons
     # Deploy to local
     # Steps: Bootstrap new wireguard interface -> install route for wg interface
     wg_intf = "wg" + str(tunnel_entry.local_port)
-    if run_command(['ip', 'link', 'add', 'dev', wg_intf, 'type', 'wireguard']) != 0:
+    if run_command(['ip', 'link', 'add', 'dev', wg_intf, 'type', 'wireguard'])[0] != 0:
         return web.Response(status=500, reason="Internal Server Error")
-    if run_command(['sh', '-c', f'\"echo \\\"{tunnel_entry.private_key}\\\"', '>',
-                    'pk_wg' + str(tunnel_entry.local_port)]) != 0:
-        return web.Response(status=500, reason="Internal Server Error")
+    # Write key file
+    key_file = open("pk_wg"+str(tunnel_entry.local_port), "w")
+    key_file.write(tunnel_entry.private_key)
+    key_file.close()
     if run_command(['wg', 'set', wg_intf,
                     'listen-port', str(tunnel_entry.local_port),
                     'private-key', './pk_wg' + str(tunnel_entry.local_port),
                     'peer', tunnel_entry.public_key,
                     'allowed-ips', tunnel_entry.inner_subnet,
-                    'endpoint', tunnel_entry.remote_end]) != 0:
+                    'endpoint', tunnel_entry.remote_end])[0] != 0:
         return web.Response(status=500, reason="Internal Server Error")
-    if run_command(['ip', 'link', 'set', 'dev', wg_intf, 'up']) != 0:
+    if run_command(['ip', 'link', 'set', 'dev', wg_intf, 'up'])[0] != 0:
         return web.Response(status=500, reason="Internal Server Error")
     # Apply routing
-    if run_command(['ip', 'route', 'add', 'default', 'via', 'dev', wg_intf, 'table', str(tunnel_entry.tunnel_entry_id)]) != 0:
+    if run_command(['ip', 'route', 'add', 'default', 'dev', wg_intf, 'table', str(tunnel_entry.tunnel_entry_id)])[0] != 0:
         return web.Response(status=500, reason="Internal Server Error")
     ret = apply_routing(tunnel_entry, None)
     if ret == 200:
@@ -164,11 +166,11 @@ def apply_routing(new: TunnelEntry or None, old: TunnelEntry or None) -> int:
     remove: [TunnelEntryMatchesInner] = []
     if not old:
         add = new.matches.copy()
-        if run_command(['ip', 'rule', 'add', 'fwmark', str(new.tunnel_entry_id), 'lookup', str(new.tunnel_entry_id)]) != 0:
+        if run_command(['ip', 'rule', 'add', 'fwmark', str(new.tunnel_entry_id), 'lookup', str(new.tunnel_entry_id)])[0] != 0:
             return 500
     elif not new:
         remove = old.matches.copy()
-        if run_command(['ip', 'rule', 'del', 'fwmark', str(new.tunnel_entry_id), 'lookup', str(new.tunnel_entry_id)]) != 0:
+        if run_command(['ip', 'rule', 'del', 'fwmark', str(old.tunnel_entry_id), 'lookup', str(old.tunnel_entry_id)])[0] != 0:
             return 500
     else:
         for n in new.matches:
@@ -194,7 +196,7 @@ def apply_routing(new: TunnelEntry or None, old: TunnelEntry or None) -> int:
 def deploy_iptables_rule(tunnel_entry_id: int, match: TunnelEntryMatchesInner, add: bool) -> int:
     # Build iptables command
     cmd = ['iptables', '-t', 'mangle',
-           '-A' if add else '-R', 'PREROUTING']
+           '-A' if add else '-D', 'PREROUTING']
     # Append source and destination ip
     if match.source_ip:
         cmd.append("-s")
@@ -214,16 +216,16 @@ def deploy_iptables_rule(tunnel_entry_id: int, match: TunnelEntryMatchesInner, a
     # Append ports
     if match.source_port and match.source_port != 0:
         cmd.append("--sport")
-        cmd.append(match.source_port)
+        cmd.append(str(match.source_port))
     if match.target_port and match.target_port != 0:
         cmd.append("--dport")
-        cmd.append(match.target_port)
+        cmd.append(str(match.target_port))
     # Append mark
     cmd.append("-j")
     cmd.append("MARK")
     cmd.append("--set-mark")
     cmd.append(str(tunnel_entry_id))
-    if run_command(cmd) != 0:
+    if run_command(cmd)[0] != 0:
         return 500
     return 200
 

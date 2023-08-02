@@ -1,3 +1,4 @@
+import traceback
 from typing import List, Dict
 from aiohttp import web
 
@@ -30,7 +31,7 @@ async def tunnel_deployment_delete(request: web.Request, auth, tunnel_id) -> web
         TunnelDeployment.remove_tunnel(DomainState.tunnel_deployments[tunnel_id],
                                        DomainState.tunnel_queue_pools[tunnel_id])
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         return web.Response(status=500, reason="The deployment to the network failed")
     finally:
         del DomainState.tunnel_deployments[tunnel_id]
@@ -77,7 +78,7 @@ async def tunnel_deployment_put(request: web.Request, auth, tunnel_id) -> web.Re
                                                tunnel_id] if tunnel_id in DomainState.tunnel_queue_pools.keys() else {}
                                            )
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         del DomainState.tunnel_deployments[tunnel_id]
         return web.Response(status=500, reason="The deployment to the network failed")
     return web.Response(status=200, reason="The tunnel has been created")

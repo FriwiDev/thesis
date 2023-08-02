@@ -1,3 +1,4 @@
+import json
 import pprint
 import re
 from typing import List, Dict
@@ -72,7 +73,7 @@ async def queue_put(request: web.Request, auth, body=None) -> web.Response:
     QueueData.queues[QueueData.current_queue_id] = queue
     QueueData.current_queue_id += 1
     flush_queues(queue.port)
-    return web.Response(status=200, content_type="application/json", body=pprint.pformat(queue))
+    return web.Response(status=200, content_type="application/json", body=json.dumps(queue.to_dict()))
 
 
 def flush_queues(port: str):

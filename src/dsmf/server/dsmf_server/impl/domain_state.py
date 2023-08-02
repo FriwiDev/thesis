@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Dict, Tuple
 
 from dsmf_server.impl.configuration_util import ConfigurationUtil
-from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfiguration
+from dsmf_server.models import Tunnel, Slice, DeviceConfiguration, NetworkConfiguration, ConnectionConfiguration
 from switch_client.model.queue import Queue
 
 DeviceType = Enum('SwitchType',
@@ -25,6 +25,11 @@ class DomainState(object):
         for device in cls.config.vpn_gateways + cls.config.switches:
             if device.name == name:
                 return device
+        # TODO-FW This could be replaced with real device config data in the future
+        for switch in cls.config.switches:
+            for connection in switch.connections:
+                if connection.other_end == name:
+                    return DeviceConfiguration(ip=None, port=None, connections=[ConnectionConfiguration(other_end=switch.name)], network=switch.network, name=name, dpid=None)
         return None
 
     @classmethod

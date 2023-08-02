@@ -193,12 +193,12 @@ class DomainUtil(object):
         return ret, roles
 
     @classmethod
-    def find_switches_with_connection_to(cls, to: str) -> [str]:
+    def find_switches_with_connection_to(cls, to: str) -> [DeviceConfiguration]:
         ret = []
         for switch in DomainState.config.switches:
             for connection in switch.connections:
                 if connection.other_end == to:
-                    ret.append(switch.name)
+                    ret.append(switch)
                     break
         return ret
 

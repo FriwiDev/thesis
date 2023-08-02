@@ -11,13 +11,13 @@ sudo lxc exec DSMF1 -- curl -X 'PUT' \
   "burst_rate": 100000,
   "latency": 0,
   "fr": {
-    "ip": "10.0.0.6",
+    "ip": "10.0.0.4",
     "port": 873,
     "name": "vpn1",
     "network": "net1"
   },
   "to": {
-    "ip": "10.0.0.9",
+    "ip": "10.0.0.6",
     "port": 874,
     "name": "vpn2",
     "network": "net2"
@@ -49,7 +49,7 @@ sudo lxc exec DSMF1 -- curl -X 'PUT' \
     "network": "net1"
   },
   "to": {
-    "ip": "10.0.0.13",
+    "ip": "10.0.0.8",
     "port": 888,
     "name": "h2",
     "network": "net2"
@@ -58,4 +58,40 @@ sudo lxc exec DSMF1 -- curl -X 'PUT' \
 
 sudo lxc exec DSMF1 -- curl -X 'PUT' \
   'http://localhost:8081/v1/slice_deployment?auth=token&slice_id=0' \
+  -H 'accept: */*' -v
+
+
+
+sudo lxc exec DSMF1 -- curl -X 'DELETE' \                                                                                                    ✔
+  'http://localhost:8081/v1/slice_deployment?auth=token&slice_id=0' \
+  -H 'accept: */*' -v
+
+sudo lxc exec DSMF1 -- curl -X 'DELETE' \                                                                                                    ✔
+  'http://localhost:8081/v1/tunnel_deployment?auth=token&tunnel_id=0' \
+  -H 'accept: */*' -v
+
+VPN1:
+
+sudo lxc exec vpn1 -- curl -X 'PUT' \
+  'http://localhost:8083/v1/tunnel_entry?auth=token' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "tunnel_entry_id": 0,
+  "inner_subnet": "10.0.0.0/24",
+  "local_port": 783,
+  "remote_end": "10.0.0.6:784",
+  "private_key": "SP06+AC4NyLXJF7ctLa9ZbJqrcST7JGiksOnfafuYXY=",
+  "public_key": "sfxNcDVY7LijUQZR80hvngNDCqUlgfTQL9xrNVRpzDU=",
+  "matches": [
+    {
+      "transport_protocol": "UDP",
+      "source_port": 0,
+      "target_port": 784
+    }
+  ]
+}' -v
+
+sudo lxc exec vpn1 -- curl -X 'DELETE' \
+  'http://localhost:8083/v1/tunnel_entry?auth=token&tunnel_entry_id=0' \
   -H 'accept: */*' -v

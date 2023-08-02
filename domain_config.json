@@ -1,0 +1,166 @@
+{
+  "type": "DSMF",
+  "network": "net1",
+  "controllers": [
+    {
+      "ip": "10.0.0.13",
+      "port": 8080,
+      "connections": [
+        {
+          "intf_name": "testnode-eth29",
+          "intf_id": 0,
+          "other_end": "DSMF1"
+        },
+        {
+          "intf_name": "testnode-eth31",
+          "intf_id": 1,
+          "other_end": "switch1"
+        }
+      ],
+      "network": "net1",
+      "name": "controller1",
+      "dpid": null
+    }
+  ],
+  "vpn_gateways": [
+    {
+      "ip": "10.0.0.4",
+      "port": 8083,
+      "connections": [
+        {
+          "intf_name": "testnode-eth3",
+          "intf_id": 0,
+          "other_end": "switch1"
+        },
+        {
+          "intf_name": "testnode-eth4",
+          "intf_id": 1,
+          "other_end": "switchbn"
+        },
+        {
+          "intf_name": "testnode-eth18",
+          "intf_id": 2,
+          "other_end": "DSMF1"
+        }
+      ],
+      "network": "net1",
+      "name": "vpn1",
+      "dpid": null
+    },
+    {
+      "ip": null,
+      "port": 8083,
+      "connections": [
+        {
+          "intf_name": "testnode-eth7",
+          "intf_id": 0,
+          "other_end": "switchbn"
+        },
+        {
+          "intf_name": "testnode-eth8",
+          "intf_id": 1,
+          "other_end": "switch2"
+        },
+        {
+          "intf_name": "testnode-eth24",
+          "intf_id": 2,
+          "other_end": "DSMF2"
+        }
+      ],
+      "network": "net2",
+      "name": "vpn2",
+      "dpid": null
+    }
+  ],
+  "switches": [
+    {
+      "ip": "10.0.0.3",
+      "port": 8082,
+      "connections": [
+        {
+          "intf_name": "testnode-eth1",
+          "intf_id": 0,
+          "other_end": "h1"
+        },
+        {
+          "intf_name": "testnode-eth2",
+          "intf_id": 1,
+          "other_end": "vpn1"
+        },
+        {
+          "intf_name": "testnode-eth16",
+          "intf_id": 2,
+          "other_end": "DSMF1"
+        },
+        {
+          "intf_name": "testnode-eth30",
+          "intf_id": 3,
+          "other_end": "controller1"
+        }
+      ],
+      "network": "net1",
+      "name": "switch1",
+      "dpid": null
+    }
+  ],
+  "network_borders": [
+    {
+      "network_name": "bn",
+      "device_name": "vpn1",
+      "device_type": "VPN",
+      "connection": [
+        {
+          "intf_name": "testnode-eth3",
+          "intf_id": 0,
+          "other_end": "switch1"
+        },
+        {
+          "intf_name": "testnode-eth4",
+          "intf_id": 1,
+          "other_end": "switchbn"
+        }
+      ]
+    }
+  ],
+  "networks": [
+    {
+      "name": "net1",
+      "reachable": [
+        "bn"
+      ],
+      "preferred_vpn": [
+        "vpn1"
+      ],
+      "subnets": [
+        "10.0.0.0/24"
+      ],
+      "subnet": "10.0.0.0/24"
+    },
+    {
+      "name": "bn",
+      "reachable": [
+        "net1",
+        "net2"
+      ],
+      "preferred_vpn": [],
+      "subnets": [
+        "10.0.0.0/24"
+      ],
+      "subnet": "10.0.0.0/24"
+    },
+    {
+      "name": "net2",
+      "reachable": [
+        "bn"
+      ],
+      "preferred_vpn": [
+        "vpn2"
+      ],
+      "subnets": [
+        "10.0.0.0/24"
+      ],
+      "subnet": "10.0.0.0/24"
+    }
+  ],
+  "reservable_bitrate": 1000000000
+}

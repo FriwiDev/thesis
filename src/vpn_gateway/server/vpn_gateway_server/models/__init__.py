@@ -2,4 +2,5 @@
 
 # import models into model package
 from vpn_gateway_server.models.tunnel_entry import TunnelEntry
-from vpn_gateway_server.models.tunnel_entry_matches_inner import TunnelEntryMatchesInner
+from vpn_gateway_server.models.tunnel_entry_egress_matches_inner import TunnelEntryEgressMatchesInner
+from vpn_gateway_server.models.tunnel_entry_ingress_matches_inner import TunnelEntryIngressMatchesInner

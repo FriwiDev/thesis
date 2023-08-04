@@ -51,44 +51,46 @@
             "type": "string",
             "description": "The public key to use for authentication of the tunnel from the other side"
           },
-          "matches": {
+          "local_tunnel_ip": {
+            "type": "string",
+            "description": "The ip of the local wireguard tunnel end device"
+          },
+          "remote_tunnel_ip": {
+            "type": "string",
+            "description": "The ip of the remote wireguard tunnel end device"
+          },
+          "ingress_matches": {
             "type": "array",
-            "description": "A specification for which packets to transport through the tunnel",
+            "description": "A specification for which mpls labels (slice ids) to match, alongside their expected ingress port",
             "items": {
               "type": "object",
               "description": "A match entry specifying packets that should be routed through the tunnel",
               "properties": {
-                "transport_protocol": {
+                "intf_name": {
                   "type": "string",
-                  "enum": ["UDP", "TCP"],
-                  "description": "The protocol to be expected"
+                  "description": "Specifies the ingress interface"
                 },
-                "source_ip": {
-                  "type": "string",
-                  "description": "Specifies the source ip to be matched. Leave empty for no matching.",
-                  "default": null
-                },
-                "target_ip": {
-                  "type": "string",
-                  "description": "Specifies the target ip to be matched. Leave empty for no matching.",
-                  "default": null
-                },
-                "source_mac": {
-                  "type": "string",
-                  "description": "Specifies the source mac to be matched. Leave empty for no matching.",
-                  "default": null
-                },
-                "source_port": {
+                "slice_id": {
                   "type": "integer",
-                  "format": "i16",
-                  "description": "Specifies the source port to be matched. Leave empty or on 0 for no matching.",
-                  "default": 0
+                  "description": "Specifies the expected mpls label"
+                }
+              }
+            }
+          },
+          "egress_matches": {
+            "type": "array",
+            "description": "A specification for which mpls labels (slice ids) to match, alongside their supposed egress port",
+            "items": {
+              "type": "object",
+              "description": "A match entry specifying packets that should be routed to their destination",
+              "properties": {
+                "intf_name": {
+                  "type": "string",
+                  "description": "Specifies the egress interface"
                 },
-                "target_port": {
+                "slice_id": {
                   "type": "integer",
-                  "format": "i16",
-                  "description": "Specifies the target port to be matched. Leave empty or on 0 for no matching.",
-                  "default": 0
+                  "description": "Specifies the expected mpls label"
                 }
               }
             }

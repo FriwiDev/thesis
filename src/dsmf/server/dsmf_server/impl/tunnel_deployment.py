@@ -41,16 +41,21 @@ class TunnelDeployment(object):
                 device_type = device_types[i]
                 if device_type == DeviceType.TUN_ENTRY:
                     # Build a list of all traffic that should traverse our tunnel
-                    matches = []
+                    ingress_matches = []
                     for slice in DomainState.slice_deployments.values():
+                        # Does the slice use our tunnel?
                         if slice.tunnel_id == tunnel.tunnel_id:
-                            # A slice that uses our tunnel
-                            matches.append({
-                                "transport_protocol": "UDP",
-                                "source_ip": slice.fr.ip,
-                                "target_ip": slice.to.ip,
-                                "target_port": slice.to.port
-                            })
+                            # Find all possible ingress interfaces for this slice
+                            slice_devs, _ = DomainUtil.route_slice(slice.fr.name, tunnel.fr.name, True)
+                            prev_hop = slice_devs[len(slice_devs)-2]
+                            for connection in DomainState.get_device(tunnel.fr.name).connections:
+                                if connection.other_end == prev_hop:
+                                    # We found a valid interface that traffic could come from
+                                    ingress_matches.append({
+                                        "slice_id": slice.slice_id,
+                                        "intf_name": connection.intf_name
+                                    })
+
                     # Define the tunnel entry
                     entry = TunnelEntry(tunnel_entry_id=tunnel.tunnel_id,
                                         inner_subnet=DomainState.get_network(device.network).subnet,
@@ -58,14 +63,30 @@ class TunnelDeployment(object):
                                         remote_end=tunnel.to.ip + ":" + str(tunnel.to.port),
                                         private_key=tunnel.private_key,
                                         public_key=tunnel.public_key,
-                                        matches=matches)
+                                        ingress_matches=ingress_matches,
+                                        egress_matches=[])
                     # Send to vpn endpoint
                     if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
                         raise Exception("Error while deploying tunnel entry")
                 elif device_type == DeviceType.TUN_EXIT:
                     # Build a list of all traffic that should traverse our tunnel
                     # (here nothing should be sent via tunnel)
-                    matches = []
+                    egress_matches = []
+                    for slice in DomainState.slice_deployments.values():
+                        # Does the slice use our tunnel?
+                        if slice.tunnel_id == tunnel.tunnel_id:
+                            # Find one possible egress interface for this slice
+                            slice_devs, _ = DomainUtil.route_slice(tunnel.to.name, slice.to.name, False)
+                            next_hop = slice_devs[1]
+                            for connection in DomainState.get_device(tunnel.to.name).connections:
+                                if connection.other_end == next_hop:
+                                    # We found a valid interface that traffic could come from
+                                    egress_matches.append({
+                                        "slice_id": slice.slice_id,
+                                        "intf_name": connection.intf_name
+                                    })
+                                    break
+
                     # Define the tunnel entry
                     entry = TunnelEntry(tunnel_entry_id=tunnel.tunnel_id,
                                         inner_subnet=DomainState.get_network(device.network).subnet,
@@ -73,7 +94,8 @@ class TunnelDeployment(object):
                                         remote_end=tunnel.fr.ip + ":" + str(tunnel.fr.port),
                                         private_key=tunnel.private_key,
                                         public_key=tunnel.public_key,
-                                        matches=matches)
+                                        ingress_matches=[],
+                                        egress_matches=egress_matches)
                     # Send to vpn endpoint
                     if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
                         raise Exception("Error while deploying tunnel exit")
@@ -83,7 +105,7 @@ class TunnelDeployment(object):
                                   min_rate=tunnel.min_rate,
                                   max_rate=tunnel.max_rate,
                                   burst_rate=tunnel.burst_rate,
-                                  priority=1,
+                                  priority=10000,
                                   port=DomainUtil.port_name_of_switch(device, devices[i + 1])
                                   )
                     old_queue = None

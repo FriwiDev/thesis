@@ -5,7 +5,8 @@ from datetime import date, datetime
 from typing import List, Dict, Type
 
 from vpn_gateway_server.models.base_model_ import Model
-from vpn_gateway_server.models.tunnel_entry_matches_inner import TunnelEntryMatchesInner
+from vpn_gateway_server.models.tunnel_entry_egress_matches_inner import TunnelEntryEgressMatchesInner
+from vpn_gateway_server.models.tunnel_entry_ingress_matches_inner import TunnelEntryIngressMatchesInner
 from vpn_gateway_server import util
 
 
@@ -15,7 +16,7 @@ class TunnelEntry(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, tunnel_entry_id: int=None, inner_subnet: str=None, local_port: int=None, remote_end: str=None, private_key: str=None, public_key: str=None, matches: List[TunnelEntryMatchesInner]=None):
+    def __init__(self, tunnel_entry_id: int=None, inner_subnet: str=None, local_port: int=None, remote_end: str=None, private_key: str=None, public_key: str=None, local_tunnel_ip: str=None, remote_tunnel_ip: str=None, ingress_matches: List[TunnelEntryIngressMatchesInner]=None, egress_matches: List[TunnelEntryEgressMatchesInner]=None):
         """TunnelEntry - a model defined in OpenAPI
 
         :param tunnel_entry_id: The tunnel_entry_id of this TunnelEntry.
@@ -24,7 +25,10 @@ class TunnelEntry(Model):
         :param remote_end: The remote_end of this TunnelEntry.
         :param private_key: The private_key of this TunnelEntry.
         :param public_key: The public_key of this TunnelEntry.
-        :param matches: The matches of this TunnelEntry.
+        :param local_tunnel_ip: The local_tunnel_ip of this TunnelEntry.
+        :param remote_tunnel_ip: The remote_tunnel_ip of this TunnelEntry.
+        :param ingress_matches: The ingress_matches of this TunnelEntry.
+        :param egress_matches: The egress_matches of this TunnelEntry.
         """
         self.openapi_types = {
             'tunnel_entry_id': int,
@@ -33,7 +37,10 @@ class TunnelEntry(Model):
             'remote_end': str,
             'private_key': str,
             'public_key': str,
-            'matches': List[TunnelEntryMatchesInner]
+            'local_tunnel_ip': str,
+            'remote_tunnel_ip': str,
+            'ingress_matches': List[TunnelEntryIngressMatchesInner],
+            'egress_matches': List[TunnelEntryEgressMatchesInner]
         }
 
         self.attribute_map = {
@@ -43,7 +50,10 @@ class TunnelEntry(Model):
             'remote_end': 'remote_end',
             'private_key': 'private_key',
             'public_key': 'public_key',
-            'matches': 'matches'
+            'local_tunnel_ip': 'local_tunnel_ip',
+            'remote_tunnel_ip': 'remote_tunnel_ip',
+            'ingress_matches': 'ingress_matches',
+            'egress_matches': 'egress_matches'
         }
 
         self._tunnel_entry_id = tunnel_entry_id
@@ -52,7 +62,10 @@ class TunnelEntry(Model):
         self._remote_end = remote_end
         self._private_key = private_key
         self._public_key = public_key
-        self._matches = matches
+        self._local_tunnel_ip = local_tunnel_ip
+        self._remote_tunnel_ip = remote_tunnel_ip
+        self._ingress_matches = ingress_matches
+        self._egress_matches = egress_matches
 
     @classmethod
     def from_dict(cls, dikt: dict) -> 'TunnelEntry':
@@ -202,24 +215,93 @@ class TunnelEntry(Model):
         self._public_key = public_key
 
     @property
-    def matches(self):
-        """Gets the matches of this TunnelEntry.
+    def local_tunnel_ip(self):
+        """Gets the local_tunnel_ip of this TunnelEntry.
 
-        A specification for which packets to transport through the tunnel
+        The ip of the local wireguard tunnel end device
 
-        :return: The matches of this TunnelEntry.
-        :rtype: List[TunnelEntryMatchesInner]
+        :return: The local_tunnel_ip of this TunnelEntry.
+        :rtype: str
         """
-        return self._matches
+        return self._local_tunnel_ip
 
-    @matches.setter
-    def matches(self, matches):
-        """Sets the matches of this TunnelEntry.
+    @local_tunnel_ip.setter
+    def local_tunnel_ip(self, local_tunnel_ip):
+        """Sets the local_tunnel_ip of this TunnelEntry.
 
-        A specification for which packets to transport through the tunnel
+        The ip of the local wireguard tunnel end device
 
-        :param matches: The matches of this TunnelEntry.
-        :type matches: List[TunnelEntryMatchesInner]
+        :param local_tunnel_ip: The local_tunnel_ip of this TunnelEntry.
+        :type local_tunnel_ip: str
         """
 
-        self._matches = matches
+        self._local_tunnel_ip = local_tunnel_ip
+
+    @property
+    def remote_tunnel_ip(self):
+        """Gets the remote_tunnel_ip of this TunnelEntry.
+
+        The ip of the remote wireguard tunnel end device
+
+        :return: The remote_tunnel_ip of this TunnelEntry.
+        :rtype: str
+        """
+        return self._remote_tunnel_ip
+
+    @remote_tunnel_ip.setter
+    def remote_tunnel_ip(self, remote_tunnel_ip):
+        """Sets the remote_tunnel_ip of this TunnelEntry.
+
+        The ip of the remote wireguard tunnel end device
+
+        :param remote_tunnel_ip: The remote_tunnel_ip of this TunnelEntry.
+        :type remote_tunnel_ip: str
+        """
+
+        self._remote_tunnel_ip = remote_tunnel_ip
+
+    @property
+    def ingress_matches(self):
+        """Gets the ingress_matches of this TunnelEntry.
+
+        A specification for which mpls labels (slice ids) to match, alongside their expected ingress port
+
+        :return: The ingress_matches of this TunnelEntry.
+        :rtype: List[TunnelEntryIngressMatchesInner]
+        """
+        return self._ingress_matches
+
+    @ingress_matches.setter
+    def ingress_matches(self, ingress_matches):
+        """Sets the ingress_matches of this TunnelEntry.
+
+        A specification for which mpls labels (slice ids) to match, alongside their expected ingress port
+
+        :param ingress_matches: The ingress_matches of this TunnelEntry.
+        :type ingress_matches: List[TunnelEntryIngressMatchesInner]
+        """
+
+        self._ingress_matches = ingress_matches
+
+    @property
+    def egress_matches(self):
+        """Gets the egress_matches of this TunnelEntry.
+
+        A specification for which mpls labels (slice ids) to match, alongside their supposed egress port
+
+        :return: The egress_matches of this TunnelEntry.
+        :rtype: List[TunnelEntryEgressMatchesInner]
+        """
+        return self._egress_matches
+
+    @egress_matches.setter
+    def egress_matches(self, egress_matches):
+        """Sets the egress_matches of this TunnelEntry.
+
+        A specification for which mpls labels (slice ids) to match, alongside their supposed egress port
+
+        :param egress_matches: The egress_matches of this TunnelEntry.
+        :type egress_matches: List[TunnelEntryEgressMatchesInner]
+        """
+
+        self._egress_matches = egress_matches

@@ -77,7 +77,7 @@ class SwitchDeployment(object):
             if queue["queue_id"] == -1:
                 raise Exception("Error while installing queue")
             if not reverse_queue:
-                reverse_queue = Queue(queue_id=0, min_rate=10000, max_rate=10000, burst_rate=10000, priority=1, port=intf_in)
+                reverse_queue = Queue(queue_id=0, min_rate=10000, max_rate=10000, burst_rate=10000, priority=10000, port=intf_in)
                 reverse_queue = Queue(queue_id=SwitchDeployment.create_queue(switch, reverse_queue),
                                       min_rate=reverse_queue["min_rate"],
                                       max_rate=reverse_queue["max_rate"],
@@ -233,14 +233,14 @@ class SwitchDeployment(object):
             m['ip_proto'] = 17
         else:
             m['mpls_label'] = mpls_match
-            m['eth_type'] = 34888
+            m['eth_type'] = 0x8847
 
         # Build actions
         actions = []
         if pop_mpls:
-            actions.append({"type": "POP_MPLS", "ethertype": 34888})  # MPLS ether type
+            actions.append({"type": "POP_MPLS", "ethertype": 2048})  # ipv4 ether type
         if push_mpls:
-            actions.append({"type": "PUSH_MPLS", "ethertype": 34888})  # MPLS ether type
+            actions.append({"type": "PUSH_MPLS", "ethertype": 0x8847})  # MPLS ether type
             actions.append({"type": "SET_FIELD", "field": "mpls_label", "value": mpls})
         if queue_id != 0:
             actions.append({"type": "SET_QUEUE", "queue_id": queue_id})

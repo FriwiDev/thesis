@@ -265,14 +265,18 @@ with vpn_gateway_client.ApiClient(configuration) as api_client:
         remote_end="remote_end_example",
         private_key="private_key_example",
         public_key="public_key_example",
-        matches=[
+        local_tunnel_ip="local_tunnel_ip_example",
+        remote_tunnel_ip="remote_tunnel_ip_example",
+        ingress_matches=[
             dict(
-                transport_protocol="UDP",
-                source_ip="source_ip_example",
-                target_ip="target_ip_example",
-                source_mac="source_mac_example",
-                source_port=0,
-                target_port=0,
+                intf_name="intf_name_example",
+                slice_id=1,
+            )
+        ],
+        egress_matches=[
+            dict(
+                intf_name="intf_name_example",
+                slice_id=1,
             )
         ],
     )

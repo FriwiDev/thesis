@@ -14,17 +14,20 @@ Key | Input Type | Accessed Type | Description | Notes
 **remote_end** | str,  | str,  | The remote address to contact as the other side of the tunnel | [optional] 
 **private_key** | str,  | str,  | The private key to use for authentication of the tunnel to the other side | [optional] 
 **public_key** | str,  | str,  | The public key to use for authentication of the tunnel from the other side | [optional] 
-**[matches](#matches)** | list, tuple,  | tuple,  | A specification for which packets to transport through the tunnel | [optional] 
+**local_tunnel_ip** | str,  | str,  | The ip of the local wireguard tunnel end device | [optional] 
+**remote_tunnel_ip** | str,  | str,  | The ip of the remote wireguard tunnel end device | [optional] 
+**[ingress_matches](#ingress_matches)** | list, tuple,  | tuple,  | A specification for which mpls labels (slice ids) to match, alongside their expected ingress port | [optional] 
+**[egress_matches](#egress_matches)** | list, tuple,  | tuple,  | A specification for which mpls labels (slice ids) to match, alongside their supposed egress port | [optional] 
 **any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
 
-# matches
+# ingress_matches
 
-A specification for which packets to transport through the tunnel
+A specification for which mpls labels (slice ids) to match, alongside their expected ingress port
 
 ## Model Type Info
 Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-list, tuple,  | tuple,  | A specification for which packets to transport through the tunnel | 
+list, tuple,  | tuple,  | A specification for which mpls labels (slice ids) to match, alongside their expected ingress port | 
 
 ### Tuple Items
 Class Name | Input Type | Accessed Type | Description | Notes
@@ -43,12 +46,38 @@ dict, frozendict.frozendict,  | frozendict.frozendict,  | A match entry specifyi
 ### Dictionary Keys
 Key | Input Type | Accessed Type | Description | Notes
 ------------ | ------------- | ------------- | ------------- | -------------
-**transport_protocol** | str,  | str,  | The protocol to be expected | [optional] must be one of ["UDP", "TCP", ] 
-**source_ip** | str,  | str,  | Specifies the source ip to be matched. Leave empty for no matching. | [optional] 
-**target_ip** | str,  | str,  | Specifies the target ip to be matched. Leave empty for no matching. | [optional] 
-**source_mac** | str,  | str,  | Specifies the source mac to be matched. Leave empty for no matching. | [optional] 
-**source_port** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the source port to be matched. Leave empty or on 0 for no matching. | [optional] if omitted the server will use the default value of 0
-**target_port** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the target port to be matched. Leave empty or on 0 for no matching. | [optional] if omitted the server will use the default value of 0
+**intf_name** | str,  | str,  | Specifies the ingress interface | [optional] 
+**slice_id** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the expected mpls label | [optional] 
+**any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
+
+# egress_matches
+
+A specification for which mpls labels (slice ids) to match, alongside their supposed egress port
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+list, tuple,  | tuple,  | A specification for which mpls labels (slice ids) to match, alongside their supposed egress port | 
+
+### Tuple Items
+Class Name | Input Type | Accessed Type | Description | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+[items](#items) | dict, frozendict.frozendict,  | frozendict.frozendict,  | A match entry specifying packets that should be routed to their destination | 
+
+# items
+
+A match entry specifying packets that should be routed to their destination
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+dict, frozendict.frozendict,  | frozendict.frozendict,  | A match entry specifying packets that should be routed to their destination | 
+
+### Dictionary Keys
+Key | Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | ------------- | -------------
+**intf_name** | str,  | str,  | Specifies the egress interface | [optional] 
+**slice_id** | decimal.Decimal, int,  | decimal.Decimal,  | Specifies the expected mpls label | [optional] 
 **any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)

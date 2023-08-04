@@ -45,7 +45,7 @@ class SliceDeployment(object):
                               min_rate=tunnel.min_rate,
                               max_rate=tunnel.max_rate,
                               burst_rate=tunnel.burst_rate,
-                              priority=1,
+                              priority=10000,
                               port=DomainUtil.port_name_of_switch(device, devices[i + 1])
                               )
                 print("Queue initialized")

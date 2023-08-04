@@ -58,13 +58,28 @@ class TunnelDeployment(object):
 
                     # Define the tunnel entry
                     entry = TunnelEntry(tunnel_entry_id=tunnel.tunnel_id,
-                                        inner_subnet=DomainState.get_network(device.network).subnet,
+                                        inner_subnet="0.0.0.0/0",  # Only our tc matches get redirected anyway
                                         local_port=tunnel.fr.port,
                                         remote_end=tunnel.to.ip + ":" + str(tunnel.to.port),
                                         private_key=tunnel.private_key,
                                         public_key=tunnel.public_key,
                                         ingress_matches=ingress_matches,
-                                        egress_matches=[])
+                                        egress_matches=[],
+                                        local_tunnel_ip=str(ipaddress.ip_address(
+                                            int(ipaddress.ip_address(tunnel.fr.ip))
+                                            + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
+                                                DomainState.get_network(
+                                                    DomainState.get_device(tunnel.fr.name).network
+                                                ).subnet
+                                            ).prefixlen))),
+                                        remote_tunnel_ip=str(ipaddress.ip_address(
+                                            int(ipaddress.ip_address(tunnel.to.ip))
+                                            + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
+                                                DomainState.get_network(
+                                                    DomainState.get_device(tunnel.to.name).network
+                                                ).subnet
+                                            ).prefixlen)))
+                                        )
                     # Send to vpn endpoint
                     if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
                         raise Exception("Error while deploying tunnel entry")
@@ -89,13 +104,28 @@ class TunnelDeployment(object):
 
                     # Define the tunnel entry
                     entry = TunnelEntry(tunnel_entry_id=tunnel.tunnel_id,
-                                        inner_subnet=DomainState.get_network(device.network).subnet,
+                                        inner_subnet="0.0.0.0/0",  # Only our tc matches get redirected anyway
                                         local_port=tunnel.to.port,
                                         remote_end=tunnel.fr.ip + ":" + str(tunnel.fr.port),
                                         private_key=tunnel.private_key,
                                         public_key=tunnel.public_key,
                                         ingress_matches=[],
-                                        egress_matches=egress_matches)
+                                        egress_matches=egress_matches,
+                                        local_tunnel_ip=str(ipaddress.ip_address(
+                                            int(ipaddress.ip_address(tunnel.to.ip))
+                                            + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
+                                                DomainState.get_network(
+                                                    DomainState.get_device(tunnel.to.name).network
+                                                ).subnet
+                                            ).prefixlen))),
+                                        remote_tunnel_ip=str(ipaddress.ip_address(
+                                            int(ipaddress.ip_address(tunnel.fr.ip))
+                                            + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
+                                                DomainState.get_network(
+                                                    DomainState.get_device(tunnel.fr.name).network
+                                                ).subnet
+                                            ).prefixlen)))
+                                        )
                     # Send to vpn endpoint
                     if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
                         raise Exception("Error while deploying tunnel exit")

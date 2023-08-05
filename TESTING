@@ -156,5 +156,5 @@ while True:
     print("received message: %s" % data)
 
 
-Resulting network packets: ETH > IP > UDP > ETH > IP > GREv0 > MPLS > ETH > IP > UDP
-                          |---Wireguard---|------GRETAP------|-MPLS-|----UDP/TCP----|
+Resulting network packets: MPLS (TUN) > ETH > IP > UDP > ETH > IP > GREv0 > MPLS (SLICE) > ETH > IP > UDP
+                          |---MPLS----|---Wireguard----|------GRETAP------|-----MPLS-----|----UDP/TCP----|

@@ -17,6 +17,7 @@ lxc exec "$IMAGE_NAME" -- apt autoremove -y
 
 # Install our service components
 bash build_steps/install_pkg.sh "$IMAGE_NAME" ../src/esmf/client
+bash build_steps/install_pkg.sh "$IMAGE_NAME" ../src/host
 
 # Finalize normal testbed container
 bash build_steps/finalize_img.sh "$IMAGE_NAME"

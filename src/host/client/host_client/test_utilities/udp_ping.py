@@ -37,11 +37,13 @@ PRECISION_BITS = 64
 
 
 class TestResult(object):
-    def __init__(self, latency_ms: float,
+    def __init__(self, min_latency: float, max_latency: float, mean_latency: float,
                  loss: float, loss_rev: float,
                  lost_messages: int, lost_messages_rev: int,
                  bps: float, bps_rev: float):
-        self.latency_ms = latency_ms
+        self.min_latency = min_latency
+        self.max_latency = max_latency
+        self.mean_latency = mean_latency
         self.loss = loss
         self.loss_rev = loss_rev
         self.lost_messages = lost_messages
@@ -99,6 +101,8 @@ class UDPPingClient(TestUtility):
         sleep(0.1)
         # Initialize our flow
         self.current_flow_start = time.time_ns()
+        min_latency = 0
+        max_latency = 0
         # Run listen thread for self.time seconds
         while self.current_flow_start + self.time * 1000000000 > time.time_ns():
             data, addr = self.sock.recvfrom(1024)
@@ -106,7 +110,12 @@ class UDPPingClient(TestUtility):
             packet = parse_packet(host, port, bytearray(data))
             if packet.start_time == self.current_flow_start:
                 self.seen_packets += 1
-                self.sum_latency += time.time_ns() - packet.packet_time
+                latency = time.time_ns() - packet.packet_time
+                self.sum_latency += latency
+                if min_latency == 0:
+                    min_latency = latency
+                min_latency = min(min_latency, latency)
+                max_latency = max(max_latency, latency)
         # Stop measurement on server side
         self.current_flow_start = -1
         # Wait for a packet from server with flow start -1 to get final values
@@ -120,18 +129,25 @@ class UDPPingClient(TestUtility):
                 break
             elif packet.start_time == self.current_flow_start:
                 self.seen_packets += 1
-                self.sum_latency += time.time_ns() - packet.packet_time
+                latency = time.time_ns() - packet.packet_time
+                self.sum_latency += latency
+                if min_latency == 0:
+                    min_latency = latency
+                min_latency = min(min_latency, latency)
+                max_latency = max(max_latency, latency)
         # Shutdown self
         self.shutdown = True
         # Build result from our and origin data
-        latency_ms = self.sum_latency / self.seen_packets / 1000000
+        min_latency /= 1000000
+        max_latency /= 1000000
+        mean_latency = self.sum_latency / self.seen_packets / 1000000
         loss = 1 - (final_packet.seen_packets + 1) / self.packet_num  # We always "loose" a frame due to our counters
         loss_rev = 1 - self.seen_packets / final_packet.packet_num
         lost_messages = self.packet_num - (final_packet.seen_packets + 1)
         lost_messages_rev = final_packet.packet_num - self.seen_packets
         bps = final_packet.seen_packets * TARGET_PACKET_SIZE * 8 / self.time
         bps_rev = self.seen_packets * TARGET_PACKET_SIZE * 8 / self.time
-        return TestResult(latency_ms, loss, loss_rev, lost_messages, lost_messages_rev, bps, bps_rev)
+        return TestResult(min_latency, max_latency, mean_latency, loss, loss_rev, lost_messages, lost_messages_rev, bps, bps_rev)
 
     def _run_sender(self):
         while not self.shutdown:

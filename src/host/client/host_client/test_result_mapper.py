@@ -14,7 +14,9 @@ class TestResultMapper(object):
                     "out_of_order_packets": result.out_of_order_messages}
         elif isinstance(result, udp_ping.TestResult):
             return {
-                "latency_ms": result.latency_ms,
+                "min_latency": result.min_latency,
+                "max_latency": result.max_latency,
+                "mean_latency": result.mean_latency,
                 "loss": result.loss,
                 "loss_rev": result.loss_rev,
                 "lost_messages": result.lost_messages,

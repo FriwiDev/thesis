@@ -266,7 +266,7 @@ No authorization required
 
 # **slice_put**
 <a id="slice_put"></a>
-> Slice slice_put(auth)
+> [Slice] slice_put(auth)
 
 
 
@@ -397,10 +397,16 @@ body | typing.Union[SchemaFor200ResponseBodyApplicationJson, ] |  |
 headers | Unset | headers were not defined |
 
 # SchemaFor200ResponseBodyApplicationJson
-Type | Description  | Notes
-------------- | ------------- | -------------
-[**Slice**](../../models/Slice.md) |  | 
 
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+list, tuple,  | tuple,  |  | 
+
+### Tuple Items
+Class Name | Input Type | Accessed Type | Description | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+[**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) | [**Slice**]({{complexTypePrefix}}Slice.md) |  | 
 
 #### slice_put.ApiResponseFor403
 Name | Type | Description  | Notes

@@ -129,6 +129,9 @@ paths:
           description: The slices were successfully deleted.
         "403":
           description: Invalid or insufficient authentication provided.
+        "429":
+          description: Please slow down. You may only use slice actions every couple
+            of seconds.
         "404":
           description: One or multiple of the slices could not be found.
         "417":
@@ -196,11 +199,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/slice'
+                items:
+                  $ref: '#/components/schemas/slice'
+                type: array
           description: "The slices have been deployed. Returns the parameters of the\
             \ deployed slices, including the fresh ids."
         "403":
           description: Invalid or insufficient authentication provided
+        "429":
+          description: Please slow down. You may only use slice actions every couple
+            of seconds.
         "404":
           description: The input or output of one or multiple of the slices could
             not be found

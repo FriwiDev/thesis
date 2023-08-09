@@ -12,7 +12,7 @@ NUM_TESTS = 10
 def main():
     # Validate that file input exists
     if len(sys.argv) <= 1:
-        print("Please specify a configuration file: python -m host_client <config>.json <IPERF|SOCKPERF|UDP_PING>")
+        print("Please specify a configuration file: python3 -m host_client <config>.json <IPERF|SOCKPERF|UDP_PING>")
         exit(1)
 
     # Determine test suite
@@ -53,13 +53,13 @@ def main():
                 requested_slices.append(rsl)
             if rsl_rev:
                 requested_slices.append(rsl_rev)
-        if ESMFCommunicator.request_slice(requested_slices, ip, port):
+        consume_slices = ESMFCommunicator.request_slice(requested_slices, ip, port)
+        if consume_slices:
             print("Successfully created all slices!")
         else:
             print("Error while creating slices!")
             exit(1)
 
-        consume_slices = requested_slices.copy()
         for sl in slices:
             sl.cosume_slices(localhost, consume_slices)
 

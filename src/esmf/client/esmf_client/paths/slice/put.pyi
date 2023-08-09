@@ -89,7 +89,32 @@ request_body_slice = api_client.RequestBody(
             schema=SchemaForRequestBodyApplicationJson),
     },
 )
-SchemaFor200ResponseBodyApplicationJson = Slice
+
+
+class SchemaFor200ResponseBodyApplicationJson(
+    schemas.ListSchema
+):
+
+
+    class MetaOapg:
+        
+        @staticmethod
+        def items() -> typing.Type['Slice']:
+            return Slice
+
+    def __new__(
+        cls,
+        _arg: typing.Union[typing.Tuple['Slice'], typing.List['Slice']],
+        _configuration: typing.Optional[schemas.Configuration] = None,
+    ) -> 'SchemaFor200ResponseBodyApplicationJson':
+        return super().__new__(
+            cls,
+            _arg,
+            _configuration=_configuration,
+        )
+
+    def __getitem__(self, i: int) -> 'Slice':
+        return super().__getitem__(i)
 
 
 @dataclass

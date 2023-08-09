@@ -5,7 +5,7 @@ from esmf_client.model.slice import Slice
 
 class ESMFCommunicator(object):
     @classmethod
-    def request_slice(cls, body: [Slice], esmf_ip: str, esmf_port: int = 8080) -> bool:
+    def request_slice(cls, body: [Slice], esmf_ip: str, esmf_port: int = 8080) -> list[Slice] or None:
         api_client, auth = get_esmf_client(esmf_ip, esmf_port)
         api_instance = slice_management_api.SliceManagementApi(api_client)
 
@@ -14,14 +14,13 @@ class ESMFCommunicator(object):
         }
 
         try:
-            api_instance.slice_put(
+            return api_instance.slice_put(
                 query_params=query_params,
                 body=body
-            )
-            return True
+            ).body
         except esmf_client.ApiException as e:
             print("Exception when calling SliceManagementApi->slice_put: %s\n" % e)
-            return False
+            return None
 
     @classmethod
     def delete_slice(cls, body: [Slice], esmf_ip: str, esmf_port: int = 8080) -> bool:

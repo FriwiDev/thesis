@@ -92,6 +92,7 @@ Code | Class | Description
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_delete.ApiResponseFor200) | The slices were successfully deleted.
 403 | [ApiResponseFor403](#slice_delete.ApiResponseFor403) | Invalid or insufficient authentication provided.
+429 | [ApiResponseFor429](#slice_delete.ApiResponseFor429) | Please slow down. You may only use slice actions every couple of seconds.
 404 | [ApiResponseFor404](#slice_delete.ApiResponseFor404) | One or multiple of the slices could not be found.
 417 | [ApiResponseFor417](#slice_delete.ApiResponseFor417) | No slice ids were provided.
 421 | [ApiResponseFor421](#slice_delete.ApiResponseFor421) | Slice management is not supported by this service
@@ -105,6 +106,13 @@ body | Unset | body was not defined |
 headers | Unset | headers were not defined |
 
 #### slice_delete.ApiResponseFor403
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_delete.ApiResponseFor429
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |
@@ -373,6 +381,7 @@ Code | Class | Description
 n/a | api_client.ApiResponseWithoutDeserialization | When skip_deserialization is True this response is returned
 200 | [ApiResponseFor200](#slice_put.ApiResponseFor200) | The slices have been deployed. Returns the parameters of the deployed slices, including the fresh ids.
 403 | [ApiResponseFor403](#slice_put.ApiResponseFor403) | Invalid or insufficient authentication provided
+429 | [ApiResponseFor429](#slice_put.ApiResponseFor429) | Please slow down. You may only use slice actions every couple of seconds.
 404 | [ApiResponseFor404](#slice_put.ApiResponseFor404) | The input or output of one or multiple of the slices could not be found
 417 | [ApiResponseFor417](#slice_put.ApiResponseFor417) | No slices were requested
 421 | [ApiResponseFor421](#slice_put.ApiResponseFor421) | Slice management is not supported by this service
@@ -394,6 +403,13 @@ Type | Description  | Notes
 
 
 #### slice_put.ApiResponseFor403
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+response | urllib3.HTTPResponse | Raw response |
+body | Unset | body was not defined |
+headers | Unset | headers were not defined |
+
+#### slice_put.ApiResponseFor429
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 response | urllib3.HTTPResponse | Raw response |

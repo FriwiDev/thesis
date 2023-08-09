@@ -72,47 +72,52 @@ def main():
     # Run our tests as server
     server_threads = []
     for sl in slices:
-        thread = Thread(target=run_test_server, args=(sl, localhost, suite))
-        thread.start()
-        server_threads.append(thread)
+        if sl.data["initiator"] != localhost:
+            thread = Thread(target=run_test_server, args=(sl, localhost, suite))
+            thread.start()
+            server_threads.append(thread)
 
     # Run our tests as client
     result = {}
+    num_clients = 0  # Number of clients over all runs!
     for i in range(0, num_tests):
         time_result = {}
         # Run all tests in new threads
         threads = []
         for sl in slices:
-            # Check if there is a reverse slice
-            target = None
-            if "reverse_max_rate" not in sl.data.keys() or int(sl.data["reverse_max_rate"]) <= 0:
-                # No reverse slice
-                target = run_test_client
-            else:
-                # We have both: reverse slice and our slice
-                if suite == "SOCKPERF":
-                    # Reverse slices are not supported anyways
+            if sl.data["initiator"] == localhost:
+                # Check if there is a reverse slice
+                target = None
+                if "reverse_max_rate" not in sl.data.keys() or int(sl.data["reverse_max_rate"]) <= 0:
+                    # No reverse slice
                     target = run_test_client
-                elif suite == "IPERF":
-                    # We need to test both -> alternate
-                    target = run_test_client_bidir_consecutive
-                elif suite == "UDP_PING":
-                    # Test is always bidirectional here
-                    target = run_test_client
-            thread = Thread(target=target, args=(sl, localhost, suite, time_result,
-                                                 duration_per_test, default_slice_rate)
-                            )
-            thread.start()
-            threads.append(thread)
+                else:
+                    # We have both: reverse slice and our slice
+                    if suite == "SOCKPERF":
+                        # Reverse slices are not supported anyways
+                        target = run_test_client
+                    elif suite == "IPERF":
+                        # We need to test both -> alternate
+                        target = run_test_client_bidir_consecutive
+                    elif suite == "UDP_PING":
+                        # Test is always bidirectional here
+                        target = run_test_client
+                thread = Thread(target=target, args=(sl, localhost, suite, time_result,
+                                                     duration_per_test, default_slice_rate)
+                                )
+                thread.start()
+                threads.append(thread)
+                num_clients += 1
         # Wait on all tests to finish
         for thread in threads:
             thread.join()
         result[i] = time_result
 
     # Write results
-    f = open(f"results_{config['host_name']}_{suite.lower()}.json", "w+")
-    json.dump(result, f)
-    f.close()
+    if num_clients > 0:
+        f = open(f"results_{config['host_name']}_{suite.lower()}.json", "w+")
+        json.dump(result, f)
+        f.close()
 
     # Should we remove slices?
     if "request_slices" in config.keys() and config["request_slices"]:

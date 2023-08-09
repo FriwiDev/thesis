@@ -1,0 +1,17 @@
+{
+  "esmf": "10.0.0.3",
+  "num_req": 10,
+  "print_every": 2,
+  "fr": {
+    "ip": "10.0.0.7",
+    "port": 0,
+    "name": "adv",
+    "network": "net1"
+  },
+  "to": {
+    "ip": "10.0.0.9",
+    "port": 7646,
+    "name": "h2",
+    "network": "net2"
+  }
+}

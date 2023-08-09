@@ -3,9 +3,6 @@ from esmf_client.model.slice import Slice
 from host_client.test_result_mapper import TestResultMapper
 from host_client.test_utilities import iperf3, sockperf, udp_ping
 
-DURATION_PER_TEST = 1
-DEFAULT_SLICE_RATE = 10000
-
 
 class TestSlice(object):
     def __init__(self, data: dict):
@@ -14,28 +11,28 @@ class TestSlice(object):
         self.slice_id_rev = -1
         self.data = data
 
-    def get_slices(self, localhost: str) -> tuple[Slice or None, Slice or None]:
+    def get_slices(self, localhost: str, default_slice_rate: int) -> tuple[Slice or None, Slice or None]:
         if self.data["initiator"] != localhost:
             return None, None
-        slice = Slice(slice_id=self.slice_id,
-                      min_rate=int(self.data["min_rate"]),
-                      max_rate=int(self.data["max_rate"]),
-                      burst_rate=int(self.data["burst_rate"]),
-                      latency=int(self.data["latency"]),
-                      tunnel_id=-1,
-                      transport_protocol=self.data["transport_protocol"],
-                      fr=Endpoint(self.data["fr"]),
-                      to=Endpoint(self.data["to"]))
+        sl = Slice(slice_id=self.slice_id,
+                   min_rate=int(self.data["min_rate"]),
+                   max_rate=int(self.data["max_rate"]),
+                   burst_rate=int(self.data["burst_rate"]),
+                   latency=int(self.data["latency"]),
+                   tunnel_id=-1,
+                   transport_protocol=self.data["transport_protocol"],
+                   fr=Endpoint(self.data["fr"]),
+                   to=Endpoint(self.data["to"]))
         slice_rev = Slice(slice_id=self.slice_id_rev,
-                          min_rate=max(DEFAULT_SLICE_RATE, int(self.data["reverse_min_rate"])),
-                          max_rate=max(int(DEFAULT_SLICE_RATE * 1.1), int(self.data["reverse_max_rate"])),
-                          burst_rate=max(int(DEFAULT_SLICE_RATE * 1.2), int(self.data["reverse_burst_rate"])),
+                          min_rate=max(default_slice_rate, int(self.data["reverse_min_rate"])),
+                          max_rate=max(int(default_slice_rate * 1.1), int(self.data["reverse_max_rate"])),
+                          burst_rate=max(int(default_slice_rate * 1.2), int(self.data["reverse_burst_rate"])),
                           latency=int(self.data["latency"]),
                           tunnel_id=-1,
                           transport_protocol=self.data["transport_protocol"],
                           fr=Endpoint(self.data["to"]),
                           to=Endpoint(self.data["fr"]))
-        return slice, slice_rev
+        return sl, slice_rev
 
     def cosume_slices(self, localhost: str, consume: list[Slice]):
         if self.data["initiator"] != localhost:
@@ -43,7 +40,8 @@ class TestSlice(object):
         self.slice_id = consume.pop(0)["slice_id"]
         self.slice_id_rev = consume.pop(0)["slice_id"]
 
-    def test_slice_client(self, localhost: str, reverse: bool, suite: str) -> dict or None:
+    def test_slice_client(self, localhost: str, reverse: bool, suite: str,
+                          duration_per_test: int, default_slice_rate: int) -> dict or None:
         if self.data["initiator"] != localhost:
             return None
         if reverse:
@@ -57,7 +55,7 @@ class TestSlice(object):
                                          self.data["fr" if self.data["fr"]["name"] == localhost else "to"]["ip"],
                                          int(self.data["fr" if self.data["fr"]["name"] == localhost else "to"]["port"]),
                                          int(self.data["reverse_max_rate" if reverse else "max_rate"]),
-                                         DURATION_PER_TEST,
+                                         duration_per_test,
                                          reverse)
             print("Starting an iperf client on " + client.client_ip + ":" + str(
                 client.client_port) + " to " + client.bind_addr + ":" + str(
@@ -76,7 +74,7 @@ class TestSlice(object):
                                              int(self.data["fr" if self.data["fr"]["name"] == localhost else "to"][
                                                      "port"]),
                                              int(self.data["reverse_max_rate" if reverse else "max_rate"]),
-                                             DURATION_PER_TEST)
+                                             duration_per_test)
             print("Starting a sockperf client on " + client.client_ip + ":" + str(
                 client.client_port) + " to " + client.bind_addr + ":" + str(
                 client.bind_port) + " with protocol " + client.protocol + " (reverse=" + str(reverse) + ")...")
@@ -95,8 +93,8 @@ class TestSlice(object):
                                             int(self.data["to" if self.data["fr"]["name"] == localhost else "fr"][
                                                     "port"]),
                                             self.data["max_rate"],
-                                            max(self.data["reverse_max_rate"], DEFAULT_SLICE_RATE),
-                                            DURATION_PER_TEST)
+                                            max(self.data["reverse_max_rate"], default_slice_rate),
+                                            duration_per_test)
             print("Starting a udp_ping client on " + client.bind_ip + ":" + str(
                 client.bind_port) + " to " + client.remote_ip + ":" + str(
                 client.remote_port) + "...")

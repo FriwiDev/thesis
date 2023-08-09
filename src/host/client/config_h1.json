@@ -3,6 +3,9 @@
   "host_net": "net1",
   "request_slices": false,
   "esmf": "10.0.0.3",
+  "num_tests": 10,
+  "duration_per_test": 1,
+  "default_slice_rate": 10000,
   "slices": [
     {
       "name": "media",

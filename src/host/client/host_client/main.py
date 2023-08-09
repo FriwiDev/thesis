@@ -6,8 +6,6 @@ from esmf_client.model.slice import Slice
 from host_client.esmf_communicator import ESMFCommunicator
 from host_client.test_slice import TestSlice
 
-NUM_TESTS = 10
-
 
 def main():
     # Validate that file input exists
@@ -29,6 +27,10 @@ def main():
     config: dict = json.load(f)
     f.close()
 
+    num_tests = config["num_tests"]
+    duration_per_test = config["duration_per_test"]
+    default_slice_rate = config["default_slice_rate"]
+
     # Build our slice list
     if "slices" not in config.keys():
         print("Error: No slices in config!")
@@ -48,7 +50,7 @@ def main():
     # Should we create slices?
     if "request_slices" in config.keys() and config["request_slices"]:
         for sl in slices:
-            rsl, rsl_rev = sl.get_slices(localhost)
+            rsl, rsl_rev = sl.get_slices(localhost, default_slice_rate)
             if rsl:
                 requested_slices.append(rsl)
             if rsl_rev:
@@ -76,7 +78,7 @@ def main():
 
     # Run our tests as client
     result = {}
-    for i in range(0, NUM_TESTS):
+    for i in range(0, num_tests):
         time_result = {}
         # Run all tests in new threads
         threads = []
@@ -97,7 +99,9 @@ def main():
                 elif suite == "UDP_PING":
                     # Test is always bidirectional here
                     target = run_test_client
-            thread = Thread(target=target, args=(sl, localhost, suite, time_result))
+            thread = Thread(target=target, args=(sl, localhost, suite, time_result,
+                                                 duration_per_test, default_slice_rate)
+                            )
             thread.start()
             threads.append(thread)
         # Wait on all tests to finish
@@ -125,21 +129,24 @@ def main():
     exit(0)
 
 
-def run_test_client(sl: TestSlice, localhost: str, suite: str, time_result: dict):
-    res = sl.test_slice_client(localhost, False, suite)
+def run_test_client(sl: TestSlice, localhost: str, suite: str, time_result: dict,
+                    duration_per_test: int, default_slice_rate: int):
+    res = sl.test_slice_client(localhost, False, suite, duration_per_test, default_slice_rate)
     if res:
         time_result[sl.name] = res
 
 
-def run_test_client_reverse(sl: TestSlice, localhost: str, suite: str, time_result: dict):
-    rev_res = sl.test_slice_client(localhost, True, suite)
+def run_test_client_reverse(sl: TestSlice, localhost: str, suite: str, time_result: dict,
+                            duration_per_test: int, default_slice_rate: int):
+    rev_res = sl.test_slice_client(localhost, True, suite, duration_per_test, default_slice_rate)
     if rev_res:
         time_result[sl.name + "_reverse"] = rev_res
 
 
-def run_test_client_bidir_consecutive(sl: TestSlice, localhost: str, suite: str, time_result: dict):
-    run_test_client(sl, localhost, suite, time_result)
-    run_test_client_reverse(sl, localhost, suite, time_result)
+def run_test_client_bidir_consecutive(sl: TestSlice, localhost: str, suite: str, time_result: dict,
+                                      duration_per_test: int, default_slice_rate: int):
+    run_test_client(sl, localhost, suite, time_result, duration_per_test, default_slice_rate)
+    run_test_client_reverse(sl, localhost, suite, time_result, duration_per_test, default_slice_rate)
 
 
 def run_test_server(sl: TestSlice, localhost: str, suite: str):

@@ -14,12 +14,17 @@ def get_owner(auth: str):
     # TODO-FW real authentication system
     return "default"
 
+def get_max_bw_permitted(owner: str):
+    # TODO-FW real resource allocations
+    return 300 * 1000 * 1000  # 300 MBit/s
+
 
 # Rate limiting (1 request every 6 seconds, initially up to 3 requests)
 rate_limit = Limiter(rate=1, capacity=20, storage=MemoryStorage())
 
 
 def check_and_use_rate(owner: str):
+    # TODO-FW Make all of this configurable
     return rate_limit.consume(owner.encode('utf-8'), 6)
 
 
@@ -91,7 +96,18 @@ async def slice_put(request: web.Request, auth, body=None) -> web.Response:
     if len(slices) == 0:
         return web.Response(status=417, reason="No slices were requested")
     # TODO-Thesis validation
-    ret = EdgeState.handle_slice_request(slices, get_owner(auth))
+    owner = get_owner(auth)
+    # Prevent user from using up too much resources
+    sum_capacity = 0
+    for sl in EdgeState.get_slices_by_owner(owner):
+        sum_capacity += max(sl.max_rate, sl.burst_rate)
+    for sl in slices:
+        sum_capacity += max(sl.max_rate, sl.burst_rate)
+    if sum_capacity >= get_max_bw_permitted(owner):
+        return web.Response(status=507, reason="Insufficient resources by participating domain or requester")
+
+    # Attempt to deploy slices
+    ret = EdgeState.handle_slice_request(slices, owner)
     if ret == 404:
         return web.Response(status=404,
                             reason="The input or output of one or multiple of the slices could not be found")

@@ -25,6 +25,7 @@ class SwitchDeployment(object):
                      ) -> (Queue, Queue or None):  # Returns the queue and the potential reverse queue
         # One of the ports will be 0, indicating our direction (we only know the port on one side)
         # Set up an ingress limit of 1G on every switch port
+        # TODO-FW: Make this configurable and allow traffic for other network members
         for intf in switch.connections:
             if not cls.traffic_policy(switch,
                                       intf.intf_name,

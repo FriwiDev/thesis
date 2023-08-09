@@ -10,14 +10,17 @@ from esmf_server.impl.edge_state import EdgeState
 from esmf_server.models.slice import Slice
 
 
-def get_owner(auth: str):
+def get_owner(auth: str) -> str:
     # TODO-FW real authentication system
     return "default"
 
-def get_max_bw_permitted(owner: str):
+def get_max_bw_permitted(owner: str) -> int:
     # TODO-FW real resource allocations
     return 300 * 1000 * 1000  # 300 MBit/s
 
+def get_max_num_slices(owner: str) -> int:
+    # TODO-FW real resource allocations
+    return 5
 
 # Rate limiting (1 request every 6 seconds, initially up to 3 requests)
 rate_limit = Limiter(rate=1, capacity=20, storage=MemoryStorage())
@@ -99,11 +102,14 @@ async def slice_put(request: web.Request, auth, body=None) -> web.Response:
     owner = get_owner(auth)
     # Prevent user from using up too much resources
     sum_capacity = 0
+    num_slices = 0
     for sl in EdgeState.get_slices_by_owner(owner):
         sum_capacity += max(sl.max_rate, sl.burst_rate)
+        num_slices += 1
     for sl in slices:
         sum_capacity += max(sl.max_rate, sl.burst_rate)
-    if sum_capacity >= get_max_bw_permitted(owner):
+        num_slices += 1
+    if sum_capacity > get_max_bw_permitted(owner) or num_slices > get_max_num_slices(owner):
         return web.Response(status=507, reason="Insufficient resources by participating domain or requester")
 
     # Attempt to deploy slices

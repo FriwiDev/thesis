@@ -10,6 +10,8 @@ from dsmf_server.models import DeviceConfiguration
 from switch_client.apis.tags import queue_management_api, authentication_api, traffic_shaping_api
 from switch_client.model.queue import Queue
 
+MAX_INGRESS_TRAFFIC_PER_PORT = 1 * 1000 * 1000 * 1000  # Ingress of max 1G
+BURST_INGRESS_TRAFFIC_PER_PORT = int(1 * 1000 * 1000 * 1000)  # Burst of max 1.1G
 
 class SwitchDeployment(object):
     @classmethod
@@ -22,7 +24,14 @@ class SwitchDeployment(object):
                      reverse_queue: Queue = None  # An already cached reverse queue
                      ) -> (Queue, Queue or None):  # Returns the queue and the potential reverse queue
         # One of the ports will be 0, indicating our direction (we only know the port on one side)
-        # TODO-Thesis: Traffic shaping
+        # Set up an ingress limit of 1G on every switch port
+        for intf in switch.connections:
+            if not cls.traffic_policy(switch,
+                                      intf.intf_name,
+                                      MAX_INGRESS_TRAFFIC_PER_PORT,
+                                      BURST_INGRESS_TRAFFIC_PER_PORT):
+                raise Exception("Could not set up ingress limit on "+switch.name+":"+intf.intf_name)
+        # Set up our slice
         if switch_type == DeviceType.SRC_BEGIN or switch_type == DeviceType.SRC_TP \
                 or switch_type == DeviceType.SRC_END or switch_type == DeviceType.SRC_ALL:
             intf_out = DomainUtil.port_name_of_switch(switch, next_name)

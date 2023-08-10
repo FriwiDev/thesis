@@ -26,12 +26,14 @@ class SwitchDeployment(object):
         # One of the ports will be 0, indicating our direction (we only know the port on one side)
         # Set up an ingress limit of 1G on every switch port
         # TODO-FW: Make this configurable and allow traffic for other network members
+        # TODO-FW: Specify which ports are actually part of the switch
         for intf in switch.connections:
             if not cls.traffic_policy(switch,
                                       intf.intf_name,
                                       MAX_INGRESS_TRAFFIC_PER_PORT,
                                       BURST_INGRESS_TRAFFIC_PER_PORT):
-                raise Exception("Could not set up ingress limit on "+switch.name+":"+intf.intf_name)
+                print(f"Warning: Could not set up ingress limit on {switch.name}:{intf.intf_name} - "
+                      f"possibly not part of switch!")
         # Set up our slice
         if switch_type == DeviceType.SRC_BEGIN or switch_type == DeviceType.SRC_TP \
                 or switch_type == DeviceType.SRC_END or switch_type == DeviceType.SRC_ALL:

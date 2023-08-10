@@ -233,6 +233,7 @@ class DomainUtil(object):
 
     @classmethod
     def port_index_of_switch(cls, device: DeviceConfiguration, other: str) -> int:
+        # TODO Needs to be resolved
         for conn in device.connections:
             if conn.other_end == other:
                 return conn.intf_id

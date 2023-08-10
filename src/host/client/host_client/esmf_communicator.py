@@ -1,3 +1,5 @@
+from typing import List
+
 import esmf_client
 from esmf_client.apis.tags import authentication_api, slice_management_api
 from esmf_client.model.slice import Slice
@@ -5,7 +7,7 @@ from esmf_client.model.slice import Slice
 
 class ESMFCommunicator(object):
     @classmethod
-    def request_slice(cls, body: [Slice], esmf_ip: str, esmf_port: int = 8080) -> list[Slice] or None:
+    def request_slice(cls, body: List[Slice], esmf_ip: str, esmf_port: int = 8080) -> List[Slice] or None:
         api_client, auth = get_esmf_client(esmf_ip, esmf_port)
         api_instance = slice_management_api.SliceManagementApi(api_client)
 
@@ -23,7 +25,7 @@ class ESMFCommunicator(object):
             return None
 
     @classmethod
-    def delete_slice(cls, body: [Slice], esmf_ip: str, esmf_port: int = 8080) -> bool:
+    def delete_slice(cls, body: List[Slice], esmf_ip: str, esmf_port: int = 8080) -> bool:
         api_client, auth = get_esmf_client(esmf_ip, esmf_port)
         api_instance = slice_management_api.SliceManagementApi(api_client)
 

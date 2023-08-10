@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from esmf_client.model.endpoint import Endpoint
 from esmf_client.model.slice import Slice
 from host_client.test_result_mapper import TestResultMapper
@@ -11,7 +13,7 @@ class TestSlice(object):
         self.slice_id_rev = -1
         self.data = data
 
-    def get_slices(self, localhost: str, default_slice_rate: int) -> tuple[Slice or None, Slice or None]:
+    def get_slices(self, localhost: str, default_slice_rate: int) -> Tuple[Slice or None, Slice or None]:
         if self.data["initiator"] != localhost:
             return None, None
         sl = Slice(slice_id=self.slice_id,
@@ -34,7 +36,7 @@ class TestSlice(object):
                           to=Endpoint(self.data["fr"]))
         return sl, slice_rev
 
-    def cosume_slices(self, localhost: str, consume: list[Slice]):
+    def cosume_slices(self, localhost: str, consume: List[Slice]):
         if self.data["initiator"] != localhost:
             return
         self.slice_id = consume.pop(0)["slice_id"]

@@ -1,0 +1,59 @@
+{
+  "host_name": "h2",
+  "host_net": "host2",
+  "request_slices": false,
+  "esmf": "10.0.0.3",
+  "num_tests": 5,
+  "duration_per_test": 10,
+  "default_slice_rate": 10000,
+  "slices": [
+    {
+      "name": "media",
+      "initiator": "h1",
+      "min_rate": 8000000,
+      "max_rate": 8000000,
+      "burst_rate": 8000000,
+      "reverse_min_rate": -1,
+      "reverse_max_rate": -1,
+      "reverse_burst_rate": -1,
+      "latency": 3,
+      "transport_protocol": "UDP",
+      "fr": {
+        "ip": "10.0.0.2",
+        "port": 0,
+        "name": "h1",
+        "network": "net1"
+      },
+      "to": {
+        "ip": "10.0.0.6",
+        "port": 8887,
+        "name": "h2",
+        "network": "net2"
+      }
+    },
+    {
+      "name": "control",
+      "initiator": "h1",
+      "min_rate": 100000,
+      "max_rate": 100000,
+      "burst_rate": 100000,
+      "reverse_min_rate": 100000,
+      "reverse_max_rate": 100000,
+      "reverse_burst_rate": 100000,
+      "latency": 3,
+      "transport_protocol": "UDP",
+      "fr": {
+        "ip": "10.0.0.2",
+        "port": 0,
+        "name": "h1",
+        "network": "net1"
+      },
+      "to": {
+        "ip": "10.0.0.6",
+        "port": 8888,
+        "name": "h2",
+        "network": "net2"
+      }
+    }
+  ]
+}

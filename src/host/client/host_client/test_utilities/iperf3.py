@@ -10,6 +10,7 @@ https://github.com/thiezn/iperf3-python
 import json
 import subprocess
 from abc import ABC
+from typing import List
 
 from host_client.test_utilities.general import TestUtility
 
@@ -260,6 +261,6 @@ class IPerf3Client(IPerf3):
         return TestResult(_run_command(cmd))
 
 
-def _run_command(cmd: list[str]) -> str:
+def _run_command(cmd: List[str]) -> str:
     result = subprocess.run(cmd, stdout=subprocess.PIPE)
     return result.stdout.decode('utf-8')

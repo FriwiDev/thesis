@@ -2,8 +2,10 @@
 A small wrapper around the sockperf library.
 https://github.com/Mellanox/sockperf
 """
+import re
 import subprocess
 from abc import ABC
+from typing import List
 
 from host_client.test_utilities.general import TestUtility
 
@@ -31,7 +33,8 @@ class TestResult(object):
         self.jitter_ms = float(output.split("std-dev=")[1].split(",")[0].strip()) / 1000
         self.dropped_messages = int(output.split("dropped messages = ")[1].split(";")[0].strip())
         self.duplicated_messages = int(output.split("duplicated messages = ")[1].split(";")[0].strip())
-        self.out_of_order_messages = int(output.split("out-of-order messages = ")[1].split("\n")[0].strip())
+        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+        self.out_of_order_messages = int(ansi_escape.sub('', output.split("out-of-order messages = ")[1].split("\n")[0]).strip())
 
 
 class Sockperf(TestUtility, ABC):
@@ -79,6 +82,6 @@ class SockperfClient(Sockperf):
         return TestResult(_run_command(cmd))
 
 
-def _run_command(cmd: list[str]) -> str:
+def _run_command(cmd: List[str]) -> str:
     result = subprocess.run(cmd, stdout=subprocess.PIPE)
     return result.stdout.decode('utf-8')

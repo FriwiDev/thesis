@@ -11,7 +11,7 @@ bash setup.sh
 bash build_steps/init_img.sh "$IMAGE_NAME"
 
 # Install dependencies
-lxc exec "$IMAGE_NAME" -- apt install -y iputils-ping net-tools iperf3 wireguard tcpdump ifstat python3 python3-pip
+lxc exec "$IMAGE_NAME" -- apt install -y iputils-ping net-tools iperf3 wireguard tcpdump ifstat python3 python3-pip hping3
 
 # Install sockperf
 lxc exec "$IMAGE_NAME" -- apt install -y perl make automake autoconf m4 libtool-bin g++ git

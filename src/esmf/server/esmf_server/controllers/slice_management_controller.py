@@ -100,6 +100,7 @@ async def slice_put(request: web.Request, auth, body=None) -> web.Response:
         return web.Response(status=417, reason="No slices were requested")
     # TODO-Thesis validation
     owner = get_owner(auth)
+    print("Validating limits...")
     # Prevent user from using up too much resources
     sum_capacity = 0
     num_slices = 0
@@ -112,6 +113,7 @@ async def slice_put(request: web.Request, auth, body=None) -> web.Response:
     if sum_capacity > get_max_bw_permitted(owner) or num_slices > get_max_num_slices(owner):
         return web.Response(status=507, reason="Insufficient resources by participating domain or requester")
 
+    print("Begin slice deployment attempt...")
     # Attempt to deploy slices
     ret = EdgeState.handle_slice_request(slices, owner)
     if ret == 404:

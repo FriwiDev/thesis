@@ -58,6 +58,8 @@ class EdgeState(object):
                 latency = min(latency, sl.latency)
                 to_cap[sl.to.network] = (min_rate, max_rate, burst_rate, latency)
 
+        print("Capacity calculation completed. Begin tunnel deployment...")
+
         # Now we know how much traffic we will require - now lets build some adequate tunnels
         # TODO-FW Grow and shrink existing tunnels. For now we will just deploy tunnels for all our slices here.
         to_tunnels = {}  # network -> tunnel
@@ -136,6 +138,8 @@ class EdgeState(object):
                 return 500
 
         staged_slices = []  # slice, [networks]
+
+        print("Tunnel deployment succeeded. Begin slice deployment...")
         # Slices
         for sl in slices:
             tunnel = None
@@ -195,6 +199,8 @@ class EdgeState(object):
         for sl, nets in deployed_slices:
             cls.slices[sl.slice_id] = DeployedSlice(sl, owner, nets)
 
+        print("Slice deployment succeeded")
+
         # Return the deployed slices
         ret = []
         for sl, nets in deployed_slices:
@@ -249,11 +255,13 @@ class EdgeState(object):
             if net == DomainState.config.network:
                 tunnel.private_key = our_private
                 tunnel.public_key = their_public
+                print(f"Tunnel->reserve->DSMF->{net}")
                 if not DSMFCommunicator.reserve_tunnel(tunnel):
                     return False
             else:
                 tunnel.private_key = their_private
                 tunnel.public_key = our_public
+                print(f"Tunnel->reserve->ESMF/CTMF->{net}")
                 if not ESMFCommunicator.reserve_tunnel(tunnel, net):
                     return False
         return True
@@ -273,9 +281,11 @@ class EdgeState(object):
     def deploy_tunnel(cls, tunnel: Tunnel, networks: [str]) -> bool:
         for net in networks:
             if net == DomainState.config.network:
+                print(f"Tunnel->deploy->DSMF->{net}")
                 if not DSMFCommunicator.deploy_tunnel(tunnel):
                     return False
             else:
+                print(f"Tunnel->deploy->ESMF/CTMF->{net}")
                 if not ESMFCommunicator.deploy_tunnel(tunnel, net):
                     return False
         return True
@@ -296,9 +306,11 @@ class EdgeState(object):
         networks = [networks[0], networks[len(networks)-1]]
         for net in networks:
             if net == DomainState.config.network:
+                print(f"Slice->reserve->DSMF->{net}")
                 if not DSMFCommunicator.reserve_slice(sl):
                     return False
             else:
+                print(f"Slice->reserve->ESMF/CTMF->{net}")
                 if not ESMFCommunicator.reserve_slice(sl, net):
                     return False
         return True
@@ -320,9 +332,11 @@ class EdgeState(object):
         networks = [networks[0], networks[len(networks) - 1]]
         for net in networks:
             if net == DomainState.config.network:
+                print(f"Slice->deploy->DSMF->{net}")
                 if not DSMFCommunicator.deploy_slice(sl):
                     return False
             else:
+                print(f"Slice->deploy->ESMF/CTMF->{net}")
                 if not ESMFCommunicator.deploy_slice(sl, net):
                     return False
         return True

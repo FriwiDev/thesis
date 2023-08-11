@@ -38,7 +38,45 @@ class SwitchPortDescription(
     class MetaOapg:
         
         class properties:
-            port_no = schemas.IntSchema
+            
+            
+            class port_no(
+                schemas.ComposedSchema,
+            ):
+            
+            
+                class MetaOapg:
+                    one_of_0 = schemas.StrSchema
+                    one_of_1 = schemas.IntSchema
+                    
+                    @classmethod
+                    @functools.lru_cache()
+                    def one_of(cls):
+                        # we need this here to make our import statements work
+                        # we must store _composed_schemas in here so the code is only run
+                        # when we invoke this method. If we kept this at the class
+                        # level we would get an error because the class level
+                        # code would be run when this module is imported, and these composed
+                        # classes don't exist yet because their module has not finished
+                        # loading
+                        return [
+                            cls.one_of_0,
+                            cls.one_of_1,
+                        ]
+            
+            
+                def __new__(
+                    cls,
+                    *_args: typing.Union[dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, bool, None, list, tuple, bytes, io.FileIO, io.BufferedReader, ],
+                    _configuration: typing.Optional[schemas.Configuration] = None,
+                    **kwargs: typing.Union[schemas.AnyTypeSchema, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, None, list, tuple, bytes],
+                ) -> 'port_no':
+                    return super().__new__(
+                        cls,
+                        *_args,
+                        _configuration=_configuration,
+                        **kwargs,
+                    )
             hw_addr = schemas.StrSchema
             name = schemas.StrSchema
             config = schemas.IntSchema
@@ -213,7 +251,7 @@ class SwitchPortDescription(
     def __new__(
         cls,
         *_args: typing.Union[dict, frozendict.frozendict, ],
-        port_no: typing.Union[MetaOapg.properties.port_no, decimal.Decimal, int, schemas.Unset] = schemas.unset,
+        port_no: typing.Union[MetaOapg.properties.port_no, dict, frozendict.frozendict, str, date, datetime, uuid.UUID, int, float, decimal.Decimal, bool, None, list, tuple, bytes, io.FileIO, io.BufferedReader, schemas.Unset] = schemas.unset,
         hw_addr: typing.Union[MetaOapg.properties.hw_addr, str, schemas.Unset] = schemas.unset,
         name: typing.Union[MetaOapg.properties.name, str, schemas.Unset] = schemas.unset,
         config: typing.Union[MetaOapg.properties.config, decimal.Decimal, int, schemas.Unset] = schemas.unset,

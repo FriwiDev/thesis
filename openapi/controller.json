@@ -353,8 +353,13 @@
         "description": "Switch port description",
         "properties": {
           "port_no": {
-            "type": "integer",
-            "format": "i16",
+            "oneOf": [{
+                "type": "string"
+              },
+              {
+                "type": "integer",
+                "format": "i16"
+              }],
             "description": "Port number",
             "example": 1
           },

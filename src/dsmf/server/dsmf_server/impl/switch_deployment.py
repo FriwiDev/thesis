@@ -24,16 +24,19 @@ class SwitchDeployment(object):
                      reverse_queue: Queue = None  # An already cached reverse queue
                      ) -> (Queue, Queue or None):  # Returns the queue and the potential reverse queue
         # One of the ports will be 0, indicating our direction (we only know the port on one side)
+        # Retrieve connection intf ids from switch, if not retrieved already
+        DomainUtil.port_index_of_switch(switch, "somepseudodev")
         # Set up an ingress limit of 1G on every switch port
         # TODO-FW: Make this configurable and allow traffic for other network members
         # TODO-FW: Specify which ports are actually part of the switch
         for intf in switch.connections:
-            if not cls.traffic_policy(switch,
-                                      intf.intf_name,
-                                      MAX_INGRESS_TRAFFIC_PER_PORT,
-                                      BURST_INGRESS_TRAFFIC_PER_PORT):
-                print(f"Warning: Could not set up ingress limit on {switch.name}:{intf.intf_name} - "
-                      f"possibly not part of switch!")
+            if intf.intf_id != -1:
+                if not cls.traffic_policy(switch,
+                                          intf.intf_name,
+                                          MAX_INGRESS_TRAFFIC_PER_PORT,
+                                          BURST_INGRESS_TRAFFIC_PER_PORT):
+                    print(f"Warning: Could not set up ingress limit on {switch.name}:{intf.intf_name} - "
+                          f"possibly not part of switch!")
         # Set up our slice
         if switch_type == DeviceType.SRC_BEGIN or switch_type == DeviceType.SRC_TP \
                 or switch_type == DeviceType.SRC_END or switch_type == DeviceType.SRC_ALL:
@@ -80,9 +83,9 @@ class SwitchDeployment(object):
             intf_in = DomainUtil.port_name_of_switch(switch, prev_name)
             # Add our tunnel queue
             queue = Queue(queue_id=SwitchDeployment.create_queue(switch, queue),
-                          min_rate=queue["min_rate"],
-                          max_rate=queue["max_rate"],
-                          burst_rate=queue["burst_rate"],
+                          min_rate=int(int(queue["min_rate"])*1.5),  # Larger capacity for tunnel to factor in additional headers
+                          max_rate=int(int(queue["max_rate"])*1.5),
+                          burst_rate=int(int(queue["burst_rate"])*1.5),
                           priority=queue["priority"],
                           port=queue["port"]
                           )
@@ -144,7 +147,6 @@ class SwitchDeployment(object):
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_out,
                                                     src_ip=dst_ip, dst_ip=src_ip, dst_port=src_port,
-                                                    # TODO-Thesis Verify if this is correct - might need another 2 flows for other combinations
                                                     mpls=slice_id, push_mpls=True,
                                                     queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
@@ -159,7 +161,6 @@ class SwitchDeployment(object):
                 if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
                                                     in_port=port_out,
                                                     src_ip=dst_ip, dst_ip=src_ip, dst_port=src_port,
-                                                    # TODO-Thesis Verify if this is correct - might need another 2 flows for other combinations
                                                     queue_id=reverse_queue["queue_id"], out_port=port_in):
                     raise Exception("Error while installing flow")
             return queue, reverse_queue
@@ -295,7 +296,8 @@ class SwitchDeployment(object):
         body = {
             'dpid': switch.dpid,
             'table_id': 0,
-            'cookie': cookie
+            'cookie': cookie,
+            'cookie_mask': 0xFFFF
         }
 
         print("Switch flow delete " + pprint.pformat(body))

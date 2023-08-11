@@ -1,13 +1,15 @@
 import heapq as hq
-import json
 import math
 from typing import List, Tuple
 
 from dsmf_server.impl.domain_state import DomainState, DeviceType
+from dsmf_server.impl.switch_port_info import SwitchPortInfo
 from dsmf_server.models import DeviceConfiguration, ConnectionConfiguration
 
 
 class DomainUtil(object):
+    resolved_switches = False
+
     @classmethod
     def route_network(cls, fr: str, to: str) -> [str]:
         # index -> index with weight
@@ -233,7 +235,11 @@ class DomainUtil(object):
 
     @classmethod
     def port_index_of_switch(cls, device: DeviceConfiguration, other: str) -> int:
-        # TODO Needs to be resolved
+        # Resolve port numbers from switches if we have not resolved them yet
+        if not cls.resolved_switches:
+            cls.calculate_switch_intf_ids()
+            cls.resolved_switches = True
+        # Find port number in connection list
         for conn in device.connections:
             if conn.other_end == other:
                 return conn.intf_id
@@ -276,3 +282,16 @@ class DomainUtil(object):
                         path[v] = u
                         hq.heappush(queue, (f, v))
         return path, weights
+
+    @classmethod
+    def calculate_switch_intf_ids(cls):
+        for switch in DomainState.config.switches:
+            ports = SwitchPortInfo.get_portdesc(switch)
+            if not ports:
+                raise Exception(f"Could not retrieve current port configuration from switch {switch.name}!")
+            for conn in switch.connections:
+                conn.intf_id = -1
+                for port in ports:
+                    if port["name"] == conn.intf_name:
+                        conn.intf_id = int(port["port_no"])
+                        break

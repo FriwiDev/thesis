@@ -65,20 +65,24 @@ class TunnelDeployment(object):
                                         public_key=tunnel.public_key,
                                         ingress_matches=ingress_matches,
                                         egress_matches=[],
+                                        # TODO Make these internal ip addresses configurable (currently we just try a
+                                        # scheme to make them unique)
                                         local_tunnel_ip=str(ipaddress.ip_address(
                                             int(ipaddress.ip_address(tunnel.fr.ip))
                                             + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
                                                 DomainState.get_network(
                                                     DomainState.get_device(tunnel.fr.name).network
                                                 ).subnet
-                                            ).prefixlen))),
+                                            ).prefixlen)
+                                            + tunnel.tunnel_id)),
                                         remote_tunnel_ip=str(ipaddress.ip_address(
                                             int(ipaddress.ip_address(tunnel.to.ip))
                                             + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
                                                 DomainState.get_network(
                                                     DomainState.get_device(tunnel.to.name).network
                                                 ).subnet
-                                            ).prefixlen)))
+                                            ).prefixlen) * 4
+                                            + tunnel.tunnel_id))
                                         )
                     # Send to vpn endpoint
                     if not VPNDeployment.create_or_update_tunnel_entry(device, entry):
@@ -111,20 +115,24 @@ class TunnelDeployment(object):
                                         public_key=tunnel.public_key,
                                         ingress_matches=[],
                                         egress_matches=egress_matches,
+                                        # TODO Make these internal ip addresses configurable (currently we just try a
+                                        # scheme to make them unique)
                                         local_tunnel_ip=str(ipaddress.ip_address(
                                             int(ipaddress.ip_address(tunnel.to.ip))
                                             + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
                                                 DomainState.get_network(
                                                     DomainState.get_device(tunnel.to.name).network
                                                 ).subnet
-                                            ).prefixlen))),
+                                            ).prefixlen) * 4
+                                            + tunnel.tunnel_id)),
                                         remote_tunnel_ip=str(ipaddress.ip_address(
                                             int(ipaddress.ip_address(tunnel.fr.ip))
                                             + pow(2, 32 - ipaddress.ip_network(  # TODO-FW Assumes ipv4, addr should be specified by coordinator
                                                 DomainState.get_network(
                                                     DomainState.get_device(tunnel.fr.name).network
                                                 ).subnet
-                                            ).prefixlen)))
+                                            ).prefixlen)
+                                            + tunnel.tunnel_id))
                                         )
                     # Send to vpn endpoint
                     if not VPNDeployment.create_or_update_tunnel_entry(device, entry):

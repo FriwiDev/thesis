@@ -95,7 +95,7 @@ class TunnelDeployment(object):
                         # Does the slice use our tunnel?
                         if slice.tunnel_id == tunnel.tunnel_id:
                             # Find one possible egress interface for this slice
-                            slice_devs, _ = DomainUtil.route_slice(tunnel.to.name, slice.to.name, False)
+                            slice_devs, _ = DomainUtil.route_slice(slice.to.name, tunnel.to.name, False)
                             next_hop = slice_devs[1]
                             for connection in DomainState.get_device(tunnel.to.name).connections:
                                 if connection.other_end == next_hop:

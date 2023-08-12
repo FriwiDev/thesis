@@ -55,19 +55,21 @@ def main():
                 requested_slices.append(rsl)
             if rsl_rev:
                 requested_slices.append(rsl_rev)
-        consume_slices = ESMFCommunicator.request_slice(requested_slices, ip, port)
-        if consume_slices:
-            print("Successfully created all slices!")
-        else:
-            print("Error while creating slices!")
-            exit(1)
+        if len(requested_slices) > 0:
+            requested_slices = ESMFCommunicator.request_slice(requested_slices, ip, port)
+            consume_slices = [x for x in requested_slices]
+            if consume_slices:
+                print("Successfully created all slices!")
+            else:
+                print("Error while creating slices!")
+                exit(1)
 
-        for sl in slices:
-            sl.cosume_slices(localhost, consume_slices)
+            for sl in slices:
+                sl.cosume_slices(localhost, consume_slices)
 
-        if len(consume_slices) > 0:
-            print("Somehow slices were left over after configuring! Something went horribly wrong!")
-            exit(1)
+            if len(consume_slices) > 0:
+                print("Somehow slices were left over after configuring! Something went horribly wrong!")
+                exit(1)
 
     # Run our tests as server
     server_threads = []
@@ -120,8 +122,8 @@ def main():
         f.close()
 
     # Should we remove slices?
-    if "request_slices" in config.keys() and config["request_slices"]:
-        if ESMFCommunicator.delete_slice([x.slice_id for x in requested_slices], ip, port):
+    if "request_slices" in config.keys() and config["request_slices"] and len(requested_slices) > 0:
+        if ESMFCommunicator.delete_slice([x["slice_id"] for x in requested_slices], ip, port):
             print("Successfully removed all slices!")
         else:
             print("Error while removing slices!")

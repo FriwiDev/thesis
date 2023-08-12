@@ -3,8 +3,8 @@
   "host_net": "net2",
   "request_slices": false,
   "esmf": "10.0.0.3",
-  "num_tests": 10,
-  "duration_per_test": 1,
+  "num_tests": 5,
+  "duration_per_test": 10,
   "default_slice_rate": 10000,
   "slices": [
     {
@@ -41,7 +41,7 @@
       "reverse_max_rate": 1000000,
       "reverse_burst_rate": 1000000,
       "latency": 3,
-      "transport_protocol": "TCP",
+      "transport_protocol": "UDP",
       "fr": {
         "ip": "127.0.0.1",
         "port": 0,

@@ -62,8 +62,14 @@ class SwitchDeployment(object):
                 raise Exception("Error while removing old flows")
             print("Creating new flows...")
             if switch_type == DeviceType.SRC_BEGIN or switch_type == DeviceType.SRC_ALL:
-                # Add our flow
-                if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol=protocol,
+                # Add our flow for udp and tcp (to allow for iperf)
+                if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol="UDP",
+                                                    in_port=port_in,
+                                                    src_ip=src_ip, src_port=src_port, dst_ip=dst_ip, dst_port=dst_port,
+                                                    mpls=slice_id, push_mpls=True,
+                                                    queue_id=queue["queue_id"], out_port=port_out):
+                    raise Exception("Error while installing flow")
+                if not SwitchDeployment.create_flow(switch, cookie=slice_id, protocol="TCP",
                                                     in_port=port_in,
                                                     src_ip=src_ip, src_port=src_port, dst_ip=dst_ip, dst_port=dst_port,
                                                     mpls=slice_id, push_mpls=True,
@@ -243,7 +249,10 @@ class SwitchDeployment(object):
             if dst_port != 0:
                 m[protocol.lower() + "_dst"] = dst_port
             m['eth_type'] = 2048
-            m['ip_proto'] = 17
+            if protocol == "UDP":
+                m['ip_proto'] = 17
+            else:
+                m['ip_proto'] = 6
         else:
             m['mpls_label'] = mpls_match
             m['eth_type'] = 0x8847

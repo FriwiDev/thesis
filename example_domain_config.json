@@ -1,24 +1,29 @@
 {
   "type": "DSMF",
-  "network": "net2",
+  "network": "bn",
   "controllers": [
     {
-      "ip": "10.0.0.14",
+      "ip": "10.0.0.22",
       "port": 8080,
       "connections": [
         {
-          "intf_name": "testnode-eth33",
-          "intf_id": 0,
-          "other_end": "DSMF2"
+          "intf_name": "testnode-eth69",
+          "intf_id": 1,
+          "other_end": "DTMF"
         },
         {
-          "intf_name": "testnode-eth35",
-          "intf_id": 1,
-          "other_end": "switch2"
+          "intf_name": "testnode-eth71",
+          "intf_id": 2,
+          "other_end": "switchbna"
+        },
+        {
+          "intf_name": "testnode-eth73",
+          "intf_id": 3,
+          "other_end": "switchbnb"
         }
       ],
-      "network": "net2",
-      "name": "controller2",
+      "network": "bn",
+      "name": "controllerbn",
       "dpid": null
     }
   ],
@@ -28,18 +33,18 @@
       "port": 8083,
       "connections": [
         {
-          "intf_name": "testnode-eth3",
-          "intf_id": 0,
-          "other_end": "switch1"
-        },
-        {
-          "intf_name": "testnode-eth4",
+          "intf_name": "testnode-eth5",
           "intf_id": 1,
-          "other_end": "switchbn"
+          "other_end": "switch1b"
         },
         {
-          "intf_name": "testnode-eth18",
+          "intf_name": "testnode-eth6",
           "intf_id": 2,
+          "other_end": "switchbna"
+        },
+        {
+          "intf_name": "testnode-eth34",
+          "intf_id": 3,
           "other_end": "DSMF1"
         }
       ],
@@ -48,22 +53,22 @@
       "dpid": null
     },
     {
-      "ip": "10.0.0.6",
+      "ip": null,
       "port": 8083,
       "connections": [
         {
-          "intf_name": "testnode-eth7",
-          "intf_id": 0,
-          "other_end": "switchbn"
-        },
-        {
-          "intf_name": "testnode-eth8",
+          "intf_name": "testnode-eth11",
           "intf_id": 1,
-          "other_end": "switch2"
+          "other_end": "switchbnb"
         },
         {
-          "intf_name": "testnode-eth24",
+          "intf_name": "testnode-eth12",
           "intf_id": 2,
+          "other_end": "switch2a"
+        },
+        {
+          "intf_name": "testnode-eth42",
+          "intf_id": 3,
           "other_end": "DSMF2"
         }
       ],
@@ -74,52 +79,94 @@
   ],
   "switches": [
     {
+      "ip": "10.0.0.6",
+      "port": 8082,
+      "connections": [
+        {
+          "intf_name": "testnode-eth7",
+          "intf_id": 1,
+          "other_end": "vpn1"
+        },
+        {
+          "intf_name": "testnode-eth8",
+          "intf_id": 2,
+          "other_end": "switchbnb"
+        },
+        {
+          "intf_name": "testnode-eth23",
+          "intf_id": 3,
+          "other_end": "switch1b"
+        },
+        {
+          "intf_name": "testnode-eth65",
+          "intf_id": 4,
+          "other_end": "DTMF"
+        },
+        {
+          "intf_name": "testnode-eth70",
+          "intf_id": 5,
+          "other_end": "controllerbn"
+        }
+      ],
+      "network": "bn",
+      "name": "switchbna",
+      "dpid": "0000000000000005"
+    },
+    {
       "ip": "10.0.0.7",
       "port": 8082,
       "connections": [
         {
           "intf_name": "testnode-eth9",
-          "intf_id": 0,
-          "other_end": "vpn2"
+          "intf_id": 1,
+          "other_end": "switchbna"
         },
         {
           "intf_name": "testnode-eth10",
-          "intf_id": 1,
-          "other_end": "h2"
-        },
-        {
-          "intf_name": "testnode-eth22",
           "intf_id": 2,
-          "other_end": "DSMF2"
+          "other_end": "vpn2"
         },
         {
-          "intf_name": "testnode-eth34",
+          "intf_name": "testnode-eth25",
           "intf_id": 3,
-          "other_end": "controller2"
+          "other_end": "switch2a"
+        },
+        {
+          "intf_name": "testnode-eth67",
+          "intf_id": 4,
+          "other_end": "DTMF"
+        },
+        {
+          "intf_name": "testnode-eth72",
+          "intf_id": 5,
+          "other_end": "controllerbn"
         }
       ],
-      "network": "net2",
-      "name": "switch2",
-      "dpid": "0000000000000002"
+      "network": "bn",
+      "name": "switchbnb",
+      "dpid": "0000000000000006"
     }
   ],
   "network_borders": [
     {
-      "network_name": "bn",
-      "device_name": "vpn2",
-      "device_type": "VPN",
-      "connection": [
-        {
-          "intf_name": "testnode-eth7",
-          "intf_id": 0,
-          "other_end": "switchbn"
-        },
-        {
-          "intf_name": "testnode-eth8",
-          "intf_id": 1,
-          "other_end": "switch2"
-        }
-      ]
+      "network_name": "net1",
+      "device_name": "switchbna",
+      "device_type": "SWITCH",
+      "connection": {
+        "intf_name": "testnode-eth7",
+        "intf_id": 1,
+        "other_end": "vpn1"
+      }
+    },
+    {
+      "network_name": "net2",
+      "device_name": "switchbnb",
+      "device_type": "SWITCH",
+      "connection": {
+        "intf_name": "testnode-eth10",
+        "intf_id": 2,
+        "other_end": "vpn2"
+      }
     }
   ],
   "networks": [

@@ -192,13 +192,13 @@ class UDPPingServer(TestUtility):
             data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
             host, port = addr
             packet = parse_packet(host, port, bytearray(data))
+            self.last_packet_received = time.time_ns()
             if packet.start_time == -1:
                 # Client wishes to clean up, so we freeze our statistics and keep on sending
                 if self.current_flow_start != -1:
                     self.pause_until = time.time_ns() + int(300 * 1000 * 1000)
                 self.current_flow_start = -1
                 continue
-            self.last_packet_received = time.time_ns()
             if self.current_flow_start < packet.start_time and self.pause_until < time.time_ns():
                 # We are now in a new flow -> reset and apply everything
                 self.token_bucket = None

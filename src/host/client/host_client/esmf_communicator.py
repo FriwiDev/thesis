@@ -25,13 +25,13 @@ class ESMFCommunicator(object):
             return None
 
     @classmethod
-    def delete_slice(cls, body: List[Slice], esmf_ip: str, esmf_port: int = 8080) -> bool:
+    def delete_slice(cls, body: List[int], esmf_ip: str, esmf_port: int = 8080) -> bool:
         api_client, auth = get_esmf_client(esmf_ip, esmf_port)
         api_instance = slice_management_api.SliceManagementApi(api_client)
 
         query_params = {
             'auth': auth,
-            'slice_ids': [x.slice_id for x in body]
+            'slice_ids': body
         }
 
         try:

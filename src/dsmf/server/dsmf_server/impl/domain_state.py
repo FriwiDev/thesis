@@ -25,6 +25,10 @@ class DomainState(object):
         for device in cls.config.vpn_gateways + cls.config.switches:
             if device.name == name:
                 return device
+        # Check if wanted device is in another network and directly attached to us - if so, return None
+        for network_border in DomainState.config.network_borders:
+            if network_border.connection.other_end == name:
+                return None
         # TODO-FW This could be replaced with real device config data in the future
         for switch in cls.config.switches:
             for connection in switch.connections:

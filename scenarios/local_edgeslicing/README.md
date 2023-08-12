@@ -170,8 +170,8 @@ Test Complete. Summary Results:
 
 ```
 Without ou background traffic running we observe similar results, but without packet drops. Sometimes short spikes (`<1s`)
-can be observed of up to 4% packet loss - but over a time of 10 seconds we always observed `<1%` packet loss for this
-example media slice.
+can be observed of up to 4% packet loss - but over a time of 10 seconds we always observed `<2%` packet loss for this
+example media slice. This is of course already out of bounds.
 
 #### Raw output from ping
 

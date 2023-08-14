@@ -1,0 +1,102 @@
+{
+  "0": {
+    "media": {
+      "min_latency": 0.375378,
+      "max_latency": 70.25702700000001,
+      "mean_latency": 57.157928,
+      "jitter_ms": 13.803427,
+      "dropped_packets": 892,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    },
+    "control": {
+      "min_latency": 57.14119,
+      "max_latency": 57.268476,
+      "mean_latency": 57.209224999999996,
+      "jitter_ms": 0.043631,
+      "dropped_packets": 8,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    }
+  },
+  "1": {
+    "media": {
+      "min_latency": 0.392004,
+      "max_latency": 65.365754,
+      "mean_latency": 57.087447,
+      "jitter_ms": 13.546188,
+      "dropped_packets": 863,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    },
+    "control": {
+      "min_latency": 57.127326000000004,
+      "max_latency": 57.355571000000005,
+      "mean_latency": 57.228379999999994,
+      "jitter_ms": 0.082084,
+      "dropped_packets": 10,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    }
+  },
+  "2": {
+    "control": {
+      "min_latency": 57.123428999999994,
+      "max_latency": 57.248156,
+      "mean_latency": 57.197309000000004,
+      "jitter_ms": 0.04109,
+      "dropped_packets": 9,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    },
+    "media": {
+      "min_latency": 0.3498,
+      "max_latency": 65.41560199999999,
+      "mean_latency": 57.131122000000005,
+      "jitter_ms": 13.767477999999999,
+      "dropped_packets": 890,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    }
+  },
+  "3": {
+    "media": {
+      "min_latency": 0.380609,
+      "max_latency": 67.79464200000001,
+      "mean_latency": 57.297116,
+      "jitter_ms": 13.634877000000001,
+      "dropped_packets": 867,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    },
+    "control": {
+      "min_latency": 57.114972,
+      "max_latency": 57.473531,
+      "mean_latency": 57.221314,
+      "jitter_ms": 0.138796,
+      "dropped_packets": 10,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    }
+  },
+  "4": {
+    "media": {
+      "min_latency": 0.397868,
+      "max_latency": 68.13886,
+      "mean_latency": 57.31512,
+      "jitter_ms": 13.431002000000001,
+      "dropped_packets": 839,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    },
+    "control": {
+      "min_latency": 57.143995000000004,
+      "max_latency": 57.276076,
+      "mean_latency": 57.227085,
+      "jitter_ms": 0.047652,
+      "dropped_packets": 11,
+      "duplicated_packets": 0,
+      "out_of_order_packets": 0
+    }
+  }
+}

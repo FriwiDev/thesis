@@ -1,0 +1,122 @@
+{
+  "0": {
+    "media": {
+      "min_latency": 0.291693,
+      "max_latency": 2412.90833,
+      "mean_latency": 1053.7348752239382,
+      "loss": 0.0,
+      "loss_rev": 0.2314540059347181,
+      "lost_messages": 0,
+      "lost_messages_rev": 78,
+      "bps": 12043161.6,
+      "bps_rev": 79564.8
+    },
+    "control": {
+      "min_latency": 0.294419,
+      "max_latency": 2413.656722,
+      "mean_latency": 1051.532220780645,
+      "loss": 0.0,
+      "loss_rev": 0.23456790123456794,
+      "lost_messages": 0,
+      "lost_messages_rev": 95,
+      "bps": 120115.2,
+      "bps_rev": 95232.0
+    }
+  },
+  "1": {
+    "control": {
+      "min_latency": 4005.031898,
+      "max_latency": 5796.613788,
+      "mean_latency": 4961.973807022223,
+      "loss": 0.1658163265306123,
+      "loss_rev": 0.5577395577395577,
+      "lost_messages": 65,
+      "lost_messages_rev": 227,
+      "bps": 100147.2,
+      "bps_rev": 55296.0
+    },
+    "media": {
+      "min_latency": 3818.241019,
+      "max_latency": 5805.09657,
+      "mean_latency": 4953.320129092715,
+      "loss": 0.012397535767017964,
+      "loss_rev": 0.5584795321637427,
+      "lost_messages": 487,
+      "lost_messages_rev": 191,
+      "bps": 11917516.8,
+      "bps_rev": 46387.2
+    }
+  },
+  "2": {
+    "control": {
+      "min_latency": 10016.565715,
+      "max_latency": 10016.565715,
+      "mean_latency": 10016.565715,
+      "loss": 0.17091836734693877,
+      "loss_rev": 0.9975550122249389,
+      "lost_messages": 67,
+      "lost_messages_rev": 408,
+      "bps": 99532.8,
+      "bps_rev": 307.2
+    },
+    "media": {
+      "min_latency": 9830.056859,
+      "max_latency": 10258.878402,
+      "mean_latency": 9946.071201,
+      "loss": 0.023994213453720104,
+      "loss_rev": 0.968299711815562,
+      "lost_messages": 962,
+      "lost_messages_rev": 336,
+      "bps": 12020736.0,
+      "bps_rev": 3379.2
+    }
+  },
+  "3": {
+    "media": {
+      "min_latency": 17920.348043,
+      "max_latency": 17920.348043,
+      "mean_latency": 17920.348043,
+      "loss": 0.016056684094740148,
+      "loss_rev": 0.9983164983164983,
+      "lost_messages": 1124,
+      "lost_messages_rev": 593,
+      "bps": 21159014.4,
+      "bps_rev": 307.2
+    },
+    "control": {
+      "min_latency": 18106.913702,
+      "max_latency": 18106.913702,
+      "mean_latency": 18106.913702,
+      "loss": 0.3375706214689266,
+      "loss_rev": 0.9986168741355463,
+      "lost_messages": 239,
+      "lost_messages_rev": 722,
+      "bps": 143769.6,
+      "bps_rev": 307.2
+    }
+  },
+  "4": {
+    "media": {
+      "min_latency": 23471.821647,
+      "max_latency": 23471.821647,
+      "mean_latency": 23471.821647,
+      "loss": 0.016916247668698925,
+      "loss_rev": 0.9987080103359173,
+      "lost_messages": 1551,
+      "lost_messages_rev": 773,
+      "bps": 27689472.0,
+      "bps_rev": 307.2
+    },
+    "control": {
+      "min_latency": 23620.408024,
+      "max_latency": 23620.408024,
+      "mean_latency": 23620.408024,
+      "loss": 0.25568797399783316,
+      "loss_rev": 0.9988009592326139,
+      "lost_messages": 236,
+      "lost_messages_rev": 833,
+      "bps": 210739.2,
+      "bps_rev": 307.2
+    }
+  }
+}

@@ -148,7 +148,7 @@ $ESMF1> -- curl -X 'DELETE' \
 ### Observation
 
 #### Raw output from iperf3
-When sending 8M of UDP packets from h1 to h2 via iperf3, we get an output similar to this:
+When sending 8M of UDP packets from h1 to h2 via iperf3 (under attack), we get an output similar to this:
 
 ```
 $> iperf3 -c 10.0.0.11 --udp --port 8888 -b 8M -t 10
@@ -193,6 +193,7 @@ With 32 flows that were placed on the switch additionally, still no change could
 In all tests our delay was mostly under 0.3ms, while an occasional spike smaller than 2ms could be observed every other minute.
 The guaranteed bandwidth of our slices never dropped below our configured guaranteed rate, apart from within one second after negotiation where slight decreases (<10%) could be observed.
 Maybe this can be explained due to the implementation of our test suite, as this could also be observed when the adversaries were not active.
+We also tested the entire situation with bidirectional spam, obtaining the same results.
 We thus conclude that our isolation was indeed successful.
 
 #### Raw output from ping

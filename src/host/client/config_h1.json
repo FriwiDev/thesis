@@ -5,7 +5,7 @@
   "esmf": "10.0.0.3",
   "num_tests": 5,
   "duration_per_test": 10,
-  "default_slice_rate": 10000,
+  "default_slice_rate": 100000,
   "slices": [
     {
       "name": "media",
@@ -34,12 +34,12 @@
     {
       "name": "control",
       "initiator": "h1",
-      "min_rate": 1000000,
-      "max_rate": 1000000,
-      "burst_rate": 1000000,
-      "reverse_min_rate": 1000000,
-      "reverse_max_rate": 1000000,
-      "reverse_burst_rate": 1000000,
+      "min_rate": 100000,
+      "max_rate": 100000,
+      "burst_rate": 100000,
+      "reverse_min_rate": 100000,
+      "reverse_max_rate": 100000,
+      "reverse_burst_rate": 100000,
       "latency": 3,
       "transport_protocol": "UDP",
       "fr": {

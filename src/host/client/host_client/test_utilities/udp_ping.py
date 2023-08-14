@@ -141,9 +141,10 @@ class UDPPingClient(TestUtility):
         min_latency /= 1000000
         max_latency /= 1000000
         mean_latency = self.sum_latency / self.seen_packets / 1000000
-        loss = 1 - (final_packet.seen_packets + 1) / self.packet_num  # We always "loose" a frame due to our counters
+        # We always "loose" a frame due to our counters
+        loss = 1 - max(0, final_packet.seen_packets + 1) / self.packet_num
         loss_rev = 1 - self.seen_packets / final_packet.packet_num
-        lost_messages = self.packet_num - (final_packet.seen_packets + 1)
+        lost_messages = self.packet_num - max(0, final_packet.seen_packets + 1)
         lost_messages_rev = final_packet.packet_num - self.seen_packets
         bps = final_packet.seen_packets * TARGET_PACKET_SIZE * 8 / self.time
         bps_rev = self.seen_packets * TARGET_PACKET_SIZE * 8 / self.time
@@ -192,11 +193,12 @@ class UDPPingServer(TestUtility):
             data, addr = self.sock.recvfrom(1024)  # buffer size is 1024 bytes
             host, port = addr
             packet = parse_packet(host, port, bytearray(data))
+            self.packet_time = max(self.packet_time, packet.packet_time)
             self.last_packet_received = time.time_ns()
             if packet.start_time == -1:
                 # Client wishes to clean up, so we freeze our statistics and keep on sending
                 if self.current_flow_start != -1:
-                    self.pause_until = time.time_ns() + int(300 * 1000 * 1000)
+                    self.pause_until = time.time_ns() + int(1000 * 1000 * 1000)  # Wait for 1 second
                 self.current_flow_start = -1
                 continue
             if self.current_flow_start < packet.start_time and self.pause_until < time.time_ns():
@@ -207,13 +209,11 @@ class UDPPingServer(TestUtility):
                 self.current_flow_start = packet.start_time
                 self.packet_num = 0
                 self.seen_packets = 0
-                self.packet_time = max(self.packet_time, packet.packet_time)
                 self.token_bucket = Limiter(rate=packet.server_rate, capacity=int(packet.server_rate / 3),
                                             storage=MemoryStorage())
             else:
                 # We continue along our flow and just increase packet counters
                 self.seen_packets += 1
-                self.packet_time = max(self.packet_time, packet.packet_time)
         self.sock.close()
         return TestResult(0, 0, 0, 0, 0, 0, 0)
 

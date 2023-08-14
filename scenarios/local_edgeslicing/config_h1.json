@@ -10,7 +10,7 @@
     {
       "name": "media",
       "initiator": "h1",
-      "min_rate": 10000000,
+      "min_rate": 8388608,
       "max_rate": 12000000,
       "burst_rate": 12000000,
       "reverse_min_rate": -1,
@@ -34,12 +34,12 @@
     {
       "name": "control",
       "initiator": "h1",
-      "min_rate": 120000,
-      "max_rate": 140000,
-      "burst_rate": 140000,
-      "reverse_min_rate": 120000,
-      "reverse_max_rate": 140000,
-      "reverse_burst_rate": 140000,
+      "min_rate": 8388608,
+      "max_rate": 120000,
+      "burst_rate": 120000,
+      "reverse_min_rate": 102400,
+      "reverse_max_rate": 120000,
+      "reverse_burst_rate": 120000,
       "latency": 3,
       "transport_protocol": "UDP",
       "fr": {

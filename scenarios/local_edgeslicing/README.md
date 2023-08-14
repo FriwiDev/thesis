@@ -258,6 +258,9 @@ We will thus take the results from ping.
 ### Result
 Even under heavy load and increased difficulty, the QoS guarantees remain intact and the slice is isolated.
 
+Our REST adversaries had no effect, apart from the HTTP spammer temporarily rendering services unavailable.
+This did not affect existing slices though.
+
 ### Topology Implementation
 Please refer to the `local_edgeslicing.py` file. The testbed was deployed to a single compute node and altered to
 include more or less attackers, depending on the test being run. An explanation on what was tested can be viewed above.

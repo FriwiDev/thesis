@@ -13,4 +13,4 @@ class ConfigurationUtil(object):
     @classmethod
     def save_configuration_to_disk(cls, config: DomainConfiguration):
         with open('domain_config.json', 'rw') as file:
-            file.write(config.to_str())
+            file.write(config.to_str().replace("\\", "\""))

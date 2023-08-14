@@ -7,7 +7,7 @@ class ConfigurationUtil(object):
     @classmethod
     def load_configuration_from_disk(cls) -> DomainConfiguration:
         with open('domain_config.json', 'r') as file:
-            content = file.read()
+            content = file.read().replace("\\", "\"")
             return DomainConfiguration.from_dict(json.loads(content))
 
     @classmethod

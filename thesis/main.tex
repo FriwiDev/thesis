@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Thesis}
+\author{Fritz Windisch}
+\date{August 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\begin{itemize}
+    \item Motivation
+    \item Objective
+    \item Structure
+\end{itemize}
+
+\section{Background}
+\begin{itemize}
+    \item Network Security
+    \item Domain
+    \begin{itemize}
+        \item Edge-Computing
+        \item Autonomous Systems
+    \end{itemize}
+    \item Enabling technologies
+    \begin{itemize}
+        \item SDN
+        \item VNF
+        \item SF/SFC
+    \end{itemize}
+    \item Connection resilience and guarantees
+    \begin{itemize}
+        \item QoS
+        \item Slicing
+    \end{itemize}
+\end{itemize}
+
+\section{Related Work}
+\iffalse
+\begin{itemize}
+    \item TODO: Add more related work
+    \item Thesis of Mr. Fuhrberg (Edge-slicing with a non-distributed design)
+    \item Our contribution (Create distributed architecture to obtain results closer to reality + real-world hardware integration)
+\end{itemize}
+\begin{itemize}
+    \item Fundamental
+    \begin{itemize}
+        \item VLAN (IEEE 802.1Q - https://standards.ieee.org/ieee/802.1Q/10323/), VXLAN (RFC 7348 - https://www.rfc-editor.org/info/rfc7348) and other traffic segmentation methods (e.g. tunnels like GRE (RFC 2784 - https://www.rfc-editor.org/info/rfc2784)) as the original way to isolate multiple virtual networks over a real one. But: Not a real isolation due to resource sharing. --> network slicing
+        \item The Isolation Concept in the 5G Network Slicing (https://ieeexplore.ieee.org/abstract/document/9200939): Concept of isolation of resource provisions in 5G
+        \item An Overview of Network Slicing for 5G (https://ieeexplore.ieee.org/abstract/document/8685766): Survey on 5G network slicing with focus on enabling technologies and the 3GPP standardization of slicing
+        \item Network Slicing in 5G: Survey and Challenges (https://ieeexplore.ieee.org/abstract/document/7926923): Yet another survey
+        \item A Comprehensive Survey on the E2E 5G Network Slicing Model (https://ieeexplore.ieee.org/abstract/document/9295415): Another survey
+        \item 5G network slicing using SDN and NFV: A survey of taxonomy, architectures and future challenges (https://www.sciencedirect.com/science/article/pii/S1389128619304773): General information on 5G and slicing on SDN/NFV - maybe the best item for this paragraph
+        \item Network Slicing for 5G with SDN/NFV: Concepts, Architectures, and Challenges (https://ieeexplore.ieee.org/abstract/document/7926921): Another 5G NFV survey focusing on the SDN architecture proposed by ONF (Open Networking Foundation)
+    \end{itemize}
+    \item Single-Domain slicing
+    \begin{itemize}
+        \item Network Slicing Based 5G and Future Mobile Networks: Mobility, Resource Management, and Challenges (https://ieeexplore.ieee.org/abstract/document/8004168): Slicing in 5G networks and handover of slices to other networks (focus on individual network supporting these characteristics).
+        \item Survey on Network Slicing for Internet of Things Realization in 5G Networks (https://ieeexplore.ieee.org/abstract/document/9382385): Survey for IoT devices in 5G networks - discuss applications of network slicing for IoT
+        \item A Resource Allocation Framework for Network Slicing (https://ieeexplore.ieee.org/abstract/document/8486303): Discuss resource allocation strategies for network slices combating inefficient resource allocations and present a new framework to perform better allocations.
+    \end{itemize}
+    \item Multi-Domain slicing
+    \begin{itemize}
+        \item Towards 5G Network Slicing over Multiple-Domains (https://search.ieice.org/bin/summary.php?id=e100-b%5F11%5F1992): Create a network slicing framework over multiple domains in the 5G context. No focus on QoS guarantees or validation
+        \item On Multi-Domain Network Slicing Orchestration Architecture and Federated Resource Control (https://ieeexplore.ieee.org/abstract/document/8758980): Focusses on resource slicing (also storage, computing, and more) in the 5G context. No focus on QoS guarantees or validation
+        \item SliceNet: End-to-End Cognitive Network Slicing and Slice Management Framework in Virtualised Multi-Domain, Multi-Tenant 5G Networks (https://ieeexplore.ieee.org/abstract/document/8436800): A project aiming to provide a slicing implementation for 5G networks
+        \item Cross-Domain Network Slicing for Industrial Applications (https://ieeexplore.ieee.org/abstract/document/8443241): Cross-domain QoS slicing for a wind turbine network. With a central QoS orchestrator managing resource allocations.
+        \item Multi-Domain Network Slicing With Latency Equalization (https://ieeexplore.ieee.org/abstract/document/9136770): Explore means of routing packets across different paths according to their delay to achieve network slicing with less packets arriving late when latency is constrained (latency limits, better utilization of resources due to multiple paths)
+        \item Securing cross-domain links using end-to-end network slicing (N. Fuhrberg): Investigating network slicing security in a SDN network slicing context. Propose distributed architecture and validate in a local setting.
+    \end{itemize}
+    \item Security in network slicing
+    \begin{itemize}
+        \item Network slicing security: Challenges and directions (https://onlinelibrary.wiley.com/doi/full/10.1002/itl2.125): Isolation as a core requirement, alongside formal security requirements for network slicing (CIA)
+        \item ML-Based 5G Network Slicing Security: A Comprehensive Survey (https://www.mdpi.com/1999-5903/14/4/116): Use a ML-based approach to design, implement and secure slices. (Not sure if this should make it in the text - seems to be offtopic even though it partially investigates security with ML)
+        \item 5G Network Slicing: A Security Overview (https://uis.brage.unit.no/uis-xmlui/handle/11250/2682454): Discusses new security challenges (life-cycle security, intra-slice security, and inter-slice security) and privacy concerns (exposing information by API or inter-slice communications) for network slicing -> use these terms
+        \item Network Slicing Security Controls and Assurance for Verticals (https://www.mdpi.com/2079-9292/11/2/222): Propose different security controls that enforce security policies in specific areas of a network, which can thus be used in network slicing to secure a slice with otherwise weak isolation.
+    \end{itemize}
+    \item Our contribution: Extend and redesign the topology proposed by N. Fuhrberg to a fully distributed setting with distributed trust among network coordinators, attempt to combat previous drawbacks (slice QoS failure with large traffic ingress on switches => full slice isolation), provide a distributed implementation that is able to integrate real-world hardware forming a mesh of networks/autonomous systems and perform validation in both a local test case for reference and a distributed test case. (=> Requirement list)
+\end{itemize}
+\fi
+
+\section{Methodology}
+\begin{itemize}
+    \item Test environment (Discussion Mininet vs Distrinet vs our solution)
+    \item Protection goals (including metrics like bandwidth and latency)
+    \begin{itemize}
+        \item Questions that can be validated in chapter “Validation” => Protection goal list
+    \end{itemize}
+    \item Attackers
+    \item Deployments
+    \begin{itemize}
+        \item Full local deployment
+        \item Minimal distributed deployment (2 Hosts, 1 real-world SDN Switch)
+    \end{itemize}
+\end{itemize}
+
+\section{Design}
+\begin{itemize}
+    \item Components
+    \begin{itemize}
+        \item Overview
+        \item ESMF \& CTMF
+        \item DSMF \& DTMF
+        \item Controller
+        \item SDN Switch
+        \item VPN Gateway
+    \end{itemize}
+    \item Concepts
+    \begin{itemize}
+        \item Distributed trust and authority
+        \item State synchronization (2PCP)
+    \end{itemize}
+\end{itemize}
+
+\section{Implementation}
+\begin{itemize}
+    \item Specification
+    \begin{itemize}
+        \item OpenAPI REST specifications
+        \item Communication
+        \begin{itemize}
+            \item Slice creation
+            \item Slice removal
+        \end{itemize}
+    \end{itemize}
+    \item Components
+    \begin{itemize}
+        \item Implemented in python using auto-generated code by OpenAPI
+        \item Interconnected via testbed + real-world hardware integration
+        \item TODO: What is missing from design to reproduce implementation?
+    \end{itemize}
+    \item Test scenarios (derived from attackers in methodology - sort of like an "attacker implementation")
+\end{itemize}
+
+\section{Validation}
+\begin{itemize}
+    \item Expectations
+    \item Base-line topology (setup without protections)
+    \item Measurements and Results
+    \begin{itemize}
+        \item Test Scenario/Attacker N
+        \begin{itemize}
+            \item Validate against all protection goals X deployments (base-line, local and distributed)
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Conclusion}
+\begin{itemize}
+    \item Summary
+    \item Limitations
+    \item Future work
+\end{itemize}
+
+\end{document}

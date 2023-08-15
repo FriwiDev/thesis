@@ -54,8 +54,16 @@ jobs:
           skip-dirs: '.git'
           log-level: 'info'
         id: render
-      - name: Copy the rendered files
+      - name: Copy rendered diagrams to pages distribution
         run: 'mkdir -p pages/diagrams && cp ${{ steps.render.outputs.rendered-files }} pages/diagrams'
+      - name: Render thesis
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: thesis
+          root_file: |
+            - main.tex
+      - name: Copy thesis to pages distribution
+        run: 'mkdir -p pages/read && cp thesis/* pages/read'
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v1.0.8
         with:

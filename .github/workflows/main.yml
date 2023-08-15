@@ -56,10 +56,8 @@ jobs:
         id: render
       - name: Copy rendered diagrams to pages distribution
         run: 'mkdir -p pages/diagrams && cp ${{ steps.render.outputs.rendered-files }} pages/diagrams'
-      - name: Install latex requirements
-        run: 'apt-get update && apt-get install -y texlive-full latexmk'
       - name: Render thesis
-        run: 'bash thesis/compile.sh'
+        run: 'sudo apt-get update && sudo apt-get install -y texlive-full latexmk && bash thesis/compile.sh'
       - name: Copy thesis to pages distribution
         run: 'mkdir -p pages/read && cp thesis/*.pdf pages/read'
       - name: Upload pages artifact

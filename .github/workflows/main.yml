@@ -59,7 +59,7 @@ jobs:
       - name: Render thesis
         uses: xu-cheng/latex-action@v2
         with:
-          working_directory: thesis
+          work_in_root_file_dir: true
           root_file: |
             - thesis/main.tex
       - name: Copy thesis to pages distribution

@@ -61,7 +61,7 @@ jobs:
         with:
           working_directory: thesis
           root_file: |
-            - main.tex
+            - thesis/main.tex
       - name: Copy thesis to pages distribution
         run: 'mkdir -p pages/read && cp thesis/* pages/read'
       - name: Upload pages artifact

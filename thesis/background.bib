@@ -1,12 +1,69 @@
 @ARTICLE{netsec,
     author = {Marin, G.A.},
-    journal = {IEEE Security & Privacy},
+    journal = {IEEE Security \& Privacy},
     title = {Network security basics},
     year = {2005},
     volume = {3},
     number = {6},
     pages = {68-72},
     doi = {10.1109/MSP.2005.153} }
+
+@inproceedings{honeypot,
+    author = {Mairh, Abhishek and Barik, Debabrat and Verma, Kanchan and Jena, Debasish},
+    title = {Honeypot in Network Security: A Survey},
+    year = {2011},
+    isbn = {9781450304641},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/1947940.1948065},
+    doi = {10.1145/1947940.1948065},
+    abstract = {In this paper we review the recent advances in honeypot. Some notable proposals and there analysis have been discussed. The aspects of using honeypot in education and in hybrid environment with IDS have been explained. In this paper we also defines the use of signature technique in honeypot for traffic analysis. In the end we summarizes all these aspects.},
+    booktitle = {Proceedings of the 2011 International Conference on Communication, Computing \& Security},
+    pages = {600–605},
+    numpages = {6},
+    keywords = {honeynet, load balancer and honeywall, honeypot, honeycomb, IDS},
+    location = {Rourkela, Odisha, India},
+    series = {ICCCS '11}
+}
+
+@INPROCEEDINGS{cryptography,
+    author = {Devi, T. Rajani},
+    booktitle = {2013 International Conference on Communication Systems and Network Technologies},
+    title = {Importance of Cryptography in Network Security},
+    year = {2013},
+    volume = {},
+    number = {},
+    pages = {462-467},
+    doi = {10.1109/CSNT.2013.102} }
+
+@InProceedings{games,
+    author = "Katz, Jonathan",
+    editor = "Canetti, Ran",
+    title = "Bridging Game Theory and Cryptography: Recent Results and Future Directions",
+    booktitle = "Theory of Cryptography",
+    year = "2008",
+    publisher = "Springer Berlin Heidelberg",
+    address = "Berlin, Heidelberg",
+    isbn = "978-3-540-78524-8"
+}
+
+@InProceedings{goals,
+    author = "Simmonds, Andrew
+and Sandilands, Peter
+and van Ekert, Louis",
+    editor = "Manandhar, Suresh
+and Austin, Jim
+and Desai, Uday
+and Oyanagi, Yoshio
+and Talukder, Asoke K.",
+    title = "An Ontology for Network Security Attacks",
+    booktitle = "Applied Computing",
+    year = "2004",
+    publisher = "Springer Berlin Heidelberg",
+    address = "Berlin, Heidelberg",
+    pages = "317--323",
+    isbn = "978-3-540-30176-9"
+}
 
 @ARTICLE{edgecomputing,
     author = {Shi, Weisong and Dustdar, Schahram},
@@ -29,6 +86,13 @@
     url = {https://www.sciencedirect.com/science/article/pii/S1084804516300297},
     author = {Rahim Masoudi and Ali Ghaffari},
     keywords = {SDN (software-defined network), OpenFlow, Network virtualization, Network security, QoS (quality of service), Control plane, Data plane, Programmable networks}
+}
+
+@inproceedings{openflow,
+    author = {Open Networking Foundation},
+    title = {OpenFlow Switch Specification v1.5.1},
+    year = {2015},
+    url = {https://opennetworking.org/wp-content/uploads/2014/10/openflow-switch-v1.5.1.pdf}
 }
 
 @article{nfv,
@@ -55,6 +119,20 @@
     url = {https://www.sciencedirect.com/science/article/pii/S1084804516301989},
     author = {Deval Bhamare and Raj Jain and Mohammed Samaka and Aiman Erbad},
     keywords = {Service function chaining, Network function virtualization, Optimal placement, SDN, Survey, Multi-cloud}
+}
+
+@misc{rfc7665,
+    series = {Request for Comments},
+    number = 7665,
+    howpublished = {RFC 7665},
+    publisher = {RFC Editor},
+    doi = {10.17487/RFC7665},
+    url = {https://www.rfc-editor.org/info/rfc7665},
+    author = {Joel M. Halpern and Carlos Pignataro},
+    title = {{Service Function Chaining (SFC) Architecture}},
+    pagetotal = 32,
+    year = 2015,
+    month = oct
 }
 
 @article{vpn,
@@ -109,9 +187,54 @@
     doi = {10.1145/185595.185648},
     abstract = {For applications relying on the transfer of multimedia, and in particular continuous media, it is essential that quality of service (QoS) is guaranteed system-wide, including end-systems, communications systems and networks. Although researchers have addressed many isolated areas of QoS provision, little attention has so far been paid to the definition of an integrated and coherent framework that incorporates QoS interfaces, management and mechanisms across all architectural layers. To address this deficiency, we are developing a Quality of Service Architecture (QoS-A) which offers a framework to specify and implement the required performance properties of multimedia applications over high-performance ATM-based networks. The QoS-A incorporates the notions of flow, service contract and flow management. Flows characterise the production, transmission and eventual consumption of single media streams, service contracts are binding agreements between users and providers and flow management provides for the monitoring and maintenance of the contracted QoS levels. This paper provides an overview of the QoS-A and focuses particularly on the role of the transport service and protocol in the architecture. We describe a multimedia enhanced transport service (METS), flow management and transport layer service contract. We show how QoS levels contracted at the transport service interface can be assured in the context of our local ATM environment.},
     journal = {SIGCOMM Comput. Commun. Rev.},
-    month = {apr},
+    month = {4},
     pages = {6–27},
     numpages = {22}
+}
+
+@misc{rfc791,
+    series = {Request for Comments},
+    number = 791,
+    howpublished = {RFC 791},
+    publisher = {RFC Editor},
+    doi = {10.17487/RFC0791},
+    url = {https://www.rfc-editor.org/info/rfc791},
+    author = {},
+    title = {{Internet Protocol}},
+    pagetotal = 51,
+    year = 1981,
+    month = sep,
+    abstract = {},
+}
+
+@misc{rfc1633,
+    series = {Request for Comments},
+    number = 1633,
+    howpublished = {RFC 1633},
+    publisher = {RFC Editor},
+    doi = {10.17487/RFC1633},
+    url = {https://www.rfc-editor.org/info/rfc1633},
+    author = {Robert T. Braden and Dr. David D. Clark and Scott Shenker},
+    title = {{Integrated Services in the Internet Architecture: an Overview}},
+    pagetotal = 33,
+    year = 1994,
+    month = jun,
+    abstract = {This memo discusses a proposed extension to the Internet architecture and protocols to provide integrated services, i.e., to support real-time as well as the current non-real-time service of IP. This memo provides information for the Internet community. This memo does not specify an Internet standard of any kind.},
+}
+
+@misc{rfc2474,
+    series = {Request for Comments},
+    number = 2474,
+    howpublished = {RFC 2474},
+    publisher = {RFC Editor},
+    doi = {10.17487/RFC2474},
+    url = {https://www.rfc-editor.org/info/rfc2474},
+    author = {Fred Baker and David L. Black and Kathleen Nichols and Steven L. Blake},
+    title = {{Definition of the Differentiated Services Field (DS Field) in the IPv4 and IPv6 Headers}},
+    pagetotal = 20,
+    year = 1998,
+    month = dec,
+    abstract = {This document defines the IP header field, called the DS (for differentiated services) field. {[}STANDARDS-TRACK{]}},
 }
 
 @INPROCEEDINGS{serv,

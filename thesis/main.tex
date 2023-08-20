@@ -283,7 +283,9 @@ For each scenario we will try to estabilish two network slices in total. As an e
 % TODO: Add figures for each scenario (without topology details)
 
 \subsection{Measurements}
-For each scenario, we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
+For each scenario and each attacker (apart from A4), we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
+
+For the eavesdropping attacker (A4) we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
 
 \section{Design}
 \begin{itemize}

@@ -1,9 +1,13 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
+\usepackage[T1]{fontenc}
+\usepackage[final]{microtype}
+\emergencystretch=1em
 
 \usepackage{biblatex}
 \addbibresource{background.bib}
 \addbibresource{related_work.bib}
+\addbibresource{methodology.bib}
 
 \title{Thesis}
 \author{Fritz Windisch}
@@ -225,7 +229,7 @@ Question 3: Is the presented related work relevant in your opinion or should I e
 To achieve our goal we will use requirement validation. Initially we defined our requirements as stated in the end of chapter 3 [LINK]. In this chapter we will thus choose an accurate environment for our experiments and define our protection goals and attackers, before finally stating the scenarios we wish to validate and our measurements we wish to obtain on them.
 
 \subsection{Test environment}
-As a test environment we want to use a network emulator to be able to easily bootstrap our solution. For this, multiple emulators are available, including mininet [CITE], distrinet [CITE], maxinet [CITE], ComNetsEmu [CITE] or our own testbed solution [CITE].
+As a test environment we want to use a network emulator to be able to easily bootstrap our solution. For this, multiple emulators are available, including mininet \cite{mininet}, distrinet \cite{distrinet1, distrinet2}, maxinet \cite{maxinet}, ComNetsEmu \cite{comnetsemu} or our own testbed solution \cite{owntb}.
 Mininet (and ComNetsEmu as a fork of mininet) emulate network topologies on a single machine, but do not scale to multiple machines. As we want to test in a distributed setting, they are sadly out of the equation. Distrinet and maxinet would both allow us to scale mininet topologies to multiple machines. As we want to be able to deploy our topologies to real-world devices in the future though and integrate real-world hardware (requirement R3), we would need to invest additional effort in deploying to real-world hardware in the future when using them. Our own testbed solution mitigates these issues by supporting multiple modes of deployment including support for real-world hardware that can easily be extended. We will thus opt to use our own testbed solution to evaluate our solution.
 
 \subsection{Protection Goals}
@@ -262,7 +266,7 @@ For our first slicing scenario we will deploy our slicing solution emulating 3 d
 
 As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
 
-For each scenario we will try to estabilish two network slices in total. As an example, we want to control a robot on the other side by receiving a video stream and maintaining a bidirectional control and feedback stream. One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC [CITE]). We require a relatively small loss rate for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not be too much of an issue. Jitter may occur as we can buffer our video stream data for short amounts of time, however we want our latency to be low so our frames appear in almost real time. For the bidirectional control and feedback slice, we need far less bandwidth. The loss rate needs to be lower than with the video stream to be in control at all times. Also we require a low latency and low jitter to be able to react in real time and without any jittering movements. We will thus apply the following resource requirements as an example:
+For each scenario we will try to estabilish two network slices in total. As an example, we want to control a robot on the other side by receiving a video stream and maintaining a bidirectional control and feedback stream. One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small loss rate for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not be too much of an issue. Jitter may occur as we can buffer our video stream data for short amounts of time, however we want our latency to be low so our frames appear in almost real time. For the bidirectional control and feedback slice, we need far less bandwidth. The loss rate needs to be lower than with the video stream to be in control at all times. Also we require a low latency and low jitter to be able to react in real time and without any jittering movements. We will thus apply the following resource requirements as an example:
 
 \begin{table}[h]
     \centering
@@ -279,6 +283,8 @@ For each scenario we will try to estabilish two network slices in total. As an e
     \caption{The guarantees we wish to meet with our slices}
     \label{table:1}
 \end{table}
+
+This example including the bandwidth requirements is taken from Fuhrberg et al. \cite{SE4} in order to be able to compare their solution against our redesigned solution. The values for latency, jitter and loss rate have been altered to reflect our goals and generally provide more strict requirements.
 
 % TODO: Add figures for each scenario (without topology details)
 

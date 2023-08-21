@@ -5,6 +5,15 @@
 \usepackage[hidelinks]{hyperref}
 \emergencystretch=1em
 
+\usepackage{enumitem, hyperref}
+\makeatletter
+\def\namedlabel#1#2{\begingroup
+    #2%
+    \def\@currentlabel{#2}%
+    \phantomsection\label{#1}\endgroup
+}
+\makeatother
+
 \usepackage{biblatex}
 \addbibresource{background.bib}
 \addbibresource{related_work.bib}
@@ -17,6 +26,8 @@
 \begin{document}
 
 \maketitle
+
+\tableofcontents
 
 \chapter{Introduction}
 \begin{itemize}
@@ -55,6 +66,8 @@
         % Source: openvpn: https://openvpn.net/images/pdf/OpenVPN_WhitepaperJuly2010.pdf
         \item MPLS
         % Source: rfc3031: RFC: https://datatracker.ietf.org/doc/html/rfc3031
+        \item 2PCP
+        % Source: 2pcp: https://dl.acm.org/doi/10.1145/850770.850772
     \end{itemize}
     \item Concepts
     \begin{itemize}
@@ -114,6 +127,9 @@ Another commonly used implementation is OpenVPN \cite{openvpn}, which uses a sli
 \subsection{Multi Protocol Label Switching (MPLS)}
 \label{mpls}
 Multi protocol label switching \cite{rfc3031} was created to facilitate routing decisions within a network faster. Without MPLS each router in a network will form a routing decision based on a number of parameters from multiple packet headers by forming a longest match over addresses and comparing other header values before forwarding the packet. This deep inspection and matching of a packet can be omitted by labeling packets on the first hop. By assigning an MPLS label, encapsulating the original packet in an MPLS header, the following routers can perform their routing decision by simply investigating the label and forwarding the packet along the already well-known path. Stacking these labels is also supported, so one packet may be encapsulated multiple times. MPLS also creates the possibility to infer the class of traffic from a label by a router and thus perform decisions like precedence of a packet or discard thresholds. While this could also be performed by inspecting the packet headers closely in some cases, establishing a traffic class from a label is way less complex than a deep inspection of a packet, saving valuable computational time on core routers of a network.
+
+\subsection{Two-phase commit protocol (2PCP)}
+The two-phase commit protocol \cite{2pcp} is a protocol used to synchronize state across transactions between multiple different participants. The participant initiating a transaction is called the coordinator. The coordinator will send a change request to all participants of a transaction, which will take note of the changes and confirm whether their application is possible. This is also referred to as the voting phase. Now the coordinator will proceed to the completion phase and can observe two different outcomes. The first possibility is that every participant responded that the change is possible. If so, the coordinator will send a commit message to all participants that will then apply the changes. This concludes the transaction. When the coordinator receives one failure or no reply from one of the participants though, the coordinator will abort the transaction and send rollback messages to all participants. All participants will then discard the changes, failing the transaction. The two-phase commit protocol can not recover from a failure of the coordinator during the entire transaction or a participant during the commit phase, making it possible that an invalid state is left after a failure.
 
 \section{Concepts}
 \subsection{Quality of Service (QoS)}
@@ -199,12 +215,13 @@ To protect slicing implementations against these threats and to reach protection
 
 In this thesis we wish to build a topology with a distributed control plane and management to create a network slicing testbed based on NFV and SFC. We will attempt to redesign the topology by Fuhrberg et al. to reach full network isolation of slices from one another, as well as distributed trust among the different participating administrative domains.
 To achieve these goals, we impose the following requirements:
-\begin{itemize}
-    \item R1: We want our slices to be fully isolated concerning network resources. Adversaries (see section \ref{adversaries}) should not be able to violate our protection goals (see section \ref{protection_goals}).
-    \item R2: We want to build a slicing network that spans multiple domains that are administered by multiple parties. We require this to be able to establish slicing communication over participating third party networks such as the DFN (German Research Network) without requiring to trust the 3rd-party networks apart from respecting their SLA (service level agreement). This includes a fully distributed control and data plane.
-    \item R3: We want our solution to be able to run on real-world networks to be able to obtain real-world results apart from small local testbenches. This is also important to be able to evaluate our QoS requirements on specialized hardware like real-world switches that can leverage hardware acceleration.
-    \item R4: We want to be able to create slices from an arbitrary amount of networks to an arbitrary amount of other networks. While one slice must only connect two networks, other networks should be reachable as well, as most modern applications wish to reach out to multiple parties in multiple destinations.
-\end{itemize}
+
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{R1}{R1}] We want our slices to be fully isolated concerning network resources. Adversaries (see section \ref{adversaries}) should not be able to violate our protection goals (see section \ref{protection_goals}).
+    \item[\namedlabel{R2}{R2}] We want to build a slicing network that spans multiple domains that are administered by multiple parties. We require this to be able to establish slicing communication over participating third party networks such as the DFN (German Research Network) without requiring to trust the 3rd-party networks apart from respecting their SLA (service level agreement). This includes a fully distributed control and data plane.
+    \item[\namedlabel{R3}{R3}] We want our solution to be able to run on real-world networks to be able to obtain real-world results apart from small local testbenches. This is also important to be able to evaluate our QoS requirements on specialized hardware like real-world switches that can leverage hardware acceleration.
+    \item[\namedlabel{R4}{R4}] We want to be able to create slices from an arbitrary amount of networks to an arbitrary amount of other networks. While one slice must only connect two networks, other networks should be reachable as well, as most modern applications wish to reach out to multiple parties in multiple destinations.
+\end{description}
 
 Question 1: Are the requirements good like this? I provide requirements here with an additional reference to our attackers and protection goals so that we can a) use R2, R3 and R4 to distinguish our new solution from Niklas' solution passively (no active comparison) and b) use R1 to validate our protection goals later. With this we can later validate our solution using the requirement list with embedded protection goals, which would be a good solution in my opinion (to not validate everything separately). We will of course argue that R2-4 are by design. Are any requirements missing in your opinion?
 
@@ -239,7 +256,7 @@ Mininet (and ComNetsEmu as a fork of mininet) emulate network topologies on a si
 In the context of our networks, we will establish two different kinds of networks.
 \begin{itemize}
     \item Edge network: An edge network is a network containing our end devices that are part of a network slice and wish to communicate with each other through these slices. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture, for example as a host established within our edge network.
-    \item Black network: A black network lies between the edge networks and there can be multiple of them in a row. A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality as an honest-but-curious attacker. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture, apart from potential eavesdropping by the transport infrastructure of the black network.
+    \item Black network: One or multiple black networks lie between the edge networks and are operating under a service level agreement (SLA). A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality as an honest-but-curious attacker. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture, apart from potential eavesdropping by the transport infrastructure of the black network.
 \end{itemize}
 % TODO: Add figure
 
@@ -271,6 +288,7 @@ Our attacker definitions are thus as follows:
     \item A3: Spams valid authenticated slice requests on the application plane attempting to overload the network by capacity or frequent slice creation and removal.
     \item A4: Attempts to eavesdrop within one of the networks between our edge networks.
 \end{itemize}
+%TODO: Add figure without our specific architecture showing our attackers
 
 \section{Scenarios}
 We will test three scenarios in total. The first scenario will provide a base case for our two other slicing-enabled scenarios, of which one will be local and the other distributed.
@@ -309,6 +327,7 @@ For each scenario and each attacker (apart from A4), we will investigate the ava
 For the eavesdropping attacker (A4) we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
 
 \chapter{Design}
+\iffalse
 \begin{itemize}
     \item Components
     \begin{itemize}
@@ -323,8 +342,45 @@ For the eavesdropping attacker (A4) we will listen on the link between the switc
     \begin{itemize}
         \item Distributed trust and authority
         \item State synchronization (2PCP)
+        \item Strict separation of SDN layers
     \end{itemize}
 \end{itemize}
+\fi
+This chapter is centered around the components and concepts embodied in our network slicing architecture. We will first give an overview over our components and then present some concepts that will need to be implemented by our implementation.
+
+\section{Components}
+In order to present our components to achieve a network slicing architecture, we will present them grouped by SDN layer. We will begin by presenting the data plane, followed by the control plane and conclude with the application plane. In figure [LINK] you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain.
+
+\subsection{Data plane}
+The job of the data plane is to transport traffic, so in our use case it will need to achieve the network resource isolation we require from our slices (protection goal \hyperref[P3]{P3}). To configure this isolation we need a way to assign traffic to QoS flows that span from one edge to another, traversing all required black networks in the process. Furthermore we need to limit third party traffic so it may not impede our resource allocations. In order to perform easier routing decisions along our path, we wish to label traffic traversing a network slice according to the MPLS scheme. As a last data plane measure we require traffic to be encrypted while traversing the black networks (protection goal \hyperref[P1]{P1}).
+
+To deploy the QoS flows and secure them against third party traffic (protection goal \hyperref[P3]{P3}), we will need to make use of SDN switches. The switches will forward the packets from source to destination, while the first switch will tag the packets with an MPLS label to facilitate easier routing and perform authentication of slice traffic along the entire path, the last switch will finally remove the MPLS label again. All switches will discard MPLS traffic from different ports than expected and drop packets with MPLS labels not expected to be found on a port. This way we can prevent third party traffic entering our slice. The switches also have to limit traffic from other participants to guarantee the slice resources, which can be realised by creating a "default slice" for all non-slice traffic on the network. This can lead to underprovisioning of network resources however. The default slice should be shrunk when new slices are created to accommodate the new slices or have a relatively small size to not be able to disturb our slices. The slice resources can be guaranteed by setting up queues for all slices and the default slice to limit the overall possible outgoing traffic per port. For ingress traffic on ports, port ingress limits should be set up so that the switch may not be overloaded by the sheer amount of traffic from all sides.
+
+For the encryption along the black networks we will use VPN gateways that encrypt traffic (protection goal \hyperref[P1]{P1}). The VPN gateways will only ever see traffic from slices and should be shielded from all other traffic to limit the surface of attack. To connect to a remote end, VPN gateways will use tunnels that need to be cryptographically secure to not disclose information. In order to limit the effect of information disclosure by the sheer existence of a slice through the black networks, we will bundle multiple slices through one single tunnel. Packets from the tunnel will be tagged with another tunnel MPLS label by the first switch and the label will be removed again by the final tunnel switch due to the same reasons as with the original slice packets. A packet is assigned to a specific tunnel by examining the slice id in the MPLS label from the first slice switch. When a packet is traversing the tunnel, the unified guarantees for the individual slices should apply, meaning a sum of the individual bandwidths and the lowest values for latency, jitter and loss.
+
+% TODO - Figure for only the data plane components?
+
+\subsection{Control plane}
+The control plane should mainly support deploying our rules to our devices. Creating the flows is supported by using OpenFlow through a standard SDN controller. For our queues and ingress limits we will need a separate service realizing them on the switches though, as these features are not currently supported by OpenFlow. We suggest implementing them via a service running on the SDN switches. For the VPN gateways we require another service running on the specialized VPN gateway hosts allowing us to register, resize and delete tunnels, as well as assigning slices to tunnels.
+
+% TODO - Figure for only the control plane components?
+
+\subsection{Application plane}
+The application plane will then care about defining the rules that should be deployed. In order to instruct the control plane, we will create a central coordinator per domain that will carry out all infrastructure tasks. This service will know about the entire topology and will have the routing information to other domains. It will set up domains and tunnels on the local infrastructure if requested and specify upfront whether resources can be guaranteed or not. This service thus follows an IntServ pattern. Apart from this infrastructure service we will need to establish a domain coordination service, coordinating the deployment of slices across multiple domains. Apart from the coordination role it should also be the main endpoint for participants from the local domain to request slices through the network. By contacting other domains and the local infrastructure service the coordination service can evaluate whether a slice request from a participant is currently possible or not. For isolation purposes, only the coordination service of a domain will be allowed to contact the infrastructure service of the same domain. The coordination services will only talk between each other and with tenants of their own domain.
+
+% TODO - Figure for only the application plane components?
+
+\section{Concepts}
+After we presented our components we now want to mention our concepts behind certain design decisions, beginning with our concept of distributed trust and authority, our state synchronization and the strict separation of SDN layers.
+
+\subsection{Distributed trust and authority}
+Distributed trust and authority is one of our core requirements (see \hyperref[R2]{requirement R2}). While wanting to lend resources to participants of our and other networks participating in our slicing architecture and guaranteeing those resources to them, we do not want others taking deployment or infrastructure decisions for our local domain. This is why we separated the coordination across all domains and only expose the coordinators to the other domains. This way another domain can ask us to allocate resources for a new slice but we may deny the creation at any point in time. Still other domains can request slices and tunnels this way without having direct access or knowledge over our infrastructure.
+
+\subsection{State synchronization}
+In order to be able to coordinate slices and tunnels across multiple domains we need to synchronize a global state across them. Without this synchronization slices could potentially be deployed only partially, violating our requirement of the basic availability of a slice (see requirement \hyperref[R1]{R1} and protection goal \hyperref[P2]{P2}) when traffic can not pass all domains along the slice. Our implementation will thus need to synchronize a global state for each slice between the coordinators.
+
+\subsection{Strict separation of SDN layers}
+In order to reach our goal to be relatively hardware independent (requirement \hyperref[R3]{R3}) we want to clearly structure our services according to our SDN layers. Of course this may not always be possible because for example our switch queue and ingress limit service will be vendor specific due to no unified API being available at this point to manage these characteristics. For all other services, the design as been separated according to the SDN layers to be able to swap out different components of the SDN environment with ease. For example to use a switch of a different vendor, only the switch queue and ingress limit service will need to be reimplemented for this vendor while the rest of the components can remain in use. This includes the integration of hardware switches or servers, enabling our topology to be executed outside of testbench scenarios.
 
 \chapter{Implementation}
 \begin{itemize}
@@ -365,6 +421,9 @@ For the eavesdropping attacker (A4) we will listen on the link between the switc
     \item Limitations
     \item Future work
 \end{itemize}
+
+\listoffigures
+\listoftables
 
 \printbibliography
 

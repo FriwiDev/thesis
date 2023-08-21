@@ -1,10 +1,12 @@
 \documentclass{book}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{svg}
 \usepackage[T1]{fontenc}
 \usepackage[final]{microtype}
 \usepackage[hidelinks]{hyperref}
 \emergencystretch=1em
 
+% From: https://tex.stackexchange.com/questions/1230/reference-name-of-description-list-item-in-latex
 \usepackage{enumitem, hyperref}
 \makeatletter
 \def\namedlabel#1#2{\begingroup
@@ -198,6 +200,8 @@ Another way to achieve this kind of functionality is by using tunnels through a 
 
 In the modern context of 5G networks, the term slicing has been established to provide a slice of network, computational or storage resources from a certain network that are guaranteed to be available to an application after their reservation \cite{5G1,5G2,5G3,5G4} and that isolate components resource wise. Slicing has the advantage over the previously mentioned VLANs, that slices can also provide resource guarantees, while in a traditional VLAN setup all VLANs share the same resource pool (without any additional configuration). Furthermore 5G network slices can be requested live by users and applications following for example the 3GPP 5G network slicing specification (TS 28.530) [CITATION NEEDED] that is currently still under development, while VLANs are set up by network administrators in advance and do not dynamically change.
 
+% TODO: Insert citation
+
 In general there are many approaches that focus on slicing on a single, local administrative domain (a network managed by one system administrator/team) \cite{SD1,SD2,SD3}. Examples for this are the resource allocation framework proposed by Mathieu Leconte et al. \cite{SD3} focussing on the resource management of 5G slicing on local domains, the mobile handover strategies discussed by Haijun Zhang et al. \cite{SD1} for future mobile networks and slicing of local domains in the context of IoT \cite{SD2}.
 
 Furthermore there are also projects to create slices over multiple domains \cite{MD1,MD2,MD3,MD4,MD5}, such as the network slicing framework proposed by Ibrahim Afolabi et al. \cite{MD1} building around a "Dynamic Adaption Stack" offering services such as provisioning, accounting and more. Another such framework is SliceNet \cite{MD3}, which aims to provide an initial implementation of slicing in 5G networks and is a project of the EU 5G Infrastructure Public Private Partnership (5G PPP). Others are investigating the role of QoS in cross-domain slicing, such as Vasileios Theodorou et al. \cite{MD4} in their network of wind turbines in Denmark, while Ivana Kovacevic et al. \cite{MD5} aim to route slice traffic among multiple routes based on their estimated time of arrival to provide a network with more stable latency. These solutions often use NFV to manage, orchestrate and deploy the slicing network, as NFV provides excellent flexibility to build network topologies in a SDN context \cite{5GSDN1,5GSDN2}.
@@ -213,7 +217,7 @@ So as one can see, there are a lot of topics in this field that are currently be
 Ruxandra Olimid et. al \cite{SE2} try a different approach of classifying threats as either life-cycle, inter-slice or intra-slice security concerns. Life-cycle threats are threats to the bootstrapping or removal of slices, threatening their existence. Inter-slice threats are threats like side-channel attacks or information disclosure, that take place when two different isolated parties have means to communicate with each other or obtain information about one another without being part of the same slice. Information disclosure can also happen when one participant is part of multiple slices and shares information that was only meant for one slice. The intra-slice threats are then threats within the slice itself, such as a malicious participant.
 To protect slicing implementations against these threats and to reach protection goals, Tomasz Wichary et al. \cite{SE3} suggested different security controls to isolate certain parts of networks that are otherwise only weakly isolated. They reach their goals by employing security policies to certain parts of the slicing network to achieve good resource isolation on multiple layers while utilizing vendor specific and vendor independent tools. Niklas Fuhrberg et al. \cite{SE4} investigated QoS degradation in their NFV based slicing topology that spanned multiple virtual domains with a single administrative entity called ESMF (edge slice management function). They validated their topology in a local testbed using Mininet \cite{mininet} (a network emulator) reaching the result that an adversary attacking a switch from multiple angles can still overload the switch and reach considerate QoS degradation in their example of controlling a remote robot.
 
-In this thesis we wish to build a topology with a distributed control plane and management to create a network slicing testbed based on NFV and SFC. We will attempt to redesign the topology by Fuhrberg et al. to reach full network isolation of slices from one another, as well as distributed trust among the different participating administrative domains.
+In this thesis we wish to build a topology with a distributed control plane and management to create a network slicing testbed based on NFV and SFC. We will attempt to redesign the topology by Fuhrberg et al. to reach full network isolation of slices from one another, as well as distributed trust among the different participating administrative domains. This also includes the synchronization of state among the domains. We furthermore want to be able to deploy our solution to real-world networks apart from emulated network testbeds.
 To achieve these goals, we impose the following requirements:
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
@@ -352,14 +356,16 @@ For the eavesdropping attacker \ref{A4} we will listen on the link between the s
 This chapter is centered around the components and concepts embodied in our network slicing architecture. We will first give an overview over our components and then present some concepts that will need to be implemented by our implementation.
 
 \section{Components}
-In order to present our components to achieve a network slicing architecture, we will present them grouped by SDN layer. We will begin by presenting the data plane, followed by the control plane and conclude with the application plane. In figure [LINK] you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain.
+In order to present our components to achieve a network slicing architecture, we will group them by SDN layer. We will begin by inspecting the data plane, followed by the control plane and conclude with the application plane. In figure [LINK] you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain. All components below are virtual network functions (VNFs).
+
+The presented components are partially sourced from Fuhrberg et al. \cite{SE4}. Our contribution is the addition of specialized components for the black network, the redesign of logic on each of the components for our new distributed slice management approach and for the other concepts introduced in section \ref{design_concepts}.
 
 \subsection{Data plane}
 The job of the data plane is to transport traffic, so in our use case it will need to achieve the network resource isolation we require from our slices (protection goal \hyperref[P3]{P3}). To configure this isolation we need a way to assign traffic to QoS flows that span from one edge to another, traversing all required black networks in the process. Furthermore we need to limit third party traffic so it may not impede our resource allocations. In order to perform easier routing decisions along our path, we wish to label traffic traversing a network slice according to the MPLS scheme. As a last data plane measure we require traffic to be encrypted while traversing the black networks (protection goal \hyperref[P1]{P1}).
 
-To deploy the QoS flows and secure them against third party traffic (protection goal \hyperref[P3]{P3}), we will need to make use of SDN switches. The switches will forward the packets from source to destination, while the first switch will tag the packets with an MPLS label to facilitate easier routing and perform authentication of slice traffic along the entire path, the last switch will finally remove the MPLS label again. All switches will discard MPLS traffic from different ports than expected and drop packets with MPLS labels not expected to be found on a port. This way we can prevent third party traffic entering our slice. The switches also have to limit traffic from other participants to guarantee the slice resources, which can be realised by creating a "default slice" for all non-slice traffic on the network. This can lead to underprovisioning of network resources however. The default slice should be shrunk when new slices are created to accommodate the new slices or have a relatively small size to not be able to disturb our slices. The slice resources can be guaranteed by setting up queues for all slices and the default slice to limit the overall possible outgoing traffic per port. For ingress traffic on ports, port ingress limits should be set up so that the switch may not be overloaded by the sheer amount of traffic from all sides.
+To deploy the QoS flows and secure them against third party traffic (protection goal \hyperref[P3]{P3}), we will need to make use of SDN switches. The switches will forward the packets from source to destination, while the first switch will tag the packets with an MPLS label to facilitate easier routing and perform authentication of slice traffic along the entire path, the last switch will finally remove the MPLS label again. All switches will discard MPLS traffic from different ports than expected and drop packets with MPLS labels not expected to be found on a port. This way we can prevent third party traffic entering our slice, protecting the integrity of our slice [LINK]. The switches also have to limit traffic from other participants to guarantee the slice resources, which can be realised by creating a "default slice" for all non-slice traffic on the network. This can lead to underprovisioning of network resources however. The default slice should be shrunk when new slices are created to accommodate the new slices or have a relatively small size to not be able to disturb our slices. The slice resources can be guaranteed by setting up queues for all slices and the default slice to limit the overall possible outgoing traffic per port. For ingress traffic on ports, port ingress limits should be set up so that the switch may not be overloaded by the sheer amount of traffic from all sides.
 
-For the encryption along the black networks we will use VPN gateways that encrypt traffic (protection goal \hyperref[P1]{P1}). The VPN gateways will only ever see traffic from slices and should be shielded from all other traffic to limit the surface of attack. To connect to a remote end, VPN gateways will use tunnels that need to be cryptographically secure to not disclose information. In order to limit the effect of information disclosure by the sheer existence of a slice through the black networks, we will bundle multiple slices through one single tunnel. Packets from the tunnel will be tagged with another tunnel MPLS label by the first switch and the label will be removed again by the final tunnel switch due to the same reasons as with the original slice packets. A packet is assigned to a specific tunnel by examining the slice id in the MPLS label from the first slice switch. When a packet is traversing the tunnel, the unified guarantees for the individual slices should apply, meaning a sum of the individual bandwidths and the lowest values for latency, jitter and loss.
+For the encryption along the black networks we will use VPN gateways that encrypt traffic (protection goal \hyperref[P1]{P1}). The VPN gateways will only ever see traffic from slices and should be shielded from all other traffic to limit the surface of attack. To connect to a remote end, VPN gateways will use tunnels that need to be cryptographically secure to not disclose information. In order to limit the effect of information disclosure by the sheer existence of a slice through the black networks, we will bundle multiple slices through one single tunnel. Packets from the tunnel will be tagged with another tunnel MPLS label by the first switch and the label will be removed again by the final tunnel switch due to the same reasons as with the original slice packets (integrity). A packet is assigned to a specific tunnel by examining the slice id in the MPLS label from the first slice switch. By tagging the packets with an MPLS label again and using the changing MPLS labels for routing, we effectively build a service function chain (SFC) to the destination host (via the two VPN gateways), which partially anonymizes the recipient to the black networks. When a packet is traversing the tunnel, the unified guarantees for the individual slices should apply, meaning a sum of the individual bandwidths and the lowest values for latency, jitter and loss.
 
 % TODO - Figure for only the data plane components?
 
@@ -376,6 +382,7 @@ While ESMF and DSMF allow the creation of slices and tunnels on their respective
 % TODO - Figure for only the application plane components?
 
 \section{Concepts}
+\label{design_concepts}
 After we presented our components we now want to mention our concepts behind certain design decisions, beginning with our concept of distributed trust and authority, our state synchronization and the strict separation of SDN layers.
 
 \subsection{Distributed trust and authority}
@@ -413,6 +420,27 @@ In order to reach our goal to be relatively hardware independent (requirement \h
         \item Specify how the individual attackers from the methodology were implemented
     \end{itemize}
 \end{itemize}
+\begin{figure}[ht]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_and_ctmf.svg}
+  \caption{ESMF to CTMF communication illustrated in a sequence diagram TODO: Update}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_switch.svg}
+  \caption{ESMF to DSMF to switch communication illustrated in a sequence diagram TODO: Update and merge}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_vpn_gateway.svg}
+  \caption{ESMF to DSMF to VPN gateway communication illustrated in a sequence diagram TODO: Update and merge}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_ctmf_to_dtmf.svg}
+  \caption{CTMF to DTMF communication illustrated in a sequence diagram TODO: Update}
+\end{figure}
+
 
 \chapter{Validation} % Security and Performance analysis?
 \begin{itemize}

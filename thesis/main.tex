@@ -254,20 +254,23 @@ Mininet (and ComNetsEmu as a fork of mininet) emulate network topologies on a si
 
 \section{Network model}
 In the context of our networks, we will establish two different kinds of networks.
-\begin{itemize}
-    \item Edge network: An edge network is a network containing our end devices that are part of a network slice and wish to communicate with each other through these slices. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture, for example as a host established within our edge network.
-    \item Black network: One or multiple black networks lie between the edge networks and are operating under a service level agreement (SLA). A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality as an honest-but-curious attacker. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture, apart from potential eavesdropping by the transport infrastructure of the black network.
-\end{itemize}
+\paragraph{Edge networks}
+are the origin and target of one specific network slice. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture, for example as a host established within our edge network.
+\paragraph{Black networks}
+lie between the edge networks and are operating under a service level agreement (SLA). There may be any number of black networks between two edges, including none. A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality as an honest-but-curious attacker. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture, apart from potential eavesdropping by the transport infrastructure of the black network.
+
+Please note that that one specific network may play different roles for different network slices. One slice may pass through a black network that is also the origin (and thus edge network) of another slice.
+
 % TODO: Add figure
 
 \section{Protection Goals}
 \label{protection_goals}
 The next question we posed was what we actually want to protect from our attackers. In general we want to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include bandwidth, latency, jitter, loss rate and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our edge networks. We do not require this protection on our edge networks, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
-\begin{itemize}
-    \item P1: Traffic needs to be protected from modification or disclosure outside of the edge networks.
-    \item P2: Slices need to be available for communication and deliver packets to the recipient at all times during their lifespan.
-    \item P3: Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate.
-\end{itemize}
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{P1}{P1}] Traffic needs to be protected from modification or disclosure outside of the edge networks.
+    \item[\namedlabel{P2}{P2}] Slices need to be available for communication and deliver packets to the recipient at all times during their lifespan.
+    \item[\namedlabel{P3}{P3}] Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate.
+\end{description}
 
 \section{Attackers}
 \label{adversaries}
@@ -282,20 +285,20 @@ As a last attacker we will consider an attacker attempting to eavesdrop within o
 We do not consider active in-path attackers, as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application layer, as any component of the application layer could instruct other components to disrupt the connection or disrupt the connection themselves.
 
 Our attacker definitions are thus as follows:
-\begin{itemize}
-    \item A1: Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected.
-    \item A2: Spams invalid slice requests on the application plane attempting to disrupt the creation of new slices.
-    \item A3: Spams valid authenticated slice requests on the application plane attempting to overload the network by capacity or frequent slice creation and removal.
-    \item A4: Attempts to eavesdrop within one of the networks between our edge networks.
-\end{itemize}
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{A1}{A1}] Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected.
+    \item[\namedlabel{A2}{A2}] Spams invalid slice requests on the application plane attempting to disrupt the creation of new slices.
+    \item[\namedlabel{A3}{A3}] Spams valid authenticated slice requests on the application plane attempting to overload the network by capacity or frequent slice creation and removal.
+    \item[\namedlabel{A4}{A4}] Attempts to eavesdrop within one of the networks between our edge networks.
+\end{description}
 %TODO: Add figure without our specific architecture showing our attackers
 
 \section{Scenarios}
 We will test three scenarios in total. The first scenario will provide a base case for our two other slicing-enabled scenarios, of which one will be local and the other distributed.
 
-The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker A1 will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker A4 to eavesdrop traffic between the switches. A2 and A3 do not apply since there is no slicing infrastructure.
+The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker \ref{A1} will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker \ref{A4} to eavesdrop traffic between the switches. \ref{A2} and \ref{A3} do not apply since there is no slicing infrastructure.
 
-For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker A1. We will deploy A4 on a link in the black network and deploy A2 and A3 to the application layer.
+For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the black network and deploy \ref{A2} and \ref{A3} to the application layer.
 
 As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
 
@@ -322,9 +325,9 @@ This example including the bandwidth requirements is taken from Fuhrberg et al. 
 % TODO: Add figures for each scenario (without topology details)
 
 \section{Measurements}
-For each scenario and each attacker (apart from A4), we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
+For each scenario and each attacker (apart from \ref{A4}), we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
 
-For the eavesdropping attacker (A4) we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
+For the eavesdropping attacker \ref{A4} we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
 
 \chapter{Design}
 \iffalse

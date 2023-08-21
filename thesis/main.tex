@@ -369,7 +369,9 @@ The control plane should mainly support deploying our rules to our devices. Crea
 % TODO - Figure for only the control plane components?
 
 \subsection{Application plane}
-The application plane will then care about defining the rules that should be deployed. In order to instruct the control plane, we will create a central coordinator per domain that will carry out all infrastructure tasks. This service will know about the entire topology and will have the routing information to other domains. It will set up domains and tunnels on the local infrastructure if requested and specify upfront whether resources can be guaranteed or not. This service thus follows an IntServ pattern. Apart from this infrastructure service we will need to establish a domain coordination service, coordinating the deployment of slices across multiple domains. Apart from the coordination role it should also be the main endpoint for participants from the local domain to request slices through the network. By contacting other domains and the local infrastructure service the coordination service can evaluate whether a slice request from a participant is currently possible or not. For isolation purposes, only the coordination service of a domain will be allowed to contact the infrastructure service of the same domain. The coordination services will only talk between each other and with tenants of their own domain.
+The application plane will then care about defining the rules that should be deployed. In order to instruct the control plane, we will create a infrastructure coordinator per domain that will carry out all infrastructure tasks. This service that we will call a domain slice management function (DSMF) will know about the entire topology and will have the routing information to other domains. It will set up domains and tunnels on the local infrastructure if requested and specify upfront whether resources can be guaranteed or not. This service thus follows an IntServ pattern to realize network slices. Apart from this infrastructure service we will need to establish a domain coordination service, called an edge slice management function (ESMF), coordinating the deployment of slices and tunnels across multiple domains. Apart from the coordination role it should also be the main endpoint for participants from the local domain to request slices through the network. By contacting other domains and the local infrastructure service the coordination service can evaluate whether a slice request from a participant is currently possible or not. For isolation purposes, only the coordination service of a domain (ESMF) will be allowed to contact the infrastructure service (DSMF) of the same domain. The ESMFs will only talk between each other and with tenants of their own domain.
+
+While ESMF and DSMF allow the creation of slices and tunnels on their respective domain, versions of them also exist with reduced functionality for black networks that do not wish to offer their tenants slice support. The ESMF will be replaced with a core tunnel management function (CTMF) and the DSMF will be replaced with a domain tunnel management function (DTMF). A CTMF will never initiate a new tunnel but rather receive tunnel requests from coordinating ESMFs. Also a CTMF will never accept slice requests from tenants of their domain. They will thus only talk to an ESMF of another domain to coordinate new tunnels or with their own DTMF to deploy tunnels to their infrastructure and to check for resource availability. A CTMF may only talk to a DTMF and an ESMF may only talk to a DSMF, depending on the network role. CTMF and DTMF may only be deployed on black networks that are exclusively black networks, requiring their network domain to never be the beginning nor the end of a slice.
 
 % TODO - Figure for only the application plane components?
 
@@ -402,7 +404,14 @@ In order to reach our goal to be relatively hardware independent (requirement \h
         \item Interconnected via testbed + real-world hardware integration
         \item TODO: What is missing from design to reproduce implementation?
     \end{itemize}
-    \item Test scenarios (derived from attackers in methodology - sort of like an "attacker implementation")
+    \item Concepts
+    \begin{itemize}
+        \item Same as in design - specify their implementation
+    \end{itemize}
+    \item Attackers
+    \begin{itemize}
+        \item Specify how the individual attackers from the methodology were implemented
+    \end{itemize}
 \end{itemize}
 
 \chapter{Validation} % Security and Performance analysis?

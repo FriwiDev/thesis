@@ -11,6 +11,8 @@ generate_component () {
   _JAVA_OPTIONS="--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED" ./openapi-generator-cli.sh generate -i "../$1.json" -g python -o "gen/$1/client" --additional-properties=packageName="$1_client"
   mkdir -p "gen/$1/server"
   ./openapi-generator-cli.sh generate -i "../$1.json" -g python-aiohttp -o "gen/$1/server" --additional-properties=packageName="$1_server" --additional-properties=serverPort="$2" --additional-properties=featureCORS="true"
+  mkdir -p "gen/$1/md"
+  ./openapi-generator-cli.sh generate -i "../$1.json" -g markdown -o "gen/$1/md"
 }
 
 # Fetch script

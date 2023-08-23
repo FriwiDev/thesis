@@ -1,0 +1,249 @@
+\chapter{Implementation}
+\iffalse
+\begin{itemize}
+    \item Specification
+    \begin{itemize}
+        \item OpenAPI REST specifications
+        \item Communication
+        \begin{itemize}
+            \item Slice creation
+            \item Slice removal
+        \end{itemize}
+    \end{itemize}
+    \item Components
+    \begin{itemize}
+        \item Implemented in python using auto-generated code by OpenAPI
+        \item Interconnected via testbed + real-world hardware integration
+        \item TODO: What is missing from design to reproduce implementation?
+    \end{itemize}
+    \item Concepts
+    \begin{itemize}
+        \item Same as in design - specify their implementation
+    \end{itemize}
+    \item Challenges
+    \begin{itemize}
+        \item MTU restriction
+        \item MPLS label popping
+        \item iptables bridge skip
+        \item offload disabling
+    \end{itemize}
+    \item Attackers
+    \begin{itemize}
+        \item Specify how the individual attackers from the methodology were implemented
+    \end{itemize}
+\end{itemize}
+\fi
+
+In this chapter we are going to be more specific about the details of our implementation that we produced from our design. At first, we will state our virtual network function (VNF) specifications, before describing some details about our components, the realization of our previously mentioned concepts and challenges we faced while implementing. TODO: Finally, we are going to describe the implementation of our attackers for the validation.
+
+\section{Specification}
+\label{impl_specification}
+In this section we will focus on our specifications. First we will present our protocol specifications for each VNF, before providing communication examples to create and remove a slice.
+
+\subsection{OpenAPI specifications}
+To interconnect our VNFs, we will use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions [LINK OpenAPI]. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project [LINK]. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI [LINK] or Redocly [LINK].
+
+We provided OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis [LINK] in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
+
+The basic endpoints of each component can be seen in the tables \ref{table:esmf} through \ref{table:vpn_gateway}. Further details on parameters and responses can be found at the end of this thesis [LINK]. All VNFs provide endpoints for authentication (apart from the SDN controller), where other components can authenticate themselves. This is just a placeholder to establish an authentication scheme later. In the current specification the authentication endpoint takes no parameters and returns a predefined token. Real authentication can thus easily be implemented in the future by employing a real authentication scheme. All the other endpoints then take this token to authenticate requests. The details on how these endpoints work together can then be seen in section \ref{impl_communication}, where we take a closer look on the creation and removal of a slice.
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/slice & Endpoint that can be contacted by hosts to submit new slice requests \\
+        \hline
+         /v1/slice\_reservation & Endpoint used by other ESMFs to reserve a slice \\
+         /v1/slice\_deployment & Endpoint used by other ESMFs to deploy a slice \\
+         /v1/tunnel\_reservation & Endpoint used by other ESMFs to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by other ESMFs to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our ESMF implementation alongside their functionality.}
+    \label{table:esmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/tunnel\_reservation & Endpoint used by ESMFs to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by ESMFs to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our CTMF implementation alongside their functionality. Includes a subset of the ESMF endpoints.}
+    \label{table:ctmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/slice\_reservation & Endpoint used by our ESMF to reserve a slice \\
+         /v1/slice\_deployment & Endpoint used by our ESMF to deploy a slice \\
+         /v1/tunnel\_reservation & Endpoint used by our ESMF to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by our ESMF to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our DSMF implementation alongside their functionality.}
+    \label{table:dsmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/tunnel\_reservation & Endpoint used by our ESMF to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by our ESMF to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our DTMF implementation alongside their functionality. Includes a subset of the DSMF endpoints.}
+    \label{table:dtmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+        \hline
+         /v1/queue & Endpoint used to manage QoS queues on this switch \\
+         /v1/policy & Endpoint used to manage traffic shaping on ingress ports of this switch \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our switch implementation alongside their functionality.}
+    \label{table:switch}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /stats/switches & Endpoint used to list all switches connected to the SDN controller. \\
+         /stats/desc & Endpoint used to obtain information on a specific switch \\
+        \hline
+         /stats/flow & Endpoint used to fetch flow stats from a specific switch \\
+         /stats/flowentry & Endpoint used to manage flows on a switch \\
+         /stats/tablefeatures & Endpoint used to retrieve details and all features of a flow table on a switch \\
+         /stats/portdesc & Endpoint used to obtain port lists and descriptions of a switch \\
+         /stats/queue & Endpoint used to view available queues on a switch \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our SDN controller implementation. Some endpoints contain additional sub-endpoints under their path that have been left out for simplicity. Please refer to the specification at the end of this thesis for additional details. This API is a subset of the RYU REST API [LINK].}
+    \label{table:controller}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+        \hline
+         /v1/tunnel\_entry & Endpoint used to manage tunnel entries on this VPN gateway \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our VPN gateway implementation alongside their functionality.}
+    \label{table:vpn_gateway}
+\end{table}
+
+% TODO: Append OpenAPI specifications to the bottom of this thesis
+
+\subsection{Communication}
+\label{impl_communication}
+In this section we are going to describe the communication required for the creation and removal of a slice. Please note that the previously described authentication is being performed in advance and not described for every VNF. In general all requests are authenticated and thus require a previous authentication request.
+
+\subsubsection{Slice creation}
+In order to create one or multiple slices, a host will contact the assigned ESMF of their domain. The host will submit the requirements for the slices to the ESMF and wait for a response. For each slice the ESMF will then either assign an existing tunnel to the slice or create a new tunnel for the slice. The tunnel will be created in a way, that all slices required to take the tunnel will fit in the tunnel. In the current implementation the ESMF will create one tunnel per source and target domain pair, so all slices sharing the same source and destination will take one tunnel. The ESMF will then attempt to push the new or adapted tunnel to the network, before pushing the slice to the network. To push slice or tunnel parts to other networks, the corresponding network coordinators (CTMF or other ESMF) are contacted. To perform the same actions on the local domain, the actions are forwarded to the local DSMF. Every slice or tunnel that is being pushed first needs to be reserved with confirmation, before deploying it via the id of the slice or tunnel. This way, the two-phase commit protocol is enacted. We first perform all required reservations. When all reservations are positive, we deploy everything and check whether the deployment was successful by collecting and checking all responses. If so, we report success back to the host. If not, we perform a removal of all reservations and deployments we made and report back a failure to the host. While as previously mentioned the two-phase commit protocol can not recover from a failure of the coordinator, in this case the coordinating ESMF, we are still guaranteed to only report back success to the host when the slice has been fully deployed, which is our main goal with the synchronization. When a participant fails while deploying the slice, we still roll back. So only a failure of the coordinating ESMF while deploying slices or tunnels is a danger to us, because slice and tunnel components could remain on the system, blocking resources forever. This could potentially be mitigated in the future by creating startup sequences that remove detached network components when recovering from a failure. This is however currently not a priority of this thesis and thus subject to future work.
+
+When slice or tunnel parts that need to be deployed are within a remote network, the CTMF or ESMF of the remote network is instructed to carry out the tasks on their respective domain. A CTMF will never receive information on slices, but rather receive only the tunnel information (apart from tunnel keys). Currently, the instruction from the coordinating ESMF is simply forwarded to the DTMF or DSMF of the corresponding domain. This way the local requests as well as the remote requests end up on the infrastructure coordinators of the respective domains.
+
+So now as we synchronized state sufficiently, we can shed some light on the actual deployment of the components. As previously mentioned, the infrastructure coordinator (DTMF or DSMF) will receive reservations for slices or tunnels. These reservations are stored locally after checking for feasibility (whether resources are available considering all other deployments and reservations). Then we will either receive a deployment request or a removal request. If we receive a remove, we simply drop the reservation. If we receive a deployment, we contact the switches to create queues and ingress limits via a REST API (see table \ref{table:switch}), the controller via another REST API (see table \ref{table:controller}) to deploy our flows, and the VPN gateways to deploy our tunnel entries and exits via yet another REST API (see table \ref{table:vpn_gateway}). To get information about what is deployed per slice and tunnel, please have a look at section \ref{impl_concepts}.
+
+The entire process of creating a slice can also be seen in our three diagrams for the state synchronization (see figure \ref{fig:slice_creation_synchronization}), the communication on the edge networks (see figure \ref{fig:slice_creation_edge}) and on our black networks (see figure \ref{fig:slice_creation_bn}). Please note that the diagrams are based on using only one black network. Of course multiple black networks would be possible as well by repeating the communication to our black network for every other black network.
+
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_and_ctmf.svg}
+  \caption[Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram.]{Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to check whether the slice and the tunnel generated by the ESMF is feasible first, before instructing everyone to deploy. Finally the ESMF responds back to the coordinating host to indicate successful slice creation. If any steps fail, everything will be rolled back with removal requests and the host would receive a negative reply. TODO: Update}
+  \label{fig:slice_creation_synchronization}
+\end{figure}
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_switch.svg}
+  \caption[Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram.]{Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram. The process seen here deploys the slices and tunnels of a single edge network. Requests might be in larger quantity when multiple slices and tunnels get deployed. The ESMF will contact the DSMF, which will then contact the data plane VNFs to deploy the actual functionality. Everything is guarded by reservations upfront. TODO: Update and merge}
+  \label{fig:slice_creation_edge}
+\end{figure}
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_ctmf_to_dtmf.svg}
+  \caption[This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels.]{This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels. There are no VPN gateways on black networks, so they do not appear here as compared to the figure on edge networks. As previously with ESMF and DSMF, the CTMF will contact the DTMF, which will then instruct the controller and switches to deploy the tunnel functionality. Everything is guarded by reservations upfront. TODO: Update}
+  \label{fig:slice_creation_bn}
+\end{figure}
+
+\subsection{Slice removal}
+In order to remove a slice the steps mentioned above are basically reversed. In this case we do not use the two-phase commit protocol, as when failing to synchronize the same drawbacks as mentioned above occur, which could be solved by future implementations with ease by removing dangling deployments.
+
+As for the creation of one or multiple slices, the coordinating ESMF is contacted again to remove these slices. The ESMF will create a list of all slices and tunnels affected and issue a removal for them. A tunnel is removed when no slices remain on the tunnel. The ESMF will contact all other participating domain coordinators and state slices and tunnels to be removed. Each domain coordinator, including the coordinating ESMF will then contact the infrastructure coordinator of their domain requesting a removal of all tunnels and slices that are supposed to be removed. The infrastructure providers will then use the before mentioned APIs to remove all components. When everyone reports back a positive result, the host is informed about the positive result of the removal.
+
+As with the previous section, the entire process of removing a slice can also be viewed as sequence diagrams for the state synchronization (see figure \ref{fig:slice_removal_synchronization}), the communication on the edge networks (see figure \ref{fig:slice_removal_edge}) and on our black networks (see figure \ref{fig:slice_removal_bn}).
+
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_and_ctmf.svg}
+  \caption[Removal of slices on the domain coordinator level illustrated in a sequence diagram.]{Removal of slices on the domain coordinator level illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to remove the slice and all tunnels that have to be removed with the slice. Once everyone reports successful removal, the succesful result is reported back to the host. If anyone reported failure to remove, the host will receive a negative reply. TODO: Update}
+  \label{fig:slice_removal_synchronization}
+\end{figure}
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_switch.svg}
+  \caption[Sequence diagram showing the removal of slices and tunnels from an edge network.]{Sequence diagram showing the removal of slices and tunnels from an edge network. The ESMF will contact the DSMF, which will then instruct controller, switches and VPN gateway to remove slice and tunnel components. TODO: Update and merge}
+  \label{fig:slice_removal_edge}
+\end{figure}
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_ctmf_to_dtmf.svg}
+  \caption[Sequence diagram showing the removal of tunnels from a black network.]{Sequence diagram showing the removal of tunnels from a black network. The CTMF will contact the DTMF, which will then instruct controller and switches to remove the tunnel components. TODO: Update}
+  \label{fig:slice_removal_bn}
+\end{figure}
+
+% TODO: Set the diagrams in a way they stay together
+
+\section{Components}
+In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers [LINK] for use in our testbed \cite{owntb}. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} [LINK], \textit{net-tools} [LINK], \textit{iperf3} [LINK], \textit{wireguard} [LINK], \textit{tcpdump} [LINK], \textit{ifstat} [LINK], \textit{hping3} [LINK] and \textit{sockperf} [LINK]. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
+
+Some images have additional software apart from above. These and their functionality are stated here:
+\paragraph{Application plane components} All components on the application plane (ESMF, CTMF, DSMF, DTMF) have their designated server implementation running, performing their coordination and management duties described in section \ref{impl_specification}.
+\paragraph{Switches} The switches currently use OpenVSwitch (OVS) [LINK] to deploy SDN switch functionality. Additionally a switch server implementation is executed which issues commands to manage queues and ingress policies on switch ports.
+\paragraph{Controller} The controller is realized by utilizing the RYU controller [LINK] with the common RYU REST API [LINK].
+\paragraph{VPN gateways} The VPN gateways run a server implementation that allows the creation of wireguard [LINK] tunnel entries. The details of these tunnel entries are explained below in section \ref{impl_concepts}.
+
+% TODO Link all software components with sources
+
+\section{Concepts}
+\label{impl_concepts}
+% TODO: Realization of all concepts from design
+% TODO: All flow and deployment info
+
+\section{Challenges}
+
+\section{Attackers}
+% TODO: Describe attackers if they should really go here

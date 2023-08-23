@@ -1,0 +1,66 @@
+\chapter{Design}
+\iffalse
+\begin{itemize}
+    \item Components
+    \begin{itemize}
+        \item Overview
+        \item ESMF \& CTMF
+        \item DSMF \& DTMF
+        \item Controller
+        \item SDN Switch
+        \item VPN Gateway
+    \end{itemize}
+    \item Concepts
+    \begin{itemize}
+        \item Distributed trust and authority
+        \item State synchronization (2PCP)
+        \item Strict separation of SDN layers
+    \end{itemize}
+\end{itemize}
+\fi
+This chapter is centered around the components and concepts embodied in our network slicing architecture. We will first give an overview over our components and then present some concepts that will need to be implemented by our implementation.
+
+\section{Components}
+In order to present our components to achieve a network slicing architecture, we will group them by SDN layer. We will begin by inspecting the data plane, followed by the control plane and conclude with the application plane. In figure [LINK] you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain. All components below are virtual network functions (VNFs).
+
+The presented components are partially sourced from Fuhrberg et al. \cite{SE4}. Our contribution is the addition of specialized components for the black network, the redesign of logic on each of the components for our new distributed slice management approach and for the other concepts introduced in section \ref{design_concepts}.
+
+\subsection{Data plane}
+The job of the data plane is to transport traffic, so in our use case it will need to achieve the network resource isolation we require from our slices (protection goal \hyperref[P3]{P3}). To configure this isolation we need a way to assign traffic to QoS flows that span from one edge to another, traversing all required black networks in the process. Furthermore we need to limit third party traffic so it may not impede our resource allocations. In order to perform easier routing decisions along our path, we wish to label traffic traversing a network slice according to the MPLS scheme. As a last data plane measure we require traffic to be encrypted while traversing the black networks (protection goal \hyperref[P1]{P1}).
+
+To deploy the QoS flows and secure them against third party traffic (protection goal \hyperref[P3]{P3}), we will need to make use of SDN switches. The switches will forward the packets from source to destination. While the first switch will tag the packets with an MPLS label to facilitate easier routing and perform authentication of slice traffic along the entire path, the last switch will finally remove the MPLS label again. All switches will discard MPLS traffic from different ports than expected and drop packets with MPLS labels not expected to be found on a port. This way we can prevent third party traffic entering our slice, protecting the integrity of our slice [LINK]. The switches also have to limit traffic from other participants to guarantee the slice resources, which can be realised by creating a "default slice" for all non-slice traffic on the network. This can lead to underprovisioning of network resources however. The default slice should be shrunk when new slices are created to accommodate the new slices or have a relatively small size to not be able to disturb our slices. The slice resources can be guaranteed by setting up queues for all slices and the default slice to limit the overall possible outgoing traffic per port. For ingress traffic on ports, port ingress limits should be set up so that the switch may not be overloaded by the sheer amount of traffic from all sides.
+
+For the encryption along the black networks we will use VPN gateways that encrypt traffic (protection goal \hyperref[P1]{P1}). The VPN gateways will only ever see traffic from slices and should be shielded from all other traffic to limit the surface of attack. To connect to a remote end, VPN gateways will use tunnels that need to be cryptographically secure to not disclose information. In order to limit the effect of information disclosure by the sheer existence of a slice through the black networks, we will bundle multiple slices through one single tunnel. Packets from the tunnel will be tagged with another tunnel MPLS label by the first switch and the label will be removed again by the final tunnel switch due to the same reasons as with the original slice packets (integrity). A packet is assigned to a specific tunnel by examining the slice id in the MPLS label from the first slice switch. By tagging the packets with an MPLS label again and using the changing MPLS labels for routing, we effectively build a service function chain (SFC) to the destination host (via the two VPN gateways), which partially anonymizes the recipient to the black networks. When a packet is traversing the tunnel, the unified guarantees for the individual slices should apply, meaning a sum of the individual bandwidths and the lowest values for latency, jitter and loss.
+
+The last required components on the data plane are the hosts that wish to send or receive data via the slices. One of these hosts should contact the application plane to create a new slice before initiating communications with the remote host.
+
+% TODO - Figure for only the data plane components?
+
+\subsection{Control plane}
+The control plane should mainly support deploying our rules to our devices. Creating the flows is supported by using OpenFlow through a standard SDN controller. For our queues and ingress limits we will need a separate service realizing them on the switches though, as these features are not currently supported by OpenFlow. We suggest implementing them via a service running on the SDN switches. For the VPN gateways we require another service running on the specialized VPN gateway hosts allowing us to register, resize and delete tunnels, as well as assigning slices to tunnels.
+
+% TODO - Figure for only the control plane components?
+
+\subsection{Application plane}
+The application plane will then care about defining the rules that should be deployed. In order to instruct the control plane, we will create a infrastructure coordinator per domain that will carry out all infrastructure tasks. This service that we will call a domain slice management function (DSMF) will know about the entire topology and will have the routing information to other domains. It will set up domains and tunnels on the local infrastructure if requested and specify upfront whether resources can be guaranteed or not. This service thus follows an IntServ pattern to realize network slices. Apart from this infrastructure service we will need to establish a domain coordination service, called an edge slice management function (ESMF), coordinating the deployment of slices and tunnels across multiple domains. Apart from the coordination role it should also be the main endpoint for participants from the local domain to request slices through the network. By contacting other domains and the local infrastructure service the coordination service can evaluate whether a slice request from a participant is currently possible or not. For isolation purposes, only the coordination service of a domain (ESMF) will be allowed to contact the infrastructure service (DSMF) of the same domain. The ESMFs will only talk between each other and with tenants of their own domain.
+
+While ESMF and DSMF allow the creation of slices and tunnels on their respective domain, versions of them also exist with reduced functionality for black networks that do not wish to offer their tenants slice support. The ESMF will be replaced with a core tunnel management function (CTMF) and the DSMF will be replaced with a domain tunnel management function (DTMF). A CTMF will never initiate a new tunnel but rather receive tunnel requests from coordinating ESMFs. Also a CTMF will never accept slice requests from tenants of their domain. They will thus only talk to an ESMF of another domain to coordinate new tunnels or with their own DTMF to deploy tunnels to their infrastructure and to check for resource availability. A CTMF may only talk to a DTMF and an ESMF may only talk to a DSMF, depending on the network role. CTMF and DTMF may only be deployed on black networks that are exclusively black networks, requiring their network domain to never be the beginning nor the end of a slice.
+
+% TODO - Figure for only the application plane components?
+
+\paragraph{} After joining the different SDN layers we thus reach our design topology (see figure [LINK]) that has the separation of different virtual network functions (VNFs) in mind.
+
+% TODO - Figure of all layers
+
+\section{Concepts}
+\label{design_concepts}
+After we presented our components we now want to mention our concepts behind certain design decisions, beginning with our concept of distributed trust and authority, our state synchronization and the strict separation of SDN layers.
+
+\subsection{Distributed trust and authority}
+Distributed trust and authority is one of our core requirements (see \hyperref[R2]{requirement R2}). While wanting to lend resources to participants of our and other networks participating in our slicing architecture and guaranteeing those resources to them, we do not want others taking deployment or infrastructure decisions for our local domain. This is why we separated the coordination across all domains and only expose the coordinators to the other domains. This way another domain can ask us to allocate resources for a new slice but we may deny the creation at any point in time. Still other domains can request slices and tunnels this way without having direct access or knowledge about our infrastructure.
+
+\subsection{State synchronization}
+In order to be able to coordinate slices and tunnels across multiple domains we need to synchronize a partial global state across them. Without this synchronization slices could potentially be deployed only in part, violating our requirement of the basic availability of a slice (see requirement \hyperref[R1]{R1} and protection goal \hyperref[P2]{P2}) when traffic can not pass all domains along the slice. We thus require to synchronize a global state for each slice between the coordinators.
+
+\subsection{Strict separation of SDN layers}
+In order to reach our goal to be relatively hardware independent (requirement \hyperref[R3]{R3}) we want to clearly structure our services according to our SDN layers. Of course this may not always be possible because for example our switch queue and ingress limit service will be vendor specific due to no unified API being available at this point to manage these characteristics. For all other services, the design as been separated according to the SDN layers to be able to swap out different components of the SDN environment with ease. For example to use a switch of a different vendor, only the switch queue and ingress limit service will need to be implemented for this vendor while the rest of the components can remain in use. This includes the integration of hardware switches or servers, enabling our topology to be executed outside of testbench scenarios.

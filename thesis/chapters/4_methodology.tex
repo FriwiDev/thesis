@@ -1,0 +1,113 @@
+\chapter{Methodology}
+\iffalse
+\begin{itemize}
+    \item Requirement validation as base methodology
+    \item Test environment (Discussion Mininet vs Distrinet vs our solution)
+    \item Protection goals (including metrics like bandwidth and latency)
+    \begin{itemize}
+        \item Questions that can be validated in chapter “Validation” => Protection goal list
+    \end{itemize}
+    \item Attackers
+    \item Deployments
+    \begin{itemize}
+        \item Full local deployment
+        \item Minimal distributed deployment (2 Hosts, 1 real-world SDN Switch)
+    \end{itemize}
+\end{itemize}
+\fi
+To achieve our goal we will use requirement validation. Initially we defined our requirements as stated in the end of chapter \ref{related_work}. In this chapter we will thus choose an accurate environment for our experiments, define a network model, our protection goals and attackers, before finally stating the scenarios we wish to validate and our measurements we wish to obtain on them.
+
+\section{Test environment}
+As a test environment we want to use a network emulator to be able to easily bootstrap our solution. For this, multiple emulators are available, including mininet \cite{mininet}, distrinet \cite{distrinet1, distrinet2}, maxinet \cite{maxinet}, ComNetsEmu \cite{comnetsemu} or our own testbed solution \cite{owntb}.
+Mininet (and ComNetsEmu as a fork of mininet) emulate network topologies on a single machine, but do not scale to multiple machines. As we want to test in a distributed setting, they are sadly out of the equation. Distrinet and maxinet would both allow us to scale mininet topologies to multiple machines. As we want to be able to deploy our topologies to real-world devices in the future though and integrate real-world hardware (requirement R3), we would need to invest additional effort in deploying to real-world hardware in the future when using them. Our own testbed solution mitigates these issues by supporting multiple modes of deployment including support for real-world hardware that can easily be extended. We will thus opt to use our own testbed solution to evaluate our solution.
+
+\section{Network model}
+In the context of our networks, we will establish two different kinds of networks.
+\paragraph{Edge networks}
+are the origin and target of one specific network slice. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture, for example as a host established within our edge network.
+\paragraph{Black networks}
+lie between the edge networks and are operating under a service level agreement (SLA). There may be any number of black networks between two edges, including none. A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality as an honest-but-curious attacker. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture, apart from potential eavesdropping by the transport infrastructure of the black network.
+
+Please note that that one specific network may play different roles for different network slices. One slice may pass through a black network that is also the origin (and thus edge network) of another slice.
+
+% TODO: Add figure
+
+\section{Protection Goals}
+\label{protection_goals}
+The next question we posed was what we actually want to protect from our attackers. In general we want to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include bandwidth, latency, jitter, loss rate and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our edge networks. We do not require this protection on our edge networks, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{P1}{P1}] Traffic needs to be protected from modification or disclosure outside of the edge networks.
+    \item[\namedlabel{P2}{P2}] Slices need to be available for communication and deliver packets to the recipient at all times during their lifespan.
+    \item[\namedlabel{P3}{P3}] Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate.
+\end{description}
+
+\section{Attackers}
+\label{adversaries}
+As previously mentioned, Ruxandra Olimid et. al \cite{SE2} classified threats to network slicing as either life-cycle threats, inter-slice threats or intra-slice threats. We will not consider intra-slice threats, as intra-slice threats do not target our slicing design or implementation but rather the components within the created slice, which is out of scope for this thesis. We will thus focus more on life-cycle and inter-slice threats.
+
+For inter-slice threats we will create an attacker utilizing a lot of resources within another slice to overload the network and potentially create artifacts in our slice that should be protected. We do not consider side-channel attacks on our slicing implementation to test the isolation between slices as it heavily depends on the used components while we will try to support a variety of components (e.g. the implementation of queues in the linux kernel vs a hardware switch).
+
+For life-cycle threats we will introduce two attackers, one spamming our application plane with arbitrary requests and one spamming our slice coordinators with valid requests. We hope to achieve denial of service for new slice registrations with the first attacker and an overload of network resources by the second attacker.
+
+As a last attacker we will consider an attacker attempting to eavesdrop within one of the black networks between our two edge networks. Eavesdroppers are not expected on our edge networks, as we trust our local environment.
+
+We do not consider active in-path attackers, as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application layer, as any component of the application layer could instruct other components to disrupt the connection or disrupt the connection themselves.
+
+Our attacker definitions are thus as follows:
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{A1}{A1}] Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected.
+    \item[\namedlabel{A2}{A2}] Spams invalid slice requests on the application plane attempting to disrupt the creation of new slices.
+    \item[\namedlabel{A3}{A3}] Spams valid authenticated slice requests on the application plane attempting to overload the network by capacity or frequent slice creation and removal.
+    \item[\namedlabel{A4}{A4}] Attempts to eavesdrop within one of the networks between our edge networks.
+\end{description}
+%TODO: Add figure without our specific architecture showing our attackers
+
+\section{Scenarios}
+We will test three scenarios in total. The first scenario will provide a base case for our two other slicing-enabled scenarios, of which one will be local and the other distributed.
+
+The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker \ref{A1} will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker \ref{A4} to eavesdrop traffic between the switches. \ref{A2} and \ref{A3} do not apply since there is no slicing infrastructure.
+
+For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the black network and deploy \ref{A2} and \ref{A3} to the application layer.
+
+As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
+
+For each scenario we will try to establish two network slices in total. As an example, we want to control a robot on the other side by receiving a video stream and maintaining a bidirectional control and feedback stream. One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small loss rate for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not be too much of an issue. Jitter may occur as we can buffer our video stream data for short amounts of time, however we want our latency to be low so our frames appear in almost real time. For the bidirectional control and feedback slice, we need far less bandwidth. The loss rate needs to be lower than with the video stream to be in control at all times. Also we require a low latency and low jitter to be able to react in real time and without any jittering movements. We will thus apply the resource guarantees in table \ref{table:1} for our experiments.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ |c|c|c| }
+    \hline
+    Metric & Media & Control \\
+    \hline
+         Bandwidth & 8Mbit/s & 100Kbit/s \\
+         Latency   & 5ms     & 3ms      \\
+         Jitter    & \textless 0.5ms  & \textless 0.3ms   \\
+         Loss rate & \textless 0.01\% & \textless 0.001\% \\
+    \hline
+    \end{tabular}
+    \caption{The guarantees we wish to meet with our slices}
+    \label{table:1}
+\end{table}
+
+This example including the bandwidth requirements is taken from Fuhrberg et al. \cite{SE4} in order to be able to compare their solution against our redesigned solution. The values for latency, jitter and loss rate have been altered to reflect our goals and generally provide more strict requirements.
+
+% TODO: Add figures for each scenario (without topology details)
+
+\section{Measurements}
+For each scenario and each attacker (apart from \ref{A4}), we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
+
+For the eavesdropping attacker \ref{A4} we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
+
+\section{Experiments}
+TODO: Split previous scenarios section to only contain the scenarios, then describe the experiments on each scenario here. Make measurements section more general.
+
+For each experiment
+\begin{itemize}
+    \item Give the experiment a number (e.g. E1)
+    \item What do we want to test
+    \item How (including attackers)
+    \item With what (algorithms for test and attacker algorithm)
+    \item Expectations
+    \item How should be evaluated
+\end{itemize}
+$\Rightarrow$ Outcome and expectation validation in validation chapter later

@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[final]{microtype}
 \usepackage[hidelinks]{hyperref}
+\usepackage{tabularx}
 \emergencystretch=1em
 
 % From: https://tex.stackexchange.com/questions/1230/reference-name-of-description-list-item-in-latex
@@ -15,6 +16,11 @@
     \phantomsection\label{#1}\endgroup
 }
 \makeatother
+
+% -- for comments
+\usepackage{xcolor}
+\usepackage{soul}
+\newcommand{\cgn}[1]{\textcolor{brown}{[GN]: #1}}
 
 \usepackage{biblatex}
 \addbibresource{background.bib}
@@ -83,6 +89,16 @@
 \end{itemize}
 \fi
 In this chapter we will establish some common terms concerning the technical background of this thesis. First we will describe our domain of network security and edge computing, before introducing key technologies that have been used such as software defined networks (SDN), network function virtualization (NFV), service function chaining (SFC), virtual private networks (VPN) and multi protocol label switching (MPLS). Lastly we will focus on concepts like quality of service (QoS) and network slicing.
+
+\cgn{The current content of the background already contain good building blocks. However, it is hard to see the coherent connections between the blocks. I suggest a different order of writing: \begin{enumerate}
+    \item Use case: Human-Machine (or robot) interaction -- HCI (?) -- because networks are built for a purpose. And the purpose here is real-time communication between humans and robots, requiring multiple modalities (video, video, control, haptics, etc.). Multiple modalities with different requirements on bandwidths, delay, jitter, etc. raise the need for QoS and slicing.
+    \item Network domains and edge computing: to enable low-latency communication with direct edge-to-edge connections via autonomous systems. This sections, therefore, includes enabling technologies, such as NFV/SDN
+    \item MPLS (for tunneling / routing between AS) and VPN
+    \item Service differentiation (QoS, slicing)
+    \item (Network) Security, especially for mission critical use cases. At this point, it is natural to discuss the (security) requirements for the systems or networks you will discuss in Related work.
+\end{enumerate}
+By the way, I am unsure about the role of 2PCP and SFC in this thesis. However, it is possible that I didn't read it through. Therefore, as long as you can find a logical order for them, it should be good.
+}
 
 \section{Domain}
 \subsection{Network Security}
@@ -194,7 +210,12 @@ Network Slicing \cite{slicing} refers to partitioning part of the resources of a
     \item Our contribution: Extend and redesign the topology proposed by N. Fuhrberg to a fully distributed setting with distributed trust among network coordinators, attempt to combat previous drawbacks (slice QoS failure with large traffic ingress on switches => full slice isolation), provide a distributed implementation that is able to integrate real-world hardware forming a mesh of networks/autonomous systems and perform validation in both a local test case for reference and a distributed test case. (=> Requirement list)
 \end{itemize}
 \fi
-When thinking about partitioning or slicing a part of a network, traditionally VLANs (virtual local area network) \cite{IEEE8021Q} or VXLANs (virtual extended local area network) \cite{rfc7348} come to mind. The goal of VLAN or VXLAN is to annotate packets with an id to distinguish certain traffic from other traffic. As the name suggests a virtual LAN will act as an emulated LAN on top of a real-world LAN, partitioning a switch or other network hardware. This is achieved by maintaining different routing tables based on the specific VLAN, enabling network administrators to specify where packets from a certain VLAN may or may not go. VLANs can be distinguished by tagged and untagged VLANs \cite[25.2]{IEEE8021Q}. Originally only untagged (also called port based) VLANs were available, where a specific switch port is assigned to a specific VLAN, binding this port statically \cite[25.3]{IEEE8021Q}. It was thus a full hardware separation but on the other hand also quite inflexible with the static port binding. To combat this issue, tagged VLANs were developed. Tagged VLANs use information stored within the network packet headers to assign a VLAN id to each packet \cite{IEEE8021Q}. While this creates a small overhead on the network, it allows to share one port between multiple VLANs. For example, the IEEE 802.1 Q standard defines a commonly used VLAN solution that encapsulates the original packet in a VLAN header, including a 12-bit VLAN id. As networks evolved however, more than 4096 VLAN ids were needed and other means of tagged VLANs were implemented, such as Cisco Systems' Private VLAN (RFC 5517) \cite{rfc5517} or VXLAN (RFC 7348). VXLAN for example uses 24-bit ids and can thus provide a way bigger value space than the header of IEEE 802.1 Q.
+
+\cgn{I suggest to start this chapter with a high level paragraph introducing key approaches. Subsequently paragraphs or subsections discuss each of the approaches in more detail.}
+
+\cgn{The general ideas is to start with broader topics and then narrow it down. I might start with two key approaches: detection vs. prevention. Your thesis fits more the prevention, doesn't it?}
+
+\cgn{This paragraph seems to focus on Isolation requirement. If so, please be more explicit about it, e.g., "This section discusses state-of-the-art isolation schemes..." -- This kind of topic sentences help reader's digest.} When thinking about partitioning or slicing a part of a network, traditionally VLANs (virtual local area network) \cite{IEEE8021Q} or VXLANs (virtual extended local area network) \cite{rfc7348} come to mind. The goal of VLAN or VXLAN is to annotate packets with an id to distinguish certain traffic from other traffic. As the name suggests a virtual LAN will act as an emulated LAN on top of a real-world LAN, partitioning a switch or other network hardware. This is achieved by maintaining different routing tables based on the specific VLAN, enabling network administrators to specify where packets from a certain VLAN may or may not go. VLANs can be distinguished by tagged and untagged VLANs \cite[25.2]{IEEE8021Q}. Originally only untagged (also called port based) VLANs were available, where a specific switch port is assigned to a specific VLAN, binding this port statically \cite[25.3]{IEEE8021Q}. It was thus a full hardware separation but on the other hand also quite inflexible with the static port binding. To combat this issue, tagged VLANs were developed. Tagged VLANs use information stored within the network packet headers to assign a VLAN id to each packet \cite{IEEE8021Q}. While this creates a small overhead on the network, it allows to share one port between multiple VLANs. For example, the IEEE 802.1 Q standard defines a commonly used VLAN solution that encapsulates the original packet in a VLAN header, including a 12-bit VLAN id. As networks evolved however, more than 4096 VLAN ids were needed and other means of tagged VLANs were implemented, such as Cisco Systems' Private VLAN (RFC 5517) \cite{rfc5517} or VXLAN (RFC 7348). VXLAN for example uses 24-bit ids and can thus provide a way bigger value space than the header of IEEE 802.1 Q. \cgn{Discuss the schemes according to the list of requirements. Try to find logical connection to the next groups of schemes.}
 
 Another way to achieve this kind of functionality is by using tunnels through a certain part of the network. A common approach to use are for example GRE tunnels \cite{rfc2784}, which enable the network administrator to send arbitrary network protocols over another arbitrary protocol, differentiated by an optional key found in the GRE packet header.
 
@@ -202,7 +223,7 @@ In the modern context of 5G networks, the term slicing has been established to p
 
 % TODO: Insert citation
 
-In general there are many approaches that focus on slicing on a single, local administrative domain (a network managed by one system administrator/team) \cite{SD1,SD2,SD3}. Examples for this are the resource allocation framework proposed by Mathieu Leconte et al. \cite{SD3} focussing on the resource management of 5G slicing on local domains, the mobile handover strategies discussed by Haijun Zhang et al. \cite{SD1} for future mobile networks and slicing of local domains in the context of IoT \cite{SD2}.
+In general there are many approaches that focus on slicing on a single, local administrative domain (a network managed by one system administrator/team) \cite{SD1,SD2,SD3}. Examples for this are the resource allocation framework proposed by Mathieu Leconte et al. \cite{SD3} focussing on the resource management of 5G slicing on local domains, the mobile handover strategies discussed by Haijun Zhang et al. \cite{SD1} for future mobile networks and slicing of local domains in the context of IoT \cite{SD2}. \cgn{relate to the requirements}
 
 Furthermore there are also projects to create slices over multiple domains \cite{MD1,MD2,MD3,MD4,MD5}, such as the network slicing framework proposed by Ibrahim Afolabi et al. \cite{MD1} building around a "Dynamic Adaption Stack" offering services such as provisioning, accounting and more. Another such framework is SliceNet \cite{MD3}, which aims to provide an initial implementation of slicing in 5G networks and is a project of the EU 5G Infrastructure Public Private Partnership (5G PPP). Others are investigating the role of QoS in cross-domain slicing, such as Vasileios Theodorou et al. \cite{MD4} in their network of wind turbines in Denmark, while Ivana Kovacevic et al. \cite{MD5} aim to route slice traffic among multiple routes based on their estimated time of arrival to provide a network with more stable latency. These solutions often use NFV to manage, orchestrate and deploy the slicing network, as NFV provides excellent flexibility to build network topologies in a SDN context \cite{5GSDN1,5GSDN2}.
 
@@ -217,6 +238,7 @@ So as one can see, there are a lot of topics in this field that are currently be
 Ruxandra Olimid et. al \cite{SE2} try a different approach of classifying threats as either life-cycle, inter-slice or intra-slice security concerns. Life-cycle threats are threats to the bootstrapping or removal of slices, threatening their existence. Inter-slice threats are threats like side-channel attacks or information disclosure, that take place when two different isolated parties have means to communicate with each other or obtain information about one another without being part of the same slice. Information disclosure can also happen when one participant is part of multiple slices and shares information that was only meant for one slice. The intra-slice threats are then threats within the slice itself, such as a malicious participant.
 To protect slicing implementations against these threats and to reach protection goals, Tomasz Wichary et al. \cite{SE3} suggested different security controls to isolate certain parts of networks that are otherwise only weakly isolated. They reach their goals by employing security policies to certain parts of the slicing network to achieve good resource isolation on multiple layers while utilizing vendor specific and vendor independent tools. Niklas Fuhrberg et al. \cite{SE4} investigated QoS degradation in their NFV based slicing topology that spanned multiple virtual domains with a single administrative entity called ESMF (edge slice management function). They validated their topology in a local testbed using Mininet \cite{mininet} (a network emulator) reaching the result that an adversary attacking a switch from multiple angles can still overload the switch and reach considerate QoS degradation in their example of controlling a remote robot.
 
+\cgn{How about positioning the requirement up front in this chapter and justify them? After that you can describe and criticize related work against the set of requirements.}
 In this thesis we wish to build a topology with a distributed control plane and management to create a network slicing testbed based on NFV and SFC. We will attempt to redesign the topology by Fuhrberg et al. to reach full network isolation of slices from one another, as well as distributed trust among the different participating administrative domains. This also includes the synchronization of state among the domains. We furthermore want to be able to deploy our solution to real-world networks apart from emulated network testbeds.
 To achieve these goals, we impose the following requirements:
 
@@ -227,11 +249,11 @@ To achieve these goals, we impose the following requirements:
     \item[\namedlabel{R4}{R4}] We want to be able to create slices from an arbitrary amount of networks to an arbitrary amount of other networks. While one slice must only connect two networks, other networks should be reachable as well, as most modern applications wish to reach out to multiple parties in multiple destinations.
 \end{description}
 
-Question 1: Are the requirements good like this? I provide requirements here with an additional reference to our attackers and protection goals so that we can a) use R2, R3 and R4 to distinguish our new solution from Niklas' solution passively (no active comparison) and b) use R1 to validate our protection goals later. With this we can later validate our solution using the requirement list with embedded protection goals, which would be a good solution in my opinion (to not validate everything separately). We will of course argue that R2-4 are by design. Are any requirements missing in your opinion?
+Question 1: Are the requirements good like this? I provide requirements here with an additional reference to our attackers and protection goals so that we can a) use R2, R3 and R4 to distinguish our new solution from Niklas' solution passively (no active comparison) and b) use R1 to validate our protection goals later. With this we can later validate our solution using the requirement list with embedded protection goals, which would be a good solution in my opinion (to not validate everything separately). We will of course argue that R2-4 are by design. Are any requirements missing in your opinion? \cgn{Try to have one keyword for each of the requirement, e.g., R1: Traffic/Slice Isolation -- for reader's digest.}
 
-Question 2: Is Niklas' thesis appropriately mentioned? I stated our solution as a redesign of his, because even though all the VNFs are completely redesigned and reimplemented (sometimes even in their base concepts of operation, like by which means things are communicated and deployed), the basic concept of a chain of ESMF->DSMF is almost the same. Our components are different of course (for example the role of the ESMF for other networks, the synchronization, the ryu controller as way to deploy the flows, and also the isolation itself). Should Niklas' thesis be mentioned later on? I do not currently think that comparing the works more than above is needed, as I already mentioned a core difference above (the role of the ESMF ["with a single administrative entity called ESMF"]). I would thus like to continue with the upcoming chapters without further referencing it. Is that a good approach or would it be ideal to further mention it?
+Question 2: Is Niklas' thesis appropriately mentioned? I stated our solution as a redesign of his, because even though all the VNFs are completely redesigned and reimplemented (sometimes even in their base concepts of operation, like by which means things are communicated and deployed), the basic concept of a chain of ESMF->DSMF is almost the same. Our components are different of course (for example the role of the ESMF for other networks, the synchronization, the ryu controller as way to deploy the flows, and also the isolation itself). Should Niklas' thesis be mentioned later on? I do not currently think that comparing the works more than above is needed, as I already mentioned a core difference above (the role of the ESMF ["with a single administrative entity called ESMF"]). I would thus like to continue with the upcoming chapters without further referencing it. Is that a good approach or would it be ideal to further mention it? \cgn{Since your thesis is closely related to Niklas thesis, you can use one separate paragraph describing and discussing pros and cons of his approach -- according to the requirement list, of course. Naturally, one would expect that your thesis address all of the cons of Niklas one.}
 
-Question 3: Is the presented related work relevant in your opinion or should I explore a certain field more?
+Question 3: Is the presented related work relevant in your opinion or should I explore a certain field more? \cgn{You already discussed the most related ones, which is okay for now. I would expect to re-arrange the order of related work, starting from the least related ones, and narrowing it down to the most related ones -- similar to a funnel.}
 
 \chapter{Methodology}
 \iffalse
@@ -333,6 +355,20 @@ For each scenario and each attacker (apart from \ref{A4}), we will investigate t
 
 For the eavesdropping attacker \ref{A4} we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
 
+\section{Experiments}
+TODO: Split previous scenarios section to only contain the scenarios, then describe the experiments on each scenario here. Make measurements section more general.
+
+For each experiment
+\begin{itemize}
+    \item Give the experiment a number (e.g. E1)
+    \item What do we want to test
+    \item How (including attackers)
+    \item With what (algorithms for test and attacker algorithm)
+    \item Expectations
+    \item How should be evaluated
+\end{itemize}
+$\Rightarrow$ Outcome and expectation validation in validation chapter later
+
 \chapter{Design}
 \iffalse
 \begin{itemize}
@@ -363,9 +399,11 @@ The presented components are partially sourced from Fuhrberg et al. \cite{SE4}. 
 \subsection{Data plane}
 The job of the data plane is to transport traffic, so in our use case it will need to achieve the network resource isolation we require from our slices (protection goal \hyperref[P3]{P3}). To configure this isolation we need a way to assign traffic to QoS flows that span from one edge to another, traversing all required black networks in the process. Furthermore we need to limit third party traffic so it may not impede our resource allocations. In order to perform easier routing decisions along our path, we wish to label traffic traversing a network slice according to the MPLS scheme. As a last data plane measure we require traffic to be encrypted while traversing the black networks (protection goal \hyperref[P1]{P1}).
 
-To deploy the QoS flows and secure them against third party traffic (protection goal \hyperref[P3]{P3}), we will need to make use of SDN switches. The switches will forward the packets from source to destination, while the first switch will tag the packets with an MPLS label to facilitate easier routing and perform authentication of slice traffic along the entire path, the last switch will finally remove the MPLS label again. All switches will discard MPLS traffic from different ports than expected and drop packets with MPLS labels not expected to be found on a port. This way we can prevent third party traffic entering our slice, protecting the integrity of our slice [LINK]. The switches also have to limit traffic from other participants to guarantee the slice resources, which can be realised by creating a "default slice" for all non-slice traffic on the network. This can lead to underprovisioning of network resources however. The default slice should be shrunk when new slices are created to accommodate the new slices or have a relatively small size to not be able to disturb our slices. The slice resources can be guaranteed by setting up queues for all slices and the default slice to limit the overall possible outgoing traffic per port. For ingress traffic on ports, port ingress limits should be set up so that the switch may not be overloaded by the sheer amount of traffic from all sides.
+To deploy the QoS flows and secure them against third party traffic (protection goal \hyperref[P3]{P3}), we will need to make use of SDN switches. The switches will forward the packets from source to destination. While the first switch will tag the packets with an MPLS label to facilitate easier routing and perform authentication of slice traffic along the entire path, the last switch will finally remove the MPLS label again. All switches will discard MPLS traffic from different ports than expected and drop packets with MPLS labels not expected to be found on a port. This way we can prevent third party traffic entering our slice, protecting the integrity of our slice [LINK]. The switches also have to limit traffic from other participants to guarantee the slice resources, which can be realised by creating a "default slice" for all non-slice traffic on the network. This can lead to underprovisioning of network resources however. The default slice should be shrunk when new slices are created to accommodate the new slices or have a relatively small size to not be able to disturb our slices. The slice resources can be guaranteed by setting up queues for all slices and the default slice to limit the overall possible outgoing traffic per port. For ingress traffic on ports, port ingress limits should be set up so that the switch may not be overloaded by the sheer amount of traffic from all sides.
 
 For the encryption along the black networks we will use VPN gateways that encrypt traffic (protection goal \hyperref[P1]{P1}). The VPN gateways will only ever see traffic from slices and should be shielded from all other traffic to limit the surface of attack. To connect to a remote end, VPN gateways will use tunnels that need to be cryptographically secure to not disclose information. In order to limit the effect of information disclosure by the sheer existence of a slice through the black networks, we will bundle multiple slices through one single tunnel. Packets from the tunnel will be tagged with another tunnel MPLS label by the first switch and the label will be removed again by the final tunnel switch due to the same reasons as with the original slice packets (integrity). A packet is assigned to a specific tunnel by examining the slice id in the MPLS label from the first slice switch. By tagging the packets with an MPLS label again and using the changing MPLS labels for routing, we effectively build a service function chain (SFC) to the destination host (via the two VPN gateways), which partially anonymizes the recipient to the black networks. When a packet is traversing the tunnel, the unified guarantees for the individual slices should apply, meaning a sum of the individual bandwidths and the lowest values for latency, jitter and loss.
+
+The last required components on the data plane are the hosts that wish to send or receive data via the slices. One of these hosts should contact the application plane to create a new slice before initiating communications with the remote host.
 
 % TODO - Figure for only the data plane components?
 
@@ -381,20 +419,25 @@ While ESMF and DSMF allow the creation of slices and tunnels on their respective
 
 % TODO - Figure for only the application plane components?
 
+\paragraph{} After joining the different SDN layers we thus reach our design topology (see figure [LINK]) that has the separation of different virtual network functions (VNFs) in mind.
+
+% TODO - Figure of all layers
+
 \section{Concepts}
 \label{design_concepts}
 After we presented our components we now want to mention our concepts behind certain design decisions, beginning with our concept of distributed trust and authority, our state synchronization and the strict separation of SDN layers.
 
 \subsection{Distributed trust and authority}
-Distributed trust and authority is one of our core requirements (see \hyperref[R2]{requirement R2}). While wanting to lend resources to participants of our and other networks participating in our slicing architecture and guaranteeing those resources to them, we do not want others taking deployment or infrastructure decisions for our local domain. This is why we separated the coordination across all domains and only expose the coordinators to the other domains. This way another domain can ask us to allocate resources for a new slice but we may deny the creation at any point in time. Still other domains can request slices and tunnels this way without having direct access or knowledge over our infrastructure.
+Distributed trust and authority is one of our core requirements (see \hyperref[R2]{requirement R2}). While wanting to lend resources to participants of our and other networks participating in our slicing architecture and guaranteeing those resources to them, we do not want others taking deployment or infrastructure decisions for our local domain. This is why we separated the coordination across all domains and only expose the coordinators to the other domains. This way another domain can ask us to allocate resources for a new slice but we may deny the creation at any point in time. Still other domains can request slices and tunnels this way without having direct access or knowledge about our infrastructure.
 
 \subsection{State synchronization}
-In order to be able to coordinate slices and tunnels across multiple domains we need to synchronize a global state across them. Without this synchronization slices could potentially be deployed only partially, violating our requirement of the basic availability of a slice (see requirement \hyperref[R1]{R1} and protection goal \hyperref[P2]{P2}) when traffic can not pass all domains along the slice. Our implementation will thus need to synchronize a global state for each slice between the coordinators.
+In order to be able to coordinate slices and tunnels across multiple domains we need to synchronize a partial global state across them. Without this synchronization slices could potentially be deployed only in part, violating our requirement of the basic availability of a slice (see requirement \hyperref[R1]{R1} and protection goal \hyperref[P2]{P2}) when traffic can not pass all domains along the slice. We thus require to synchronize a global state for each slice between the coordinators.
 
 \subsection{Strict separation of SDN layers}
-In order to reach our goal to be relatively hardware independent (requirement \hyperref[R3]{R3}) we want to clearly structure our services according to our SDN layers. Of course this may not always be possible because for example our switch queue and ingress limit service will be vendor specific due to no unified API being available at this point to manage these characteristics. For all other services, the design as been separated according to the SDN layers to be able to swap out different components of the SDN environment with ease. For example to use a switch of a different vendor, only the switch queue and ingress limit service will need to be reimplemented for this vendor while the rest of the components can remain in use. This includes the integration of hardware switches or servers, enabling our topology to be executed outside of testbench scenarios.
+In order to reach our goal to be relatively hardware independent (requirement \hyperref[R3]{R3}) we want to clearly structure our services according to our SDN layers. Of course this may not always be possible because for example our switch queue and ingress limit service will be vendor specific due to no unified API being available at this point to manage these characteristics. For all other services, the design as been separated according to the SDN layers to be able to swap out different components of the SDN environment with ease. For example to use a switch of a different vendor, only the switch queue and ingress limit service will need to be implemented for this vendor while the rest of the components can remain in use. This includes the integration of hardware switches or servers, enabling our topology to be executed outside of testbench scenarios.
 
 \chapter{Implementation}
+\iffalse
 \begin{itemize}
     \item Specification
     \begin{itemize}
@@ -415,31 +458,233 @@ In order to reach our goal to be relatively hardware independent (requirement \h
     \begin{itemize}
         \item Same as in design - specify their implementation
     \end{itemize}
+    \item Challenges
+    \begin{itemize}
+        \item MTU restriction
+        \item MPLS label popping
+        \item iptables bridge skip
+        \item offload disabling
+    \end{itemize}
     \item Attackers
     \begin{itemize}
         \item Specify how the individual attackers from the methodology were implemented
     \end{itemize}
 \end{itemize}
-\begin{figure}[ht]
+\fi
+
+In this chapter we are going to be more specific about the details of our implementation that we produced from our design. At first, we will state our virtual network function (VNF) specifications, before describing some details about our components, the realization of our previously mentioned concepts and challenges we faced while implementing. TODO: Finally, we are going to describe the implementation of our attackers for the validation.
+
+\section{Specification}
+\label{impl_specification}
+In this section we will focus on our specifications. First we will present our protocol specifications for each VNF, before providing communication examples to create and remove a slice.
+
+\subsection{OpenAPI specifications}
+To interconnect our VNFs, we will use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions [LINK OpenAPI]. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project [LINK]. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI [LINK] or Redocly [LINK].
+
+We provided OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis [LINK] in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
+
+The basic endpoints of each component can be seen in the tables \ref{table:esmf} through \ref{table:vpn_gateway}. Further details on parameters and responses can be found at the end of this thesis [LINK]. All VNFs provide endpoints for authentication (apart from the SDN controller), where other components can authenticate themselves. This is just a placeholder to establish an authentication scheme later. In the current specification the authentication endpoint takes no parameters and returns a predefined token. Real authentication can thus easily be implemented in the future by employing a real authentication scheme. All the other endpoints then take this token to authenticate requests. The details on how these endpoints work together can then be seen in section \ref{impl_communication}, where we take a closer look on the creation and removal of a slice.
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/slice & Endpoint that can be contacted by hosts to submit new slice requests \\
+        \hline
+         /v1/slice\_reservation & Endpoint used by other ESMFs to reserve a slice \\
+         /v1/slice\_deployment & Endpoint used by other ESMFs to deploy a slice \\
+         /v1/tunnel\_reservation & Endpoint used by other ESMFs to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by other ESMFs to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our ESMF implementation alongside their functionality.}
+    \label{table:esmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/tunnel\_reservation & Endpoint used by ESMFs to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by ESMFs to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our CTMF implementation alongside their functionality. Includes a subset of the ESMF endpoints.}
+    \label{table:ctmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/slice\_reservation & Endpoint used by our ESMF to reserve a slice \\
+         /v1/slice\_deployment & Endpoint used by our ESMF to deploy a slice \\
+         /v1/tunnel\_reservation & Endpoint used by our ESMF to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by our ESMF to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our DSMF implementation alongside their functionality.}
+    \label{table:dsmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+         /v1/configuration & Endpoint to configure this service \\
+        \hline
+         /v1/tunnel\_reservation & Endpoint used by our ESMF to reserve a tunnel  \\
+         /v1/tunnel\_deployment & Endpoint used by our ESMF to deploy a tunnel \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our DTMF implementation alongside their functionality. Includes a subset of the DSMF endpoints.}
+    \label{table:dtmf}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+        \hline
+         /v1/queue & Endpoint used to manage QoS queues on this switch \\
+         /v1/policy & Endpoint used to manage traffic shaping on ingress ports of this switch \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our switch implementation alongside their functionality.}
+    \label{table:switch}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /stats/switches & Endpoint used to list all switches connected to the SDN controller. \\
+         /stats/desc & Endpoint used to obtain information on a specific switch \\
+        \hline
+         /stats/flow & Endpoint used to fetch flow stats from a specific switch \\
+         /stats/flowentry & Endpoint used to manage flows on a switch \\
+         /stats/tablefeatures & Endpoint used to retrieve details and all features of a flow table on a switch \\
+         /stats/portdesc & Endpoint used to obtain port lists and descriptions of a switch \\
+         /stats/queue & Endpoint used to view available queues on a switch \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our SDN controller implementation. Some endpoints contain additional sub-endpoints under their path that have been left out for simplicity. Please refer to the specification at the end of this thesis for additional details. This API is a subset of the RYU REST API [LINK].}
+    \label{table:controller}
+\end{table}
+
+\begin{table}[htp]
+    \begin{tabularx}{\textwidth}{ |l|X| }
+        \hline
+        \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+         /v1/auth & Endpoint that can be contacted by all parties to authenticate and obtain a new authentication token \\
+        \hline
+         /v1/tunnel\_entry & Endpoint used to manage tunnel entries on this VPN gateway \\
+        \hline
+    \end{tabularx}
+    \caption{The endpoints of our VPN gateway implementation alongside their functionality.}
+    \label{table:vpn_gateway}
+\end{table}
+
+% TODO: Append OpenAPI specifications to the bottom of this thesis
+
+\subsection{Communication}
+\label{impl_communication}
+In this section we are going to describe the communication required for the creation and removal of a slice. Please note that the previously described authentication is being performed in advance and not described for every VNF. In general all requests are authenticated and thus require a previous authentication request.
+
+\subsubsection{Slice creation}
+In order to create one or multiple slices, a host will contact the assigned ESMF of their domain. The host will submit the requirements for the slices to the ESMF and wait for a response. For each slice the ESMF will then either assign an existing tunnel to the slice or create a new tunnel for the slice. The tunnel will be created in a way, that all slices required to take the tunnel will fit in the tunnel. In the current implementation the ESMF will create one tunnel per source and target domain pair, so all slices sharing the same source and destination will take one tunnel. The ESMF will then attempt to push the new or adapted tunnel to the network, before pushing the slice to the network. To push slice or tunnel parts to other networks, the corresponding network coordinators (CTMF or other ESMF) are contacted. To perform the same actions on the local domain, the actions are forwarded to the local DSMF. Every slice or tunnel that is being pushed first needs to be reserved with confirmation, before deploying it via the id of the slice or tunnel. This way, the two-phase commit protocol is enacted. We first perform all required reservations. When all reservations are positive, we deploy everything and check whether the deployment was successful by collecting and checking all responses. If so, we report success back to the host. If not, we perform a removal of all reservations and deployments we made and report back a failure to the host. While as previously mentioned the two-phase commit protocol can not recover from a failure of the coordinator, in this case the coordinating ESMF, we are still guaranteed to only report back success to the host when the slice has been fully deployed, which is our main goal with the synchronization. When a participant fails while deploying the slice, we still roll back. So only a failure of the coordinating ESMF while deploying slices or tunnels is a danger to us, because slice and tunnel components could remain on the system, blocking resources forever. This could potentially be mitigated in the future by creating startup sequences that remove detached network components when recovering from a failure. This is however currently not a priority of this thesis and thus subject to future work.
+
+When slice or tunnel parts that need to be deployed are within a remote network, the CTMF or ESMF of the remote network is instructed to carry out the tasks on their respective domain. A CTMF will never receive information on slices, but rather receive only the tunnel information (apart from tunnel keys). Currently, the instruction from the coordinating ESMF is simply forwarded to the DTMF or DSMF of the corresponding domain. This way the local requests as well as the remote requests end up on the infrastructure coordinators of the respective domains.
+
+So now as we synchronized state sufficiently, we can shed some light on the actual deployment of the components. As previously mentioned, the infrastructure coordinator (DTMF or DSMF) will receive reservations for slices or tunnels. These reservations are stored locally after checking for feasibility (whether resources are available considering all other deployments and reservations). Then we will either receive a deployment request or a removal request. If we receive a remove, we simply drop the reservation. If we receive a deployment, we contact the switches to create queues and ingress limits via a REST API (see table \ref{table:switch}), the controller via another REST API (see table \ref{table:controller}) to deploy our flows, and the VPN gateways to deploy our tunnel entries and exits via yet another REST API (see table \ref{table:vpn_gateway}). To get information about what is deployed per slice and tunnel, please have a look at section \ref{impl_concepts}.
+
+The entire process of creating a slice can also be seen in our three diagrams for the state synchronization (see figure \ref{fig:slice_creation_synchronization}), the communication on the edge networks (see figure \ref{fig:slice_creation_edge}) and on our black networks (see figure \ref{fig:slice_creation_bn}). Please note that the diagrams are based on using only one black network. Of course multiple black networks would be possible as well by repeating the communication to our black network for every other black network.
+
+\begin{figure}[hp]
   \centering
   \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_and_ctmf.svg}
-  \caption{ESMF to CTMF communication illustrated in a sequence diagram TODO: Update}
+  \caption[Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram.]{Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to check whether the slice and the tunnel generated by the ESMF is feasible first, before instructing everyone to deploy. Finally the ESMF responds back to the coordinating host to indicate successful slice creation. If any steps fail, everything will be rolled back with removal requests and the host would receive a negative reply. TODO: Update}
+  \label{fig:slice_creation_synchronization}
 \end{figure}
-\begin{figure}[ht]
+\begin{figure}[hp]
   \centering
   \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_switch.svg}
-  \caption{ESMF to DSMF to switch communication illustrated in a sequence diagram TODO: Update and merge}
+  \caption[Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram.]{Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram. The process seen here deploys the slices and tunnels of a single edge network. Requests might be in larger quantity when multiple slices and tunnels get deployed. The ESMF will contact the DSMF, which will then contact the data plane VNFs to deploy the actual functionality. Everything is guarded by reservations upfront. TODO: Update and merge}
+  \label{fig:slice_creation_edge}
 \end{figure}
-\begin{figure}[ht]
-  \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_vpn_gateway.svg}
-  \caption{ESMF to DSMF to VPN gateway communication illustrated in a sequence diagram TODO: Update and merge}
-\end{figure}
-\begin{figure}[ht]
+\begin{figure}[hp]
   \centering
   \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_ctmf_to_dtmf.svg}
-  \caption{CTMF to DTMF communication illustrated in a sequence diagram TODO: Update}
+  \caption[This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels.]{This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels. There are no VPN gateways on black networks, so they do not appear here as compared to the figure on edge networks. As previously with ESMF and DSMF, the CTMF will contact the DTMF, which will then instruct the controller and switches to deploy the tunnel functionality. Everything is guarded by reservations upfront. TODO: Update}
+  \label{fig:slice_creation_bn}
 \end{figure}
+
+\subsection{Slice removal}
+In order to remove a slice the steps mentioned above are basically reversed. In this case we do not use the two-phase commit protocol, as when failing to synchronize the same drawbacks as mentioned above occur, which could be solved by future implementations with ease by removing dangling deployments.
+
+As for the creation of one or multiple slices, the coordinating ESMF is contacted again to remove these slices. The ESMF will create a list of all slices and tunnels affected and issue a removal for them. A tunnel is removed when no slices remain on the tunnel. The ESMF will contact all other participating domain coordinators and state slices and tunnels to be removed. Each domain coordinator, including the coordinating ESMF will then contact the infrastructure coordinator of their domain requesting a removal of all tunnels and slices that are supposed to be removed. The infrastructure providers will then use the before mentioned APIs to remove all components. When everyone reports back a positive result, the host is informed about the positive result of the removal.
+
+As with the previous section, the entire process of removing a slice can also be viewed as sequence diagrams for the state synchronization (see figure \ref{fig:slice_removal_synchronization}), the communication on the edge networks (see figure \ref{fig:slice_removal_edge}) and on our black networks (see figure \ref{fig:slice_removal_bn}).
+
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_and_ctmf.svg}
+  \caption[Removal of slices on the domain coordinator level illustrated in a sequence diagram.]{Removal of slices on the domain coordinator level illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to remove the slice and all tunnels that have to be removed with the slice. Once everyone reports successful removal, the succesful result is reported back to the host. If anyone reported failure to remove, the host will receive a negative reply. TODO: Update}
+  \label{fig:slice_removal_synchronization}
+\end{figure}
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_esmf_to_dsmf_to_switch.svg}
+  \caption[Sequence diagram showing the removal of slices and tunnels from an edge network.]{Sequence diagram showing the removal of slices and tunnels from an edge network. The ESMF will contact the DSMF, which will then instruct controller, switches and VPN gateway to remove slice and tunnel components. TODO: Update and merge}
+  \label{fig:slice_removal_edge}
+\end{figure}
+\begin{figure}[hp]
+  \centering
+  \includesvg[inkscapelatex=false, width=\linewidth]{images/slice_creation_ctmf_to_dtmf.svg}
+  \caption[Sequence diagram showing the removal of tunnels from a black network.]{Sequence diagram showing the removal of tunnels from a black network. The CTMF will contact the DTMF, which will then instruct controller and switches to remove the tunnel components. TODO: Update}
+  \label{fig:slice_removal_bn}
+\end{figure}
+
+% TODO: Set the diagrams in a way they stay together
+
+\section{Components}
+In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers [LINK] for use in our testbed \cite{owntb}. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} [LINK], \textit{net-tools} [LINK], \textit{iperf3} [LINK], \textit{wireguard} [LINK], \textit{tcpdump} [LINK], \textit{ifstat} [LINK], \textit{hping3} [LINK] and \textit{sockperf} [LINK]. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
+
+Some images have additional software apart from above. These and their functionality are stated here:
+\paragraph{Application plane components} All components on the application plane (ESMF, CTMF, DSMF, DTMF) have their designated server implementation running, performing their coordination and management duties described in section \ref{impl_specification}.
+\paragraph{Switches} The switches currently use OpenVSwitch (OVS) [LINK] to deploy SDN switch functionality. Additionally a switch server implementation is executed which issues commands to manage queues and ingress policies on switch ports.
+\paragraph{Controller} The controller is realized by utilizing the RYU controller [LINK] with the common RYU REST API [LINK].
+\paragraph{VPN gateways} The VPN gateways run a server implementation that allows the creation of wireguard [LINK] tunnel entries. The details of these tunnel entries are explained below in section \ref{impl_concepts}.
+
+% TODO Link all software components with sources
+
+\section{Concepts}
+\label{impl_concepts}
+% TODO: Realization of all concepts from design
+% TODO: All flow and deployment info
+
+\section{Challenges}
+
+\section{Attackers}
+% TODO: Describe attackers if they should really go here
 
 
 \chapter{Validation} % Security and Performance analysis?

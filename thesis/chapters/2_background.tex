@@ -53,6 +53,7 @@ In this chapter we will establish some common terms concerning the technical bac
 \end{enumerate}
 By the way, I am unsure about the role of 2PCP and SFC in this thesis. However, it is possible that I didn't read it through. Therefore, as long as you can find a logical order for them, it should be good.
 }
+\cfw{I tried to spin the order by the three categories I used, structuring the content by the similarity of role in this thesis. Maybe the story reference could be placed in the beginning of the background and I could introduce the story as motivation in the introduction. I guess I could still spin the story in a way that it makes sense to begin with network security though, because consequences of failure could have been averted by designing the network with security in mind, introducing our domain. Then we can go to edge-computing to understand in which domain we are working. ("But to understand how we can secure our communications in the future, we must first understand or domain...") Then I could move up the concepts to say "this is how we could have had more security" and then state the building blocks (enabling technologies) that will help us build a better solution. This way I could connect all the blocks with a story by stating their relevance in the beginning and providing some links. Does that sound like a good idea? :) }
 
 \section{Domain}
 \subsection{Network Security}
@@ -61,14 +62,15 @@ According to \cite{netsec}, network security can be viewed as a subset of comput
 Another view on network security can be from the cryptographical standpoint \cite{netsec}. Cryptography plays a key role in network security, because it can be used to achieve four of the major goals of security in network contexts: confidentiality, integrity, authentication and non-repudiation \cite{cryptography}. In this context often times security games are played to define what an attacker may know or not know at a certain point of a secure protocol, e.g. a key exchange, and what the attacker can possibly guess \cite{games}. The assumption generally is, that while some parties are honest and behaving according to protocol, some malicious actors will participate in the protocol. These malicious actors should (hopefully) never reach their goal concerning the protection goals from above.
 
 So while the two views presented so far are of different nature, what combines them is the set of major protection goals on a network. Here are some of the most noteworthy \cite{goals}:
-\begin{itemize}
-    \item Confidentiality: Information that is only meant to be viewed by certain parties must not be disclosed to other parties.
-    \item Integrity: Information has to be protected against modification or forgery by malicious actors.
-    \item Availability: Information has to be available according to the service specifications.
-    \item Authentication: Actors have to prove their identity.
-    \item Non-repudiation: Actors should not be able to claim that they did not take part in an action.
-\end{itemize}
-So as one can see, network security is a relatively complex topic with many different approaches, view angles and goals.
+\paragraph{Confidentiality} Information that is only meant to be viewed by certain parties must not be disclosed to other parties.
+\paragraph{Integrity} Information has to be protected against modification or forgery by malicious actors.
+\paragraph{Availability} Information has to be available according to the service specifications.
+\paragraph{Authentication} Actors have to prove their identity.
+\paragraph{Non-repudiation} Actors should not be able to claim that they did not take part in an action.
+
+\paragraph{}Furthermore, resilience of networks can be an important goal \cite{resilience}. According to Trivedi et al. \cite{resilience}, resilience of a network or computer system is the combination of trustworthiness and tolerance. The trustworthiness consists of dependability (How reliable is the system?), security (Which risks does a system have?) and performability (How capable is a system?). Tolerance consists of survivability (How likely will a system survive when target of an attack?), disruption tolerance (How well does the system handle service disruptions?) and traffic tolerance (How much traffic can the system handle?). When one of the six components of resilience is impeded, the major protection goals might be compromised. This is why resilience should play a key role when designing networks and services.
+
+\paragraph{}So as one can see, network security is a relatively complex topic with many different approaches, view angles and goals. But while different approaches exist, it is of critical importance today to design networks with security in mind. Network outages can cause a lot of damage to property or infrastructure, prompting for security-aware solutions in the current world of digitalization.
 
 \subsection{Edge Computing}
 Edge computing \cite{edgecomputing} refers to the relatively new domain to perform computations at the network edges, closer to the end user. Traditionally, the internet follows a centralized approach with servers clustered in data centers while users remain at the edges of the network. This provides some challenges to the network though, because the traffic has to be transported over long distances. This has significant impact on latency, bandwidth at central hubs, security and privacy. By moving the computational resources (e.g. servers) closer to the user at the network edge, we can reply to requests from the user with less delay, with less transportation distance (and thus cost) and with more security and privacy in mind due to decentralization. This also reduces the possible single points of failure because there is no central infrastructure anymore that could render a service unusable for all users. Edge computing has gained additional traction in recent developments due to the emergence of IoT in our everyday lifes. With a lot of data being collected by IoT devices, edge computing can be used to bundle all traffic generated by a users IoT devices closer to their origin, reducing the overall load of networks and thus their operational cost.
@@ -76,12 +78,11 @@ Edge computing \cite{edgecomputing} refers to the relatively new domain to perfo
 \section{Enabling technologies}
 \subsection{Software Defined Networking (SDN)}
 When building network topologies, software defined networking \cite{sdn} has emerged as one of the most valuable tools to build networks dynamically and with less cost. While traditionally specialized hardware was deployed for every use case, SDN provides a number of abstractions to build arbitrary virtual topologies on top of real-world topologies. To achieve this, software defined networking partitions the network into three major layers:
-\begin{itemize}
-    \item Data plane: This is the lowest layer, actually performing the work on the data to be transmitted. It is usually being realized by switches or other hardware that is used to perform work on the network traffic itself.
-    \item Control plane: The control plane consists of SDN controllers that instruct the data plane components on how to handle data via a so called southbound API. The data plane components will also contact the control plane when instructions for a certain type of traffic are needed that no rules have been defined for yet. A commonly used protocol and the defacto standard for this southbound API is called OpenFlow \cite{openflow} and currently supported by a wide range of SDN capable switches. With OpenFlow, traffic is being classified into flows via flow matching tables. After traffic has been assigned to a flow, the actions that have been defined for this flow will be applied on the traffic by the data plane components. Actions include dropping traffic, queuing traffic, outputting traffic on a specific port and modifying traffic in various ways.
-    \item Application plane: This plane is used to configure the SDN controllers via a northbound API. This can include end applications and users that want to manage and monitor the network.
-\end{itemize}
-These three layers can also been seen in figure [LINK]. % TODO: Create figure for SDN
+\paragraph{Data plane} This is the lowest layer, actually performing the work on the data to be transmitted. It is usually being realized by switches or other hardware that is used to perform work on the network traffic itself.
+\paragraph{Control plane} The control plane consists of SDN controllers that instruct the data plane components on how to handle data via a so called southbound API. The data plane components will also contact the control plane when instructions for a certain type of traffic are needed that no rules have been defined for yet. A commonly used protocol and the defacto standard for this southbound API is called OpenFlow \cite{openflow} and currently supported by a wide range of SDN capable switches. With OpenFlow, traffic is being classified into flows via flow matching tables. After traffic has been assigned to a flow, the actions that have been defined for this flow will be applied on the traffic by the data plane components. Actions include dropping traffic, queuing traffic, outputting traffic on a specific port and modifying traffic in various ways.
+\paragraph{Application plane} This plane is used to configure the SDN controllers via a northbound API. This can include end applications and users that want to manage and monitor the network.
+
+\paragraph{}These three layers can also been seen in figure [LINK]. % TODO: Create figure for SDN
 
 \subsection{Network Function Virtualization (NFV)}
 Closely related to SDN is the concept of network function virtualization \cite{nfv}. Network functions are components taking a specific role in a network, such as a switch which would forward or reshape traffic. Originally a lot of proprietary network functions were used to create larger networks. This resulted in a difficulty to manage the resulting networks. The proposed solution proposed for this is virtualization, so that individual network functions are decoupled from their hardware and executed in a virtual environment. The resulting network functions are called virtual network functions (VNFs) and can be orchestrated with ease to build complex topologies and integrations on a network level. Virtual network functions can thus be used as building blocks for software defined networks.
@@ -107,19 +108,16 @@ The two-phase commit protocol \cite{2pcp} is a protocol used to synchronize stat
 \subsection{Quality of Service (QoS)}
 % TODO: Maybe find a better base source for this chapter? --> It is hard to find a good source for such an old and basic term, thus the IP has been included for intial references of latency (delay), throughput and loss rate (high-reliability). The main qos source mentions the 4 terms below (as many other papers do).
 Quality of service \cite{qos, rfc791} refers to assigning traffic to flows for which certain guarantees are to be uphold. These guarantees are usually measured in different metrics, of which the major four are outlined here:
-\begin{itemize}
-    \item Latency: The two-way delay for a packet travelling from flow start to finish and back.
-    \item Jitter: The mean deviation of latency from the mean latency (standard deviation).
-    \item Throughput: The number of bits transferable in one direction via the traffic flow in a certain time.
-    \item Loss rate: The number of lost packets divided by the total amount of packets. The loss rate is especially relevant in contexts where data needs to be retransmitted when lost, because the lost data will then need to be requested again and will be delivered delayed, thus at least doubling the latency.
-\end{itemize}
-Securing these guarantees is an important task in network security, as violation of them could result in service level agreements (SLAs) being broken and violation of availability as one of our main goals.
+\paragraph{Latency} The two-way delay for a packet travelling from flow start to finish and back.
+\paragraph{Jitter} The mean deviation of latency from the mean latency (standard deviation).
+\paragraph{Throughput} The number of bits transferable in one direction via the traffic flow in a certain time.
+\paragraph{Loss rate} The number of lost packets divided by the total amount of packets. The loss rate is especially relevant in contexts where data needs to be transmitted again when lost, because the lost data will then need to be requested again and will be delivered delayed, thus at least doubling the latency.
+
+\paragraph{}Securing these guarantees is an important task in network security, as violation of them could result in service level agreements (SLAs) being broken and violation of availability as one of our main goals.
 
 To determine the flow for a certain packet, two main approaches exist \cite{serv}:
-\begin{itemize}
-    \item IntServ: Integrated Services \cite{rfc1633} negotiate flows beforehand with all participating network nodes. Packets are then assigned to flows based on pre-negotiated parameters. The advantage of this approach is that bandwidth and other assigned guarantees can be planned by the participating network providers in advance.
-    \item DiffServ: Differentiated Services \cite{rfc2474} on the other hand match quality of service on a per packet basis, normally by using the IPv4/IPv6 differentiated services (DS) header field. The advantage of this approach is that it provides flexibility to the sender of packets who can assign priorities per packet. The disadvantage is of course that network operators can not plan ahead accurately before packets arrive and providing guarantees will be challenging.
-\end{itemize}
+\paragraph{IntServ} Integrated Services \cite{rfc1633} negotiate flows beforehand with all participating network nodes. Packets are then assigned to flows based on pre-negotiated parameters. The advantage of this approach is that bandwidth and other assigned guarantees can be planned by the participating network providers in advance.
+\paragraph{DiffServ} Differentiated Services \cite{rfc2474} on the other hand match quality of service on a per packet basis, normally by using the IPv4/IPv6 differentiated services (DS) header field. The advantage of this approach is that it provides flexibility to the sender of packets who can assign priorities per packet. The disadvantage is of course that network operators can not plan ahead accurately before packets arrive and providing guarantees will be challenging.
 
 \subsection{Network Slicing}
 Network Slicing \cite{slicing} refers to partitioning part of the resources of a network to new virtual networks. Partitioned resources can include network resources, computational resources or storage resources. The result are multiple virtual networks that each have a slice of the resources of the underlying network available. In order to guarantee these resources to the owners of a slice, the slices need to be isolated from a resource perspective. The latest developments in the field are part of the 5G standard, where applications can request slices of network resources to leverage uninterrupted communication afterwards. Apart from 5G also other applications leverage this approach already, for example by partitioning network links on nodes with multiple virtual machines.

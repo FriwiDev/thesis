@@ -36,9 +36,10 @@ Please note that that one specific network may play different roles for differen
 \label{protection_goals}
 The next question we posed was what we actually want to protect from our attackers. In general we want to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include bandwidth, latency, jitter, loss rate and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our edge networks. We do not require this protection on our edge networks, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{P1}{P1}] Traffic needs to be protected from modification or disclosure outside of the edge networks.
-    \item[\namedlabel{P2}{P2}] Slices need to be available for communication and deliver packets to the recipient at all times during their lifespan.
-    \item[\namedlabel{P3}{P3}] Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate.
+    \item[\namedlabel{P1}{P1}] \textbf{Confidentiality} Traffic needs to be protected from disclosure outside of the edge networks.
+    \item[\namedlabel{P2}{P2}] \textbf{Integrity} Traffic needs to be protected from modification by attackers outside of our path on the edge networks and from attackers on the black network.
+    \item[\namedlabel{P3}{P3}] \textbf{Availability} Slices need to be available for communication and deliver packets to the recipient at all times during their lifespan.
+    \item[\namedlabel{P4}{P4}] \textbf{Resilience} Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate, even when the network is under attack.
 \end{description}
 
 \section{Attackers}
@@ -55,10 +56,11 @@ We do not consider active in-path attackers, as they could disrupt communication
 
 Our attacker definitions are thus as follows:
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{A1}{A1}] Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected.
-    \item[\namedlabel{A2}{A2}] Spams invalid slice requests on the application plane attempting to disrupt the creation of new slices.
-    \item[\namedlabel{A3}{A3}] Spams valid authenticated slice requests on the application plane attempting to overload the network by capacity or frequent slice creation and removal.
-    \item[\namedlabel{A4}{A4}] Attempts to eavesdrop within one of the networks between our edge networks.
+    \item[\namedlabel{A1}{A1}] \textbf{Slice availability and resilience} Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
+    \item[\namedlabel{A2}{A2}] \textbf{Application plane availability and resilience (1)} Spams invalid slice requests on the exposed application plane components attempting to disrupt the creation of new slices. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
+    \item[\namedlabel{A3}{A3}] \textbf{Application plane availability and resilience (2)}Spams valid authenticated slice requests on the exposed application plane components attempting to overload the network by capacity or frequent slice creation and removal. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
+    \item[\namedlabel{A4}{A4}] \textbf{Slice confidentiality} Attempts to eavesdrop within one of the black networks. Attacks protection goal \ref{P1} (confidentiality).
+    \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the black networks. Attacks protection goal \ref{P2} (integrity).
 \end{description}
 %TODO: Add figure without our specific architecture showing our attackers
 

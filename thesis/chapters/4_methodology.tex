@@ -15,11 +15,20 @@
     \end{itemize}
 \end{itemize}
 \fi
-To achieve our goal we will use requirement validation. Initially we defined our requirements as stated in the end of chapter \ref{related_work}. In this chapter we will thus choose an accurate environment for our experiments, define a network model, our protection goals and attackers, before finally stating the scenarios we wish to validate and our measurements we wish to obtain on them.
+To be able to accurately design, implement and validate our solution we will need to specify our methodology first. To achieve our goal we will use requirement validation. Initially we defined our requirements as stated in section \ref{related_work_requirements}.
+
+In this chapter we will thus choose an accurate environment for our experiments, define a network model, our protection goals and attackers, before finally stating the scenarios we wish to validate and our measurements we wish to obtain on them. We will then state all experiments we will perform that will subsequently be evaluated in the validation chapter (see chapter \ref{validation}).
 
 \section{Test environment}
 As a test environment we want to use a network emulator to be able to easily bootstrap our solution. For this, multiple emulators are available, including mininet \cite{mininet}, distrinet \cite{distrinet1, distrinet2}, maxinet \cite{maxinet}, ComNetsEmu \cite{comnetsemu} or our own testbed solution \cite{owntb}.
-Mininet (and ComNetsEmu as a fork of mininet) emulate network topologies on a single machine, but do not scale to multiple machines. As we want to test in a distributed setting, they are sadly out of the equation. Distrinet and maxinet would both allow us to scale mininet topologies to multiple machines. As we want to be able to deploy our topologies to real-world devices in the future though and integrate real-world hardware (requirement R3), we would need to invest additional effort in deploying to real-world hardware in the future when using them. Our own testbed solution mitigates these issues by supporting multiple modes of deployment including support for real-world hardware that can easily be extended. We will thus opt to use our own testbed solution to evaluate our solution.
+
+\paragraph{Mininet and ComNetsEmu} emulate network topologies on a single machine, but do not scale to multiple machines. As we want to test in a distributed setting, they are sadly out of the equation.
+
+\paragraph{Distrinet and maxinet} would both allow us to scale mininet topologies to multiple machines. As we want to be able to deploy our topologies to real-world devices in the future though and integrate real-world hardware (requirement R3), we would need to invest additional effort in deploying to real-world hardware in the future when using them.
+
+\paragraph{Our own testbed solution} mitigates these issues by supporting multiple modes of deployment including support for real-world hardware that can easily be extended.
+
+\paragraph{} We will thus opt to use our own hybrid testbed to evaluate our solution.
 
 \section{Network model}
 In the context of our networks, we will establish two different kinds of networks.
@@ -42,44 +51,57 @@ The next question we posed was what we actually want to protect from our attacke
     \item[\namedlabel{P4}{P4}] \textbf{Resilience} Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate, even when the network is under attack.
 \end{description}
 
-\section{Attackers}
+\section{Threats and Attackers}
 \label{adversaries}
-As previously mentioned, Ruxandra Olimid et. al \cite{SE2} classified threats to network slicing as either life-cycle threats, inter-slice threats or intra-slice threats. We will not consider intra-slice threats, as intra-slice threats do not target our slicing design or implementation but rather the components within the created slice, which is out of scope for this thesis. We will thus focus more on life-cycle and inter-slice threats.
+Now that we specified our protection goals, the attackers should be designed.
 
-For inter-slice threats we will create an attacker utilizing a lot of resources within another slice to overload the network and potentially create artifacts in our slice that should be protected. We do not consider side-channel attacks on our slicing implementation to test the isolation between slices as it heavily depends on the used components while we will try to support a variety of components (e.g. the implementation of queues in the linux kernel vs a hardware switch).
+As previously mentioned, Ruxandra Olimid et. al \cite{SE2} classified threats to network slicing as either life-cycle threats, inter-slice threats or intra-slice threats. We will present our attackers for these threats below.
 
-For life-cycle threats we will introduce two attackers, one spamming our application plane with arbitrary requests and one spamming our slice coordinators with valid requests. We hope to achieve denial of service for new slice registrations with the first attacker and an overload of network resources by the second attacker.
+\paragraph{Inter-slice threats} For inter-slice threats we will create an attacker utilizing a lot of resources within another slice to overload the network and potentially create artifacts in our slice that should be protected. We do not consider side-channel attacks on our slicing implementation to test the isolation between slices as it heavily depends on the used components while we will try to support a variety of components (e.g. the implementation of queues in the linux kernel vs a hardware switch).
 
-As a last attacker we will consider an attacker attempting to eavesdrop within one of the black networks between our two edge networks. Eavesdroppers are not expected on our edge networks, as we trust our local environment.
+\paragraph{Life-cycle threats} For life-cycle threats we will introduce two attackers, one spamming our application plane with arbitrary requests and one spamming our slice coordinators with valid requests. We hope to achieve denial of service for new slice registrations with the first attacker and an overload of network resources by the second attacker.
 
-We do not consider active in-path attackers, as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application layer, as any component of the application layer could instruct other components to disrupt the connection or disrupt the connection themselves.
+\paragraph{Intra-slice threats} As the last two attackers we will consider attackers attempting to eavesdrop or violate integrity within one of the black networks between our two edge networks. The eavesdropping attacker will only observe traffic attempting to break confidentiality. The integrity attacker will however try to replay and craft new messages (including sending modified packets additionally). Dropping and modifying packets should not be supported by the attacker, as we can not compensate for the subsequently lost packets while only using a single path without resending packets, potentially violating resource guarantees. Eavesdroppers and integrity attackers are not expected on our edge networks, as we trust our local environment infrastructure (but not all tenants).
 
-Our attacker definitions are thus as follows:
+\paragraph{} As has been already the case with the attacker on integrity, we do not consider active in-path attackers (apart from the integrity attacker), as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application layer, as any component of the application layer could instruct other components to disrupt the connection or disrupt the connection themselves.
+
+\paragraph{} Our attacker definitions are thus as follows:
 \begin{description}[style=multiline, labelwidth=0.7cm]
     \item[\namedlabel{A1}{A1}] \textbf{Slice availability and resilience} Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
     \item[\namedlabel{A2}{A2}] \textbf{Application plane availability and resilience (1)} Spams invalid slice requests on the exposed application plane components attempting to disrupt the creation of new slices. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
-    \item[\namedlabel{A3}{A3}] \textbf{Application plane availability and resilience (2)}Spams valid authenticated slice requests on the exposed application plane components attempting to overload the network by capacity or frequent slice creation and removal. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
+    \item[\namedlabel{A3}{A3}] \textbf{Application plane availability and resilience (2)} Spams valid authenticated slice requests on the exposed application plane components attempting to overload the network by capacity or frequent slice creation and removal. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
     \item[\namedlabel{A4}{A4}] \textbf{Slice confidentiality} Attempts to eavesdrop within one of the black networks. Attacks protection goal \ref{P1} (confidentiality).
-    \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the black networks. Attacks protection goal \ref{P2} (integrity).
+    \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the black networks by replaying or sending additional packets. Will not modify or drop packets, but may send modified packets as additional packets. Attacks protection goal \ref{P2} (integrity).
 \end{description}
 %TODO: Add figure without our specific architecture showing our attackers
 
 \section{Scenarios}
+\label{scenarios}
 We will test three scenarios in total. The first scenario will provide a base case for our two other slicing-enabled scenarios, of which one will be local and the other distributed.
 
-The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker \ref{A1} will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker \ref{A4} to eavesdrop traffic between the switches. \ref{A2} and \ref{A3} do not apply since there is no slicing infrastructure.
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{S1}{S1}] \textbf{Reference scenario} The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch.
+    \item[\namedlabel{S2}{S2}] \textbf{Local slicing scenario} For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. Each domain will have two slicing switches which the traffic of the slices has to pass. One of the simulated hosts will be created on each edge.
+    \item[\namedlabel{S3}{S3}] \textbf{Remote slicing scenario} As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
+\end{description}
 
-For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the black network and deploy \ref{A2} and \ref{A3} to the application layer.
+%The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker \ref{A1} will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker \ref{A4} to eavesdrop traffic between the switches. \ref{A2} and \ref{A3} do not apply since there is no slicing infrastructure.
 
-As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
+%For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the black network and deploy \ref{A2} and \ref{A3} to the application layer.
 
-For each scenario we will try to establish two network slices in total. As an example, we want to control a robot on the other side by receiving a video stream and maintaining a bidirectional control and feedback stream. One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small loss rate for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not be too much of an issue. Jitter may occur as we can buffer our video stream data for short amounts of time, however we want our latency to be low so our frames appear in almost real time. For the bidirectional control and feedback slice, we need far less bandwidth. The loss rate needs to be lower than with the video stream to be in control at all times. Also we require a low latency and low jitter to be able to react in real time and without any jittering movements. We will thus apply the resource guarantees in table \ref{table:1} for our experiments.
+%As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
+
+For each scenario we will try to establish two network slices in total. As an example, we want to control a robot on the other side by receiving a video stream and maintaining a bidirectional control and feedback stream, as in our use case for the surgery.
+
+One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small loss rate for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not be too much of an issue. Jitter may occur as we can buffer our video stream data for short amounts of time, however we want our latency to be low so our frames appear in almost real time.
+
+For the bidirectional control and feedback slice, we need far less bandwidth. The loss rate needs to be lower than with the video stream to be in control at all times. Also we require a low latency and low jitter to be able to react in real time and without any inaccurate movements. We will thus apply the resource guarantees in table \ref{table:slices} to all of our scenarios.
 
 \begin{table}[ht]
     \centering
     \begin{tabular}{ |c|c|c| }
     \hline
-    Metric & Media & Control \\
+    \textbf{Metric} & \textbf{Media} & \textbf{Control} \\
     \hline
          Bandwidth & 8Mbit/s & 100Kbit/s \\
          Latency   & 5ms     & 3ms      \\
@@ -88,21 +110,48 @@ For each scenario we will try to establish two network slices in total. As an ex
     \hline
     \end{tabular}
     \caption{The guarantees we wish to meet with our slices}
-    \label{table:1}
+    \label{table:slices}
 \end{table}
 
-This example including the bandwidth requirements is taken from Fuhrberg et al. \cite{SE4} in order to be able to compare their solution against our redesigned solution. The values for latency, jitter and loss rate have been altered to reflect our goals and generally provide more strict requirements.
+The robot example including the bandwidth requirements is taken from Fuhrberg et al. \cite{SE4} in order to be able to compare their solution against our redesigned solution. The values for latency, jitter and loss rate have been altered to reflect our goals and generally provide more strict requirements.
 
 % TODO: Add figures for each scenario (without topology details)
 
 \section{Measurements}
-For each scenario and each attacker (apart from \ref{A4}), we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
+\label{measurements}
+Measurements on the resources of a slice will be performed by sending continuous traffic according to the slice specifications through the slice. By sending the traffic and observing the packets reaching the other and, we can obtain measurements on whether the slices upheld their guarantees in this specific situation or not.
 
-For the eavesdropping attacker \ref{A4} we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
+To send the traffic and observe their result, we will use three different tools:
+
+\paragraph{Iperf3} [LINK] is a network bandwidth testing tool that also provides data on packet drops and connection jitter. It supports both UDP and TCP.
+
+\paragraph{Nettools-ping} [LINK] is a network latency testing tool that provides data on latency, packet drops and jitter. We will not generate traffic using ping, but will rather use it for latency measurements while \textit{iperf3} sends continuous traffic. It will use ICMP as protocol.
+
+\paragraph{Sockperf} [LINK] is a network bandwidth and latency testing tool that provides data on bandwidth, packet drops, latency and jitter. It supports both UDP and TCP.
+
+\paragraph{} More details on this can be seen in table \ref{table:measurements}. We will thus be able to obtain each metric from at least two tools, providing us with the ability to verify their result.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ |c|c|c|c|c| }
+    \hline
+    \textbf{Tool} & \textbf{Bandwidth} & \textbf{Packet drops} & \textbf{Latency} & \textbf{Jitter}  \\
+    \hline
+         IPerf3   & \ding{51} & UDP only  & TCP only  & UDP only  \\
+         Ping     & \ding{55} & \ding{51} & \ding{51} & \ding{51} \\
+         Sockperf & \ding{51} & \ding{51} & \ding{51} & \ding{51} \\
+    \hline
+    \end{tabular}
+    \caption{The measurements obtained on our different tools}
+    \label{table:measurements}
+\end{table}
+
+%For each scenario and each attacker (apart from \ref{A4}), we will investigate the availability of our slice and measure our available bandwidth, loss rate, latency and jitter while sending the amount of traffic we reserved. We will compare our results to the values that we requested in the individual slice.
+
+%For the eavesdropping attacker \ref{A4} we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
 
 \section{Experiments}
-TODO: Split previous scenarios section to only contain the scenarios, then describe the experiments on each scenario here. Make measurements section more general.
-
+\iffalse
 For each experiment
 \begin{itemize}
     \item Give the experiment a number (e.g. E1)
@@ -113,3 +162,41 @@ For each experiment
     \item How should be evaluated
 \end{itemize}
 $\Rightarrow$ Outcome and expectation validation in validation chapter later
+\fi
+
+In this section we are now going to state the experiments that we are going to perform. We will perform one experiment for each attacker. The experiments are numbered the same as the attackers.
+
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\namedlabel{E1}{E1}] \textbf{Slice availability and resilience} In this experiment we want to test whether the slice isolation is working as expected. For this, we will place one attacking host on each of the edges, which send traffic along the same path that our slice is taking by using \textit{hping3} [LINK]. Hping3 is a tool to spam traffic on network interfaces.
+
+    We will establish our test slices specified in section \ref{scenarios} and obtain base measurements using the three tools mentioned in section \ref{measurements} without activating the attackers yet. For scenario \ref{S1} where no slicing setup is available, we will perform all measurements without setting up slices in advance. Afterwards we will activate the attackers and increase the traffic produced by hping3 while continuing our measurements until either the isolation fails or the attackers have reached their maximum possible capacity. The maximum possible computational power the attackers get in a simulated environment is the number of threads minus two, so there is still some computational capacity available for the scenarios, which is more than generous to the attackers.
+
+    If the isolation fails, then we have not reached our isolation requirement \ref{R1}. If on the other hand the attackers reach their capacity limit, the experiment has succeeded, due to the isolation not being broken so far and thus the isolation being better than the traffic generation capacity of the system. This would validate our protection goals of availability (\ref{P3}) and resilience (\ref{P4}).
+
+    We would expect that our slice is isolated from this other traffic and no effects can be seen on the slice concerning the additional traffic in the system.
+
+    \item[\namedlabel{E2}{E2}] \textbf{Application plane availability and resilience (1)} In this experiment we will try to perform DoS on the application plane by spamming unauthenticated requests on the domain coordinator. We will spam the domain coordinator by using a python script that has been self developed and can be found in the sources. It uses multiple threads to spam http requests.
+
+    We expect the coordinator to go down, because we have not protected it against http spam yet. We will validate this by starting the spam on the coordinator and then performing a slice request a couple of seconds later. We expect our request to not be replied to.
+
+    \item[\namedlabel{E3}{E3}] \textbf{Application plane availability and resilience (2)} In this experiment we will use the same approach as in experiment \ref{E2}, but will rather spam authenticated requests. We will send the requests at a lower rate though, because we want the coordinator to have to work on them though.
+
+    We expect the coordinator to stay up, because there is a rate limit and an allocation limit for slice requests from one identity in place. The spam will thus also not propagate through the network. We will validate this by starting the spam on the coordinator and then performing a slice request a couple of seconds later. We expect our request to go through.
+
+    \item[\namedlabel{E4}{E4}] \textbf{Slice confidentiality} In this experiment we try to break confidentiality by eavesdropping on the black network of switches. To achieve this, we are going to use a tool called \textit{tcpdump} [LINK] to dump packets passing a black network switch. Tcpdump is a traffic sniffer that will collect packets passing on an interface either to console or to a file.
+
+    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop that is sending UDP traffic to the remote host. We will then start sniffing on an appropriate switch port of the black network.
+
+    We expect to see only encrypted traffic on the black network. This experiment succeeds when the traffic is encrypted, or fails when it is not.
+
+    \item[\namedlabel{E5}{E5}] \textbf{Slice integrity} In this final experiment we will try to replay packets from a black network switch by capturing it and delivering it twice. We will use a \textit{qdisc} [LINK] for this to multiply our traffic and send every ingress packet twice.
+
+    To test this, we will establish our slices (apart from scenario \ref{S1} again where no slicing is available) and then install our traffic duplication qdisc on a black network switch. Afterwards we will start sending continuous traffic on the slices using iperf3 as before. We will then execute \textit{ifstat} [LINK] (a traffic monitoring tool) simultaneously on both hosts and compare the transfer rates we observe.
+
+    We expect to see the same rate on both hosts, but reversed concerning RX and TX traffic. If the rate on the receiving host is higher than on the sending host, then traffic has successfully been duplicated and the experiment failed. Else the experiment succeeds.
+
+    While this experiment does not cover all possible integrity violations, the integrity can be assumed to be protected because our utilization of the wireguard protocol. The wireguard whitepaper proves the resilience of wireguard to replay attacks by using nonces and to message forgery by using authentication tags \cite{wireguard}.
+
+    TODO: Maybe rather claim integrity as by design, because the experiment does not cover all attacker angles.
+
+\end{description}

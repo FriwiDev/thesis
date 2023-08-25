@@ -63,7 +63,7 @@ def get_esmf_client(esmf_ip: str, esmf_port: int = 8080) -> (esmf_client.ApiClie
         # example, this endpoint has no required or optional parameters
         try:
             api_response = api_instance.auth_post()
-            return api_client, api_response.body
+            return api_client, "adv_token"  # We use an adversary token here to not jeopardize our main token
         except esmf_client.ApiException as e:
             print("Exception when calling AuthenticationApi->auth_post: %s\n" % e)
             raise e

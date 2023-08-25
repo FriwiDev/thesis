@@ -12,7 +12,7 @@ from esmf_server.models.slice import Slice
 
 def get_owner(auth: str) -> str:
     # TODO-FW real authentication system
-    return "default"
+    return "default" if auth == "token" else "adversary"
 
 def get_max_bw_permitted(owner: str) -> int:
     # TODO-FW real resource allocations

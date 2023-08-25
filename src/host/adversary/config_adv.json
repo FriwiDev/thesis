@@ -1,7 +1,7 @@
 {
-  "esmf": "10.0.0.3",
-  "num_req": 10,
-  "print_every": 2,
+  "esmf": "127.0.0.1",
+  "num_req": 1000000,
+  "print_every": 100,
   "fr": {
     "ip": "10.0.0.7",
     "port": 0,

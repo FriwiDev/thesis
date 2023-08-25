@@ -12,4 +12,5 @@ async def auth_post(request: web.Request, ) -> web.Response:
 
 
 def check_auth(token: str) -> bool:
-    return token == "token"
+    # adv_token is the token of our spamming adversary so that we can distinguish it from our host
+    return token == "token" or token == "adv_token"

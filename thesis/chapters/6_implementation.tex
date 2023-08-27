@@ -38,7 +38,7 @@ In this chapter we are going to be more specific about the details of our implem
 In this section we will focus on our specifications. First we will present our protocol specifications for each VNF, before providing communication examples to create and remove a slice.
 
 \subsection{OpenAPI specifications}
-To interconnect our VNFs, we will use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions [LINK OpenAPI]. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project [LINK]. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI [LINK] or Redocly [LINK].
+To interconnect our VNFs, we will use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions \cite{openapi}. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project \cite{openapi-generator}. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI \cite{swaggerui} or Redocly \cite{redocly}.
 
 We provided OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis [LINK] in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
 
@@ -146,7 +146,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /stats/queue & Endpoint used to view available queues on a switch \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our SDN controller implementation. Some endpoints contain additional sub-endpoints under their path that have been left out for simplicity. Please refer to the specification at the end of this thesis for additional details. This API is a subset of the RYU REST API [LINK].}
+    \caption{The endpoints of our SDN controller implementation. Some endpoints contain additional sub-endpoints under their path that have been left out for simplicity. Please refer to the specification at the end of this thesis for additional details. This API is a subset of the RYU REST API \cite{ryu-rest}.}
     \label{table:controller}
 \end{table}
 
@@ -233,13 +233,13 @@ As with the previous section, the entire process of removing a slice can also be
 % TODO: Set the diagrams in a way they stay together
 
 \section{Components}
-In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers [LINK] for use in our testbed \cite{owntb}. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} [LINK], \textit{net-tools} [LINK], \textit{iperf3} [LINK], \textit{wireguard} [LINK], \textit{tcpdump} [LINK], \textit{ifstat} [LINK], \textit{hping3} [LINK] and \textit{sockperf} [LINK]. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
+In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers (small footprint containers running on the linux platform) \cite{lxc} for use in our testbed \cite{owntb}. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} \cite{iputils}, \textit{net-tools} \cite{net-tools}, \textit{iperf3} \cite{iperf3}, \textit{wireguard} \cite{wireguard}, \textit{tcpdump} \cite{tcpdump}, \textit{ifstat} (part of \textit{iproute2} \cite{iproute2}), \textit{hping3} \cite{hping3} and \textit{sockperf} \cite{sockperf}. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
 
 Some images have additional software apart from above. These and their functionality are stated here:
 \paragraph{Application plane components} All components on the application plane (ESMF, CTMF, DSMF, DTMF) have their designated server implementation running, performing their coordination and management duties described in section \ref{impl_specification}.
-\paragraph{Switches} The switches currently use OpenVSwitch (OVS) [LINK] to deploy SDN switch functionality. Additionally a switch server implementation is executed which issues commands to manage queues and ingress policies on switch ports.
-\paragraph{Controller} The controller is realized by utilizing the RYU controller [LINK] with the common RYU REST API [LINK].
-\paragraph{VPN gateways} The VPN gateways run a server implementation that allows the creation of wireguard [LINK] tunnel entries. The details of these tunnel entries are explained below in section \ref{impl_concepts}.
+\paragraph{Switches} The switches currently use OpenVSwitch (OVS) \cite{openvswitch} to deploy SDN switch functionality. Additionally a switch server implementation is executed which issues commands to manage queues and ingress policies on switch ports.
+\paragraph{Controller} The controller is realized by utilizing the RYU controller \cite{ryu} with the common RYU REST API \cite{ryu-rest}.
+\paragraph{VPN gateways} The VPN gateways run a server implementation that allows the creation of wireguard \cite{wireguard} tunnel entries. The details of these tunnel entries are explained below in section \ref{impl_concepts}.
 
 % TODO Link all software components with sources
 
@@ -249,7 +249,7 @@ Now that we established how we wish to deploy tunnels and slices, we still need 
 
 For simplicity of our implementation, we do not deploy bi-directional slices or tunnels, but rather deploy two uni-directional slices or tunnels to build one single bi-directional one.
 
- A summary of all the flow rules can be seen in figure [LINK].
+A summary of all the flow rules can be seen in figure [LINK].
 
 \subsection{General switch configuration}
 We will specify ingress limits on all interfaces, setting the maximum allowed rate and burst to 1Gbit/s. This can of course be adapted for other use cases in the future. This will be realised by OVS using a token bucket filter. This way the maximum needed computational capacity of our switch can be evaluated better and an upper limit is provided.
@@ -323,7 +323,7 @@ Of course we stumbled into some issues while implementing our solution. We will 
 Maybe one of the most obvious issues are MTU considerations. Our multiple MPLS and GRETAP headers will attach information to packets. When packets get close to the network MTU in size, this can lead to fragmentation of packets that would otherwise fit in the MTU. In our case, packets would no longer be delivered after being fragmented. To combat this, a lower MTU than the network MTU should be applied on the hosts. We chose 1300 in our host LXC container image, which is 200 byte smaller than the network MTU. Slightly higher values might be possible, but this has not been investigated.
 
 \subsection{MPLS label popping in OpenFlow}
-Headaches have been caused due to the MPLS label popping implemented in OpenFlow. The author assumed, that when popping an MPLS label, one has to submit the MPLS label id that should be popped. This would make sense because it is possible to stack multiple MPLS labels and maybe the second or third in the stack should get popped. This is however not the case. Instead one has to specify the ethertype of the resulting packet, which would be 2048 (or 0x800) for IPv4. This caused corrupt packets on the destination host.
+Headaches have been caused due to the MPLS label popping implemented in OpenFlow. The author assumed, that when popping an MPLS label, one has to submit the MPLS label id that should be popped. This would make sense because it is possible to stack multiple MPLS labels and maybe the second or third in the stack should get popped. This is however not the case. Instead one has to specify the ethertype of the resulting packet \cite{openflow}, which would be 2048 (or 0x800) for IPv4 \cite{rfc7042}. This caused corrupt packets on the destination host.
 
 \subsection{Checksum offloading issues}
 Another issue with corrupt packets on the destination host was caused by invalid UDP and TCP checksums. When pushing or popping MPLS labels, current implementations of OpenVSwitch break the UDP and TCP checksums while TX (write) offloading is enabled on the switch interfaces. To fix the checksum calculations, one has to disable TX offloading on all switch interfaces like this:

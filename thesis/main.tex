@@ -8,6 +8,7 @@
 \usepackage{tabularx}
 \emergencystretch=1em
 
+% Fancy enumerations for our letter-number references like requirements, protection goals and more
 % From: https://tex.stackexchange.com/questions/1230/reference-name-of-description-list-item-in-latex
 \usepackage{enumitem, hyperref}
 \makeatletter
@@ -56,6 +57,7 @@
 \newcommand{\cfw}[1]{\textcolor{blue}{[FW]: #1}}
 
 \usepackage[defernumbers=true]{biblatex}
+\addbibresource{bibliographies/1_introduction.bib}
 \addbibresource{bibliographies/2_background.bib}
 \addbibresource{bibliographies/3_related_work.bib}
 \addbibresource{bibliographies/4_methodology.bib}
@@ -69,6 +71,8 @@
 \begin{document}
 
 \maketitle
+\include{chapters/0_abstract}
+\include{chapters/0_statement_of_authorship}
 
 \tableofcontents
 

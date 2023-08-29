@@ -521,7 +521,7 @@
         "tags": [
           "General Switch Information"
         ],
-        "description": "Get the list of all switches which connected to the controller.",
+        "description": "Get the list of all switches which are connected to the controller.",
         "responses": {
           "200": {
             "description": "A list of DPIDs.",

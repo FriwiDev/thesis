@@ -1,7 +1,88 @@
 \chapter{Validation}
 \label{validation}
+\iffalse
 For each experiment:
 \begin{itemize}
     \item Outcome of the experiment
     \item Is it the outcome we expected?
 \end{itemize}
+\fi
+
+As mentioned previously in the methodology in chapter \ref{methodology}, we wish to validate our solution against our requirements provided in section \ref{related_work_requirements}. In this chapter we will thus validate every requirement one after another, beginning with \ref{R1} by conducting our experiments on the protection goals. Afterwards we will check our design and implementation for the remaining requirements, including the requested distributed coordination (\ref{R2}), compatibility outside of our testbench (\ref{R3}) and the flexibility of the solution (\ref{R4}).
+
+\section{Slice isolation}
+To validate the isolation of our slices, we will perform the experiments from \ref{methodology_experiments} on our slicing infrastructure. When all experiments pass, we can claim our isolation as sufficient to our attackers and protection goals.
+We will perform the experiments in their numerical ordering.
+
+\begin{description}[style=multiline, labelwidth=0.7cm]
+    \item[\ref{E1}] \textbf{Slice availability and resilience} We conducted the experiment as described on all three scenarios. We will now discuss the results per scenario.
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|l|c|c|c|c|c|c|c|}
+             \hline
+             \textbf{Characteristic} & \textbf{QoS} & \textbf{S1B} & \textbf{S1E} & \textbf{S2B} & \textbf{S2E} & \textbf{S3B} & \textbf{S3E} \\
+             \hline
+             Bandwidth$^M$ [bit/s] & $\geq$8M & 8M & $\approx$ 0.5M & 8M & 8M & 8M & 8M \\
+             Bandwidth$^C$ [bit/s] & $\geq$100K & 100K & $\approx$ 63K & 100K & 100K & 100K & 100K \\
+             \hline
+             Latency$^M$ [ms] & $<$5 & 0.1 & $\geq$ 2000 & 0.23 & 0.15 & 0.68 & 0.68 \\
+             Latency$^C$ [ms] & $<$3 & 0.1 & $\geq$ 2000 & 0.23 & 0.15 & 0.68 & 0.68 \\
+             \hline
+             Jitter$^M$ [ms] & $<$0.5 & 0.17 & $\approx$ 1 & 0.224 & 0.015 & 0.037 & 0.088 \\
+             Jitter$^C$ [ms] & $<$0.3 & 0.007 & $\approx$ 30 & 0.034 & 0.011 & 0.032 & 0.061 \\
+             \hline
+             Loss rate$^M$ & $<$0.01\% & 0\% & $\approx$ 80\% & 0\% & 0\% & 0\% & 0\% \\
+             Loss rate$^C$ & $<$0.001\% & 0\% & $\approx$ 60\% & 0\% & 0\% & 0\% & 0\% \\
+             \hline
+        \end{tabular}
+        \caption[Results of experiment E1]{Results of experiment E1 in tabular form. All thresholds in the QoS column are being met. For each scenario there are base values (B) and values while under attack (E). M: Values from the media slice. C: Values from the control slice.}
+        \label{table:validation_qos_results}
+    \end{table}
+
+    \paragraph{\ref{S1}} In the scenario without our slicing solution, the outcome for our communications was catastrophic under attack. Without active adversaries, we observed 0\% packet loss with a latency well below 0.5ms (0.17ms average).
+
+    With just 2Gbit/s of traffic from the adversaries (overpowering the 1Gbit/s capacity of the scenario), packets on our 8Mbit/s media stream were dropped about 80\% of times, peaking at 84\% in the observed interval. Latency increased to a point, where the measurements got capped to 2000ms by the output of the ping tool. It is thus safe to say that without protections our communications are critically endangered, even with just two attackers on our network.
+
+    \paragraph{\ref{S2}} In our local edgeslicing scenario we also observed a packet loss of 0\%, latency of about 0.23ms  and jitter of about 0.224ms when not under attack. The bandwidths of all slices were consistent with their specification.
+
+    When starting the attack, a drop in latency to an average of about 0.15ms as well as a decrease in jitter to about 0.18ms can be observed, which we found interesting. This can possibly be explained by the tickless design of the linux networking stack, resulting in shorter wait times when data is processed more frequently, as long as the system is not overwhelmed.
+
+    As per experiment design, we then increased the traffic subsequently to 30Gbit/s with attackers occupying 30 out of 32 threads of the host machine. We even removed the ingress policy on the switches and link capacity restrictions in our testbed while under full load. Still, we were not able to observe any changes apart from the initial drop in latency.
+    The bandwidths never went below their specified value (apart from beginning and ending of the communication due to connection establishment and teardown). We still observed an unchanged 0\% packet loss, an average of 0.15ms in latency and jitter of about 0.18ms, meeting our thresholds.
+
+    \paragraph{\ref{S3}} In our remote scenario we measure slightly different values while not under attack, with about 0.68ms latency between our hosts. The packet loss remains at 0\% though and the bandwidths are according to specification. Jitter is at about 0.037ms as determined by the ping tool. It is interesting that the transmission in the remote scenario seems to have less jitter than in our local environment.
+
+    In our remote example we are limited a bit more resource-wise. We can only assign attackers 3 out of 4 threads of a 3GHz Intel Core i5-7400 CPU per server. Our traffic generation is thus limited. Per server we reached speeds of up to about 4.5Gbit/s.
+
+    Under this maximum possible load, we still observe stable results. Packet loss is at 0\%, latency is unchanged at 0.68ms average and jitter is increasing to 0.088ms. Even though the jitter has increased, jitter is still way below the threshold of 0.5ms for the control slice. The same characteristic can be observed on the control slice. The bandwidths are still met with the same characteristics as in the local slicing scenario. We thus also pass with success in our remote slicing scenario.
+
+    Due to all thresholds being met in our slicing scenario, we consider experiment \ref{E1} as successfully passed. All results can also be seen in table \ref{table:validation_qos_results}.
+
+   \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our ESMF \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against DoS are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the DoS attack, the system quickly recovers and requests for slices go through again.
+
+   \item[\ref{E3}] \textbf{Application plane availability and resilience (2)} In this experiment we only sent about 3.000 requests per second to the ESMF \textit{/v1/slice} endpoint, requesting the creation and removal of slices. As expected, our requests apart from the first request got denied due to rate limiting. When attempting to request large quantities of resources we got denied due to resource limitations of our own identity.
+
+   When attempting to allocate resources from another identity that is not currently attacking, our slice request went through as normal. Our implementation thus passes this experiment.
+
+   \item[\ref{E4}] \textbf{Slice confidentiality} After creating a slice and starting to send traffic, we attempted to eavesdrop on the tunnel connection by using \textit{tcpdump} on an interface of the first black network switch. We only observed encrypted traffic from one tunnel endpoint to the other tunnel endpoint. We thus conclude that this experiment has been passed as well.
+\end{description}
+
+We thus passed all experiments that we concluded. Of course experiment \ref{E2} has been a planned failure, but confirms our suspicion that additional measures are needed here. Nonetheless \ref{A2} (and thus \ref{E2}) only affect slice creation and removal and can not affect already established slices.
+
+We thus conclude that our protection goal of availability (\ref{P3}) has been met, excluding slice creation and removal availability jeopardized by attacker \ref{A2}. The same applies to our protection goal of resilience (\ref{P4}), even though the recovery from DoS by attacker \ref{A2} is quick.
+
+Our protection goals of confidentiality (\ref{P1}) and integrity (\ref{P2}) were not violated.
+
+Due to our protection goals not being broken, we subsequently pass requirement \ref{R1} for the isolation of our slices, with the slight exclusion mentioned above which does not affect established slices.
+
+\section{Distributed coordination}
+In our design we feature an approach of distributed coordination, where each network domain performs its own decisions concerning resources and deployment of infrastructure. We thus feature a decentralized approach that only requires trust in other entities that they are going to behave according to protocol and honor their service level agreement (SLA). This matches the specification of requirement \ref{R2} which we subsequently pass.
+
+\section{Compatibility}
+In our design and implementation we worked on the creation of VNFs separated by SDN layers. Due to the creation of many separate VNFs, porting one VNF (for example a switch implementation) to another vendor requires relatively few effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using OpenAPI, which will lower the effort for new implementations even more. By using common protocols like OpenFlow where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
+
+\section{Flexibility}
+As our domain coordinators can coordinate slices to any target network that is reachable, we can also request slices to any host residing in such a network as long as we are permitted to do so. As we can request as many slices as the domain coordinator and other parties allow us, we can theoretically communicate via multiple slices to multiple destinations at the same time. Requirement \ref{R4} is thus passed by our solution.
+
+\paragraph{} We thus passed all requirements for our solution, concluding this validation. We can thus confidently state that our design and implementation adheres to our requirements.

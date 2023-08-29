@@ -1,6 +1,27 @@
 \chapter{Conclusion}
+\label{conclusion}
+\iffalse
 \begin{itemize}
     \item Summary
     \item Limitations
     \item Future work
 \end{itemize}
+\fi
+
+Isolation of tenants is one of the key requirements for building a network based on the zero trust approach \cite{zerotrust}, which has become more and more relevant due to the increase of devices in IoT \cite{iotincrease} and the subsequently increasing threats to network architectures \cite{iotthreats}. Network slicing can be used to isolate certain devices on a network which has gained additional popularity since the advent of 5G \cite{5G1, 5G2, 5G3}, of which network slicing is an integral part.
+
+In this thesis we designed and implemented a solution to create isolated network slices across multiple domains and evaluated it for our protection goals of confidentiality, integrity, availability and resilience. This has been performed by conducting carefully designed experiments against multiple different scenarios that resemble real-world network architectures. Part of these scenarios is also one distributed scenario, where individual domains are separated on individual network nodes, integrating a hardware switch for some performance measurements that are closer to the real-world behaviour of switches.
+
+Apart from meeting these requirements, our proposed solution also features distributed coordination of network slices allowing multiple domains to work together without necessarily trusting each other. This enables us to work together with other parties to bootstrap network  slices over multiple networks. Furthermore our solution has been built with compatibility in mind by separating components, using common standards like OpenFlow and providing specifiactions for our APIs. We also provide flexibility of network slices, allowing tenants to request multiple slices to multiple different target domains.
+
+\section{Limitations}
+As with any solution, there are some limitations though. First, only two tenants may be part of a network slice, because a network slice is a communication channel in our solution. To include more tenants one can always build a mesh of communication channels though.
+
+Closely related to this is that currently, network slices are always expected to go to another domain. Requesting a slice to the own local domain is not possible however. This functionality could be implemented in the future though.
+
+A bigger limitation is currently, that we do not pass protection goals for availability and resilience if domain coordinators are attacked by HTTP floods or other DoS methods. This could be mitigated by protecting the coordinators against these attacks from their tenants, for example by deploying anti DoS solutions and firewalls. This has not been investigated however.
+
+\section{Future work}
+Many different things would come to mind when thinking about potential future work. One direction would be progressing the implementation further to production readiness. Requirements for this would be resilience against DoS on the coordinators, a proper authentication scheme and implementation of our VNFs for vendor specific hardware. Furthermore our APIs would need to be protected for attacks on confidentiality and integrity, for example by deploying TLS to all services. Also more validation on API endpoints could be performed in advance, so that requests can be rejected earlier before even asking other services to perform changes or running into errors. The tunnel allocation logic could also be adapted to match the needs of the individual networks more closely.
+
+The second direction would be progressing more on features. One feature could be accounting, where tenants would invest a currency to establish and keep a slice. This could either be used for billing these tenants or to allocate communication contingents to them apart from the already implemented parallel resource allocation limits. This is for example already common practice in mobile broadband. Apart from this, another feature could be to set time limits on slices upon allocation, so that slices get removed automatically after a specified time or if they have not been used in a while. This could help limit a potential overflow in our slicing architecture after some time of operation.

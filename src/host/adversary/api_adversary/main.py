@@ -48,9 +48,9 @@ def main():
         print(f"Sent {num_requests} requests in {time.time() - startt} seconds")
     elif test.upper() == "INVALID":
         startt = time.time()
-        pool = mp.Pool(mp.cpu_count())
-        pool.starmap(send_invalid_requests, [(i, int(num_requests / mp.cpu_count()))
-                                             for i in range(mp.cpu_count())])
+        pool = mp.Pool(mp.cpu_count() * 8)
+        pool.starmap(send_invalid_requests, [(i, int(num_requests / mp.cpu_count() / 8))
+                                             for i in range(mp.cpu_count()*8)])
         print(f"Sent {int(num_requests / mp.cpu_count()) * mp.cpu_count()} requests in {time.time() - startt} seconds")
     else:
         print("Invalid mode given. Supported modes are VALID and INVALID!")

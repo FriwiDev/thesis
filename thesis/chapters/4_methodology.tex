@@ -66,6 +66,10 @@ As previously mentioned, Ruxandra Olimid et. al \cite{SE2} classified threats to
 
 \paragraph{Exclusions} As it has already been the case with the attacker on integrity, we do not consider active in-path attackers (apart from the integrity attacker), as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application layer, as any component of the application layer that participates in a slice could instruct other components to disrupt the connection or disrupt the connection themselves. To compensate this, routing via multiple alternative paths would be required, introducing redundancy to the network.
 
+We also do not include attackers on confidentiality and integrity on the application plane here, as this could be easily solved by using transport layer security (TLS) enabled protocols for communication in the future, which is however also currently out of scope for this thesis. The same applies to a proper authentication scheme on the application plane.
+
+There are also no attackers on our control plane, because all control plane components are in-path (as stated above) and are not directly reachable by tenant devices of our networks that we distrust.
+
 \paragraph{} Our attacker definitions are thus as follows:
 \begin{description}[style=multiline, labelwidth=0.7cm]
     \item[\namedlabel{A1}{A1}] \textbf{Slice availability and resilience} Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
@@ -104,10 +108,10 @@ For the bidirectional control and feedback slice, we need far less bandwidth. Th
     \hline
     \textbf{Metric} & \textbf{Media} & \textbf{Control} \\
     \hline
-         Bandwidth & 8Mbit/s & 100Kbit/s \\
-         Latency   & 5ms     & 3ms      \\
-         Jitter    & \textless 0.5ms  & \textless 0.3ms   \\
-         Loss rate & \textless 0.01\% & \textless 0.001\% \\
+         Bandwidth & $\geq$ 8Mbit/s & $\geq$ 100Kbit/s \\
+         Latency   & $<$ 5ms     & $<$ 3ms      \\
+         Jitter    & $<$ 0.5ms  & $<$ 0.3ms   \\
+         Loss rate & $<$ 0.01\% & $<$ 0.001\% \\
     \hline
     \end{tabular}
     \caption{The guarantees we wish to meet with our slices}
@@ -152,6 +156,7 @@ To send the traffic and observe their result, we will use three different tools:
 %For the eavesdropping attacker \ref{A4} we will listen on the link between the switches for the non-edgeslicing scenario and on a link in the black network for the edge-slicing scenarios.
 
 \section{Experiments}
+\label{methodology_experiments}
 \iffalse
 For each experiment
 \begin{itemize}
@@ -165,7 +170,7 @@ For each experiment
 $\Rightarrow$ Outcome and expectation validation in validation chapter later
 \fi
 
-In this section we are now going to state the experiments that we are going to perform. We will perform one experiment for each attacker. The experiments are numbered the same as the attackers.
+In this section we are now going to state the experiments that we are going to perform. We will perform one experiment for each attacker, apart from the integrity attacker (see below for more info on this). The experiments are numbered the same as the attackers.
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
     \item[\namedlabel{E1}{E1}] \textbf{Slice availability and resilience} In this experiment we want to test whether the slice isolation is working as expected. For this, we will place one attacking host on each of the edges, which send traffic along the same path that our slice is taking by using \textit{hping3} \cite{hping3}. Hping3 is a tool to spam traffic on network interfaces.
@@ -190,20 +195,54 @@ In this section we are now going to state the experiments that we are going to p
 
     In the case of using the adversary token to spam slice requests we expect our request of a slice to go through. In the case that our host token is being used to spam slice requests, we expect to be denied our slice allocation because we already have too many open slices under our identity.
 
-    \item[\namedlabel{E4}{E4}] \textbf{Slice confidentiality} In this experiment we try to break confidentiality by eavesdropping on the switches of the black network. To achieve this, we are going to use a tool called \textit{tcpdump} \cite{tcpdump} to dump packets passing a black network switch. Tcpdump is a traffic sniffer that will collect packets passing on an interface either to console or to a file.
+    \item[\namedlabel{E4}{E4}] \textbf{Slice confidentiality} In this experiment we try to break confidentiality by eavesdropping on the switches of the black network (protection goal \ref{P1}). To achieve this, we are going to use a tool called \textit{tcpdump} \cite{tcpdump} to dump packets passing a black network switch. Tcpdump is a traffic sniffer that will collect packets passing on an interface either to console or to a file.
 
-    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the exact implementation can be seen in chapter \ref{validation}) that is sending UDP traffic to the remote host. We will then start sniffing on an appropriate switch port of the black network.
+    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the implementation can be seen below) on the slice initiator that is sending UDP traffic to the remote host. We will then start sniffing on an appropriate switch port of the black network.
 
-    We expect to see only encrypted traffic on the black network. This experiment succeeds when the traffic is encrypted, or fails when it is not.
+\begin{lstlisting}[language=python]
+import socket
 
-    \item[\namedlabel{E5}{E5}] \textbf{Slice integrity} In this final experiment we will try to replay packets from a black network switch by capturing it and delivering it twice. We will use a \textit{qdisc} (part of \textit{iproute2} \cite{iproute2}) for this to multiply our traffic and send every ingress packet twice.
+# Create a UDP socket
+socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    To test this, we will establish our slices (apart from scenario \ref{S1} again where no slicing is available) and then install our traffic duplication qdisc on a black network switch. Afterwards we will start sending continuous traffic from one host using our python UDP loop as in experiment \ref{E4}. We will then execute \textit{tcpdump} \cite{tcpdump} on the other host and look for packets that have been delivered twice with the same content.
+while True:
+    # Send a packet with secret content to the remote host
+    sock.sendto(b"This traffic should be encrypted!",
+                ("<dest_ip>", <dest_port>))
+\end{lstlisting}
 
-    We expect to see no duplicates being delivered on our receiving host. If there are no duplicates, the experiment succeeds. If there are, we have broken integrity and the experiment fails.
+    We expect to see only encrypted traffic on the black network that moves from one tunnel endpoint to the other and vice versa. This experiment succeeds when the traffic is encrypted, or fails when it is not.
 
-    While this experiment does not cover all possible integrity violations, the integrity on the black network can be assumed to be protected because our utilization of the wireguard protocol. The wireguard whitepaper proves the resilience of wireguard to replay attacks by using nonces and to message forgery by using authentication tags \cite{wireguard}.
+    %\item[\namedlabel{E5}{E5}] \textbf{Slice integrity} In this final experiment we will try to replay packets from a black network switch by capturing it and delivering it twice. We will use a \textit{qdisc} (part of \textit{iproute2} \cite{iproute2}) for this to multiply our traffic and send every ingress packet twice.
 
-    TODO: Maybe rather claim integrity as by design, because the experiment does not cover all attacker angles.
+    %To test this, we will establish our slices (apart from scenario \ref{S1} again where no slicing is available) and then install our traffic duplication qdisc on a black network switch. Afterwards we will start sending continuous traffic from one host using our python UDP loop as in experiment \ref{E4}. We will then execute \textit{tcpdump} \cite{tcpdump} on the other host and look for packets that have been delivered twice with the same content.
+
+    %We expect to see no duplicates being delivered on our receiving host. If there are no duplicates, the experiment succeeds. If there are, we have broken integrity and the experiment fails.
+
+    %While this experiment does not cover all possible integrity violations, the integrity on the black network can be assumed to be protected because our utilization of the wireguard protocol. The wireguard whitepaper proves the resilience of wireguard to replay attacks by using nonces and to message forgery by using authentication tags \cite{wireguard}.
+
+    %TODO: Maybe rather claim integrity as by design, because the experiment does not cover all attacker angles.
 
 \end{description}
+
+We do not conduct a fifth experiment for the fifth attacker, because we already check with experiment \ref{E4} that our traffic is passing the black network through our wireguard tunnel. Apart from provably encrypting traffic, wireguard tunnels also protect data integrity according to their whitepaper \cite{wireguard}. As there is formal proof for this we can be sure that conducting an arbitrary attack on integrity will not lead to a violation of integrity. Experiment \ref{E4} thus also covers integrity, which is our protection goal \ref{P2}.
+
+\newcolumntype{P}{>{\centering\arraybackslash}p{.19\textwidth}}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|P|P|P|P|}
+         \hline
+         \textbf{Exp} & \textbf{\ref{P1}} & \textbf{\ref{P2}} & \textbf{\ref{P3}} & \textbf{\ref{P4}} \\
+         ~ & Confidentiality & Integrity & Availability & Resilience \\
+         \hline
+         \ref{E1} & ~ & ~ & \ding{51}$^D$ & \ding{51}$^D$ \\
+         \ref{E2} & ~ & ~ & \ding{51}$^A$ & \ding{51}$^A$ \\
+         \ref{E3} & ~ & ~ & \ding{51}$^A$ & \ding{51}$^A$ \\
+         \ref{E4} & \ding{51}$^D$ & \ding{51}$^D$ & ~ & ~ \\
+         \hline
+    \end{tabular}
+    \caption[Protection goal coverage by experiments]{Protection goal coverage by experiments. A: Targets application plane. D: Targets data plane (slice).}
+    \label{table:experiment_coverage}
+\end{table}
+
+In table \ref{table:experiment_coverage} we give an overview over our experiment coverage.

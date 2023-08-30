@@ -142,11 +142,20 @@ In our concepts (section \ref{bg_concepts}) we stated that we want to isolate co
 \subsection{Software Defined Networking (SDN)}
 When building network topologies, software defined networking \cite{sdn} has emerged as one of the most valuable tools to build networks dynamically and with less cost.
 While traditionally specialized hardware was deployed for every use case, SDN provides a number of abstractions to build arbitrary virtual topologies on top of real-world topologies.
-To achieve this, software defined networking partitions the network into three major layers:
+To achieve this, software defined networking partitions the network into three major planes:
 \cts{is the notion of 'higher' and 'lower' layers useful in the context of SDN (Giang?)? For me when it comes to networking higher layers are those closer to the application and lower layers those closer to the medium (iso/osi, tcp/ip models). Not sure..}
 \cfw{Ah, most likely not. But I can simply omit "lowest" like I now did below :)}
+\cgn{SDN usually uses plane instead of layer}
+\cfw{I changed "layer" to "part of the infrastructure" below - hopefully now everything is correct :)}
 
-\paragraph{Data plane} This is the layer actually performing the work on the data to be transmitted. It is usually being realized by switches or other hardware that is used to perform work on the network traffic itself.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{images/chapter_2/sdn.png}
+  \caption[Software defined networking (SDN)]{The three planes of software defined networks: application plane, control plane and data plane. Application and control plane are connected via northbound APIs, while control and data plane are connected via southbound APIs like OpenFlow.}
+  \label{fig:sdn}
+\end{figure}
+
+\paragraph{Data plane} This is the part of the infrastructure actually performing the work on the data to be transmitted. It is usually being realized by switches or other hardware that is used to perform work on the network traffic itself.
 
 \paragraph{Control plane} The control plane consists of SDN controllers that instruct the data plane components on how to handle data via a so called southbound API. The data plane components will also contact the control plane when instructions for a certain type of traffic are needed that no rules have been defined for yet.
 
@@ -154,7 +163,7 @@ A commonly used protocol and the defacto standard for this southbound API is cal
 
 \paragraph{Application plane} This plane is used to configure the SDN controllers via a northbound API. This can include end applications and users that want to manage and monitor the network.
 
-\paragraph{}These three layers can also been seen in figure [LINK]. % TODO: Create figure for SDN
+\paragraph{}These three planes can also been seen in figure \ref{fig:sdn}.
 
 \subsection{Network Function Virtualization (NFV)}
 Closely related to SDN is the concept of network function virtualization \cite{nfv}. Network functions are components taking a specific role in a network, such as a switch which would forward or reshape traffic. Originally a lot of proprietary network functions were used to create larger networks. This resulted in a difficulty to manage the resulting networks. The proposed solution proposed for this is virtualization, so that individual network functions are decoupled from their hardware and executed in a virtual environment. The resulting network functions are called virtual network functions (VNFs) and can be orchestrated with ease to build complex topologies and integrations on a network level. Virtual network functions can thus be used as building blocks for software defined networks.

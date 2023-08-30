@@ -15,16 +15,25 @@
     \begin{itemize}
         \item Distributed trust and authority
         \item State synchronization (2PCP)
-        \item Strict separation of SDN layers
+        \item Strict separation of SDN planes
     \end{itemize}
 \end{itemize}
 \fi
 This chapter is centered around the components and concepts embodied in our network slicing architecture. We will first give an overview over our components and then present some concepts that will need to be implemented by our implementation.
 
 \section{Components}
-In order to present our components to achieve a network slicing architecture, we will group them by SDN layer. We will begin by inspecting the data plane, followed by the control plane and conclude with the application plane. In figure [LINK] you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain. All components below are virtual network functions (VNFs).
+In order to present our components to achieve a network slicing architecture, we will group them by SDN plane. We will begin by inspecting the data plane, followed by the control plane and conclude with the application plane. In figure \ref{fig:topology} you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain. All components described below are virtual network functions (VNFs).
 
 The presented components are partially sourced from Fuhrberg et al. \cite{SE4}. Our contribution is the addition of specialized components for the black network, the redesign of logic on each of the components for our new distributed slice management approach and for the other concepts introduced in section \ref{design_concepts}.
+
+\begin{landscape}
+\begin{figure}[ht]
+        \centering
+        \includegraphics[width=\linewidth]{images/chapter_5/topology.png}
+        \caption[Slicing architecture components]{The components of our slicing architecture in an example topology. In this case we use 3 domains, one of which is a black network. Per domain we use two switches. Apart from this, each edge domain has a host and a VPN gateway. The green links are part of a slice from h1 to h2. The dotted links are bypass links for other traffic not using our slicing architecture because the VPN gateways will not forward non-slice traffic.}
+        \label{fig:topology}
+\end{figure}
+\end{landscape}
 
 \subsection{Data plane}
 The job of the data plane is to transport traffic, so in our use case it will need to achieve the network resource isolation we require from our slices (protection goal \hyperref[P4]{P4}). To configure this isolation we need a way to assign traffic to QoS flows that span from one edge to another, traversing all required black networks in the process. Furthermore we need to limit third party traffic so it may not impede our resource allocations. In order to perform easier routing decisions along our path, we wish to label traffic traversing a network slice according to the MPLS scheme. As a last data plane measure we require traffic to be encrypted and protected against modification while traversing the black networks (protection goal \hyperref[P1]{P1} and \hyperref[P2]{P2}).
@@ -39,16 +48,10 @@ For the encryption along the black networks we will use VPN gateways that encryp
 
 When a packet is traversing the tunnel, the unified guarantees for the individual slices should apply, meaning a sum of the individual bandwidths and the lowest values for latency, jitter and loss.
 
-% TODO: Mention that tunnel needs integrity protection above with protection goal 1 -> add 2 - maybe mention wireguard already?
-
 The last required components on the data plane are the hosts that wish to send or receive data via the slices. One of these hosts should contact the application plane to create a new slice before initiating communications with the remote host.
-
-% TODO - Figure for only the data plane components?
 
 \subsection{Control plane}
 The control plane should mainly support deploying our rules to our devices. Creating the flows is supported by using OpenFlow through a standard SDN controller. For our queues and ingress limits we will need a separate service realizing them on the switches though, as these features are not currently supported by OpenFlow. We suggest implementing them via a service running on the SDN switches. For the VPN gateways we require another service running on the specialized VPN gateway hosts allowing us to register, resize and delete tunnels, as well as assigning slices to tunnels.
-
-% TODO - Figure for only the control plane components?
 
 \subsection{Application plane}
 The application plane will then care about defining the rules that should be deployed. In order to instruct the control plane, we will create one infrastructure coordinator per domain that will carry out all infrastructure tasks. This service that we will call a domain slice management function (DSMF) will know about the entire topology and will have the routing information to other domains. It will set up domains and tunnels on the local infrastructure if requested and specify upfront whether resources can be guaranteed or not. This service thus follows an IntServ pattern to realize network slices.
@@ -57,15 +60,11 @@ Apart from this infrastructure service we will need to establish a domain coordi
 
 While ESMF and DSMF allow the creation of slices and tunnels on their respective domain, versions of them also exist with reduced functionality for black networks that do not wish to offer their tenants slice support. The ESMF will be replaced with a core tunnel management function (CTMF) and the DSMF will be replaced with a domain tunnel management function (DTMF). A CTMF will never initiate a new tunnel but rather receive tunnel requests from coordinating ESMFs. Also a CTMF will never accept slice requests from tenants of their domain. They will thus only talk to an ESMF of another domain to coordinate new tunnels or with their own DTMF to deploy tunnels to their infrastructure and to check for resource availability. A CTMF may only talk to a DTMF and an ESMF may only talk to a DSMF, depending on the network role. CTMF and DTMF may only be deployed on black networks that are exclusively black networks, requiring their network domain to never be the beginning nor the end of a slice.
 
-% TODO - Figure for only the application plane components?
-
-\paragraph{} After joining the different SDN layers we thus reach our design topology (see figure [LINK]) that has the separation of different virtual network functions (VNFs) in mind.
-
-% TODO - Figure of all layers
+\paragraph{} After joining the different SDN planes we thus reach our design topology (see figure \ref{fig:topology} for an example topology) that has the separation of different virtual network functions (VNFs) in mind.
 
 \section{Concepts}
 \label{design_concepts}
-After we presented our components we now want to mention our concepts behind certain design decisions, beginning with our concept of distributed trust and authority, our state synchronization and the strict separation of SDN layers.
+After we presented our components we now want to mention our concepts behind certain design decisions, beginning with our concept of distributed trust and authority, our state synchronization and the strict separation of SDN planes.
 
 \subsection{Distributed trust and authority}
 Distributed trust and authority is one of our core requirements (see \hyperref[R2]{requirement R2}). While wanting to lend resources to participants of our and other networks participating in our slicing architecture and guaranteeing those resources to them, we do not want others taking deployment or infrastructure decisions for our local domain. This is why we separated the coordination across all domains and only expose the coordinators to the other domains. This way another domain can ask us to allocate resources for a new slice but we may deny the creation at any point in time. Still other domains can request slices and tunnels this way without having direct access or knowledge about our infrastructure.
@@ -75,5 +74,5 @@ In order to be able to coordinate slices and tunnels across multiple domains we 
 
 We will realize this by leveraging the two-phase commit protocol (2PCP) \cite{2pcp}. This way tunnel and slices will first be reserved throughout the network and if all reservations succeeded they can then be deployed. A failure of the coordinating ESMF or a participant during the commit phase is no critical issue to us, as the host will not get a positive reply for the slice registration then. We do not guarantee the creation of slices to our tenants, but rather guarantee that a registered slice performs according to specification. Of course the issue could arise, that partially created slices persist on the network this way, but those dangling components could also be removed afterwards, when the system recovers from a failure.
 
-\subsection{Strict separation of SDN layers}
-In order to reach our goal to be relatively hardware independent (requirement \hyperref[R3]{R3}) we want to clearly structure our services according to our SDN layers. Of course this may not always be possible because for example our switch queue and ingress limit service will be vendor specific due to no unified API being available at this point to manage these characteristics. For all other services, the design has been separated according to the SDN layers to be able to swap out different components of the SDN environment with ease. For example to use a switch of a different vendor, only the switch queue and ingress limit service will need to be implemented for this vendor while the rest of the components can remain in use. This includes the integration of hardware switches or servers, enabling our topology to be executed outside of testbench scenarios.
+\subsection{Strict separation of SDN planes}
+In order to reach our goal to be relatively hardware independent (requirement \hyperref[R3]{R3}) we want to clearly structure our services according to our SDN planes. Of course this may not always be possible because for example our switch queue and ingress limit service will be vendor specific due to no unified API being available at this point to manage these characteristics. For all other services, the design has been separated according to the SDN planes to be able to swap out different components of the SDN environment with ease. For example to use a switch of a different vendor, only the switch queue and ingress limit service will need to be implemented for this vendor while the rest of the components can remain in use. This includes the integration of hardware switches or servers, enabling our topology to be executed outside of testbench scenarios.

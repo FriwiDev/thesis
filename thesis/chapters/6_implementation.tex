@@ -15,7 +15,7 @@
     \begin{itemize}
         \item Implemented in python using auto-generated code by OpenAPI
         \item Interconnected via testbed + real-world hardware integration
-        \item TODO: What is missing from design to reproduce implementation?
+        \item What is missing from design to reproduce implementation?
     \end{itemize}
     \item Concepts
     \begin{itemize}
@@ -39,11 +39,11 @@ In this chapter we are going to be more specific about the details of our implem
 In this section we will focus on our specifications. First we will present our protocol specifications for each VNF, before providing communication examples to create and remove a slice.
 
 \subsection{OpenAPI specifications}
-To interconnect our VNFs, we will use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions \cite{openapi}. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project \cite{openapi-generator}. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI \cite{swaggerui} or Redocly \cite{redocly}.
+To interconnect our VNFs, we will \cgn{use present or past tense from here instead?} use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions \cite{openapi}. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project \cite{openapi-generator}. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI \cite{swaggerui} or Redocly \cite{redocly}.
 
-We provided OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis [LINK] in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
+We provided \cgn{be consistent on the tense: past or present?} OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis (see appendix \ref{specifications}) in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
 
-The basic endpoints of each component can be seen in the tables \ref{table:esmf} through \ref{table:vpn_gateway}. Further details on parameters and responses can be found at the end of this thesis [LINK].
+The basic endpoints of each component can be seen in the tables \ref{table:esmf} through \ref{table:vpn_gateway}. Further details on parameters and responses can be found at the end of this thesis in appendix \ref{specifications}.
 
 All VNFs provide endpoints for authentication (apart from the SDN controller), where other components can authenticate themselves. This is just a placeholder to establish an authentication scheme later. In the current specification the authentication endpoint takes no parameters and returns a predefined token. Real authentication can thus easily be implemented in the future by employing a real authentication scheme. All the other endpoints then take this token to authenticate requests. The details on how these endpoints work together can then be seen in section \ref{impl_communication}, where we take a closer look on the creation and removal of a slice.
 
@@ -63,7 +63,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /v1/tunnel\_deployment & Endpoint used by other ESMFs to deploy a tunnel \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our ESMF implementation alongside their functionality.}
+    \caption[ESMF endpoints]{The endpoints of our ESMF implementation alongside their functionality.}
     \label{table:esmf}
 \end{table}
 
@@ -79,7 +79,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /v1/tunnel\_deployment & Endpoint used by ESMFs to deploy a tunnel \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our CTMF implementation alongside their functionality. Includes a subset of the ESMF endpoints.}
+    \caption[CTMF endpoints]{The endpoints of our CTMF implementation alongside their functionality. Includes a subset of the ESMF endpoints.}
     \label{table:ctmf}
 \end{table}
 
@@ -97,7 +97,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /v1/tunnel\_deployment & Endpoint used by our ESMF to deploy a tunnel \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our DSMF implementation alongside their functionality.}
+    \caption[DSMF endpoints]{The endpoints of our DSMF implementation alongside their functionality.}
     \label{table:dsmf}
 \end{table}
 
@@ -113,7 +113,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /v1/tunnel\_deployment & Endpoint used by our ESMF to deploy a tunnel \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our DTMF implementation alongside their functionality. Includes a subset of the DSMF endpoints.}
+    \caption[DTMF endpoints]{The endpoints of our DTMF implementation alongside their functionality. Includes a subset of the DSMF endpoints.}
     \label{table:dtmf}
 \end{table}
 
@@ -128,7 +128,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /v1/policy & Endpoint used to manage traffic shaping on ingress ports of this switch \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our switch implementation alongside their functionality.}
+    \caption[Switch endpoints]{The endpoints of our switch implementation alongside their functionality.}
     \label{table:switch}
 \end{table}
 
@@ -147,7 +147,7 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /stats/queue & Endpoint used to view available queues on a switch \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our SDN controller implementation. Some endpoints contain additional sub-endpoints under their path that have been left out for simplicity. Please refer to the specification at the end of this thesis for additional details. This API is a subset of the RYU REST API \cite{ryu-rest}.}
+    \caption[Controller endpoints]{The endpoints of our SDN controller implementation. Some endpoints contain additional sub-endpoints under their path that have been left out for simplicity. Please refer to the specification at the end of this thesis for additional details. This API is a subset of the RYU REST API \cite{ryu-rest}.}
     \label{table:controller}
 \end{table}
 
@@ -161,11 +161,9 @@ All VNFs provide endpoints for authentication (apart from the SDN controller), w
          /v1/tunnel\_entry & Endpoint used to manage tunnel entries on this VPN gateway \\
         \hline
     \end{tabularx}
-    \caption{The endpoints of our VPN gateway implementation alongside their functionality.}
+    \caption[VPN gateway endpoints]{The endpoints of our VPN gateway implementation alongside their functionality.}
     \label{table:vpn_gateway}
 \end{table}
-
-% TODO: Append OpenAPI specifications to the bottom of this thesis
 
 \subsection{Communication}
 \label{impl_communication}
@@ -186,52 +184,56 @@ So now as we synchronized state sufficiently, we can shed some light on the actu
 
 The entire process of creating a slice can also be seen in our three diagrams for the state synchronization (see figure \ref{fig:slice_creation_synchronization}), the communication on the edge networks (see figure \ref{fig:slice_creation_edge}) and on our black networks (see figure \ref{fig:slice_creation_bn}). Please note that the diagrams are based on using only one black network. Of course multiple black networks would be possible as well by repeating the communication to our black network for every other black network.
 
-\begin{figure}[hp]
+\newpage
+
+\begin{figure}[H]
   \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/6_implementation/slice_creation_esmf_and_ctmf.svg}
-  \caption[Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram.]{Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to check whether the slice and the tunnel generated by the ESMF is feasible first, before instructing everyone to deploy. Finally the ESMF responds back to the coordinating host to indicate successful slice creation. If any steps fail, everything will be rolled back with removal requests and the host would receive a negative reply. TODO: Update}
+  \includegraphics[width=\linewidth]{images/chapter_6/slice_creation_coordination.png}
+  \caption[Slice creation on the coordinators]{Successful ESMF and CTMF synchronization to create a slice illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to check whether the slice and the tunnel generated by the ESMF is feasible first, before instructing everyone to deploy. Finally the ESMF responds back to the coordinating host to indicate successful slice creation. If any steps fail, everything will be rolled back with removal requests and the host would receive a negative reply. If there is more than one black network, the requests for the CTMF need to be applied on each of them.}
   \label{fig:slice_creation_synchronization}
 \end{figure}
-\begin{figure}[hp]
+\begin{figure}[H]
   \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/6_implementation/slice_creation_esmf_to_dsmf_to_switch.svg}
-  \caption[Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram.]{Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram. The process seen here deploys the slices and tunnels of a single edge network. Requests might be in larger quantity when multiple slices and tunnels get deployed. The ESMF will contact the DSMF, which will then contact the data plane VNFs to deploy the actual functionality. Everything is guarded by reservations upfront. TODO: Update and merge}
+  \includegraphics[width=\linewidth]{images/chapter_6/slice_creation_edge.png}
+  \caption[Slice creation on an edge network]{Communication between ESMF, DSMF, controller, switches and VPN gateway on the edge to create a slice illustrated in a sequence diagram. The process seen here deploys the slices and tunnels of a single edge network. Requests might be in larger quantity when multiple slices and tunnels get deployed or multiple switches are present. The ESMF will contact the DSMF, which will then contact the data plane VNFs to deploy the actual functionality. Everything is guarded by reservations upfront. The dotted arrows to the left indicate synchronization efforts from other ESMFs or communication with the requesting host.}
   \label{fig:slice_creation_edge}
 \end{figure}
-\begin{figure}[hp]
+\begin{figure}[H]
   \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/6_implementation/slice_creation_ctmf_to_dtmf.svg}
-  \caption[This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels.]{This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels. There are no VPN gateways on black networks, so they do not appear here as compared to the figure on edge networks. As previously with ESMF and DSMF, the CTMF will contact the DTMF, which will then instruct the controller and switches to deploy the tunnel functionality. Everything is guarded by reservations upfront. TODO: Update}
+  \includegraphics[width=\linewidth]{images/chapter_6/slice_creation_bn.png}
+  \caption[Slice creation on a black network]{This figure shows the communication between CTMF, DTMF, controller and switches on the black network in a sequence diagram in order to create tunnels. There are no VPN gateways on black networks, so they do not appear here as compared to the figure on edge networks. As previously with ESMF and DSMF, the CTMF will contact the DTMF, which will then instruct the controller and switches to deploy the tunnel functionality. Everything is guarded by reservations upfront. The dotted arrows to the left indicate synchronization efforts from other ESMFs. If there are multiple switches the requests are repeated for each of them.}
   \label{fig:slice_creation_bn}
 \end{figure}
 
-\subsection{Slice removal}
+\newpage
+
+\subsubsection{Slice removal}
 In order to remove a slice the steps mentioned above are basically reversed. In this case we do not use the two-phase commit protocol, as when failing to synchronize the same drawbacks as mentioned above occur, which could be solved by future implementations with ease by removing dangling deployments.
 
 As for the creation of one or multiple slices, the coordinating ESMF is contacted again to remove these slices. The ESMF will create a list of all slices and tunnels affected and issue a removal for them. A tunnel is removed when no slices remain on the tunnel, else the tunnel may be adapted to include less capacity. The ESMF will contact all other participating domain coordinators and state slices and tunnels to be removed. Each domain coordinator, including the coordinating ESMF will then contact the infrastructure coordinator of their domain requesting a removal of all tunnels and slices that are supposed to be removed. The infrastructure providers will then use the before mentioned APIs to remove all components. When everyone reports back a positive result, the host is informed about the positive result of the removal.
 
 As with the previous section, the entire process of removing a slice can also be viewed as sequence diagrams for the state synchronization (see figure \ref{fig:slice_removal_synchronization}), the communication on the edge networks (see figure \ref{fig:slice_removal_edge}) and on our black networks (see figure \ref{fig:slice_removal_bn}).
 
-\begin{figure}[hp]
+\begin{figure}[H]
   \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/6_implementation/slice_creation_esmf_and_ctmf.svg}
-  \caption[Removal of slices on the domain coordinator level illustrated in a sequence diagram.]{Removal of slices on the domain coordinator level illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to remove the slice and all tunnels that have to be removed with the slice or that need to be adapted. Once everyone reports successful removal, the successful result is reported back to the host. If anyone reported a failure to remove, the host will receive a negative reply. TODO: Update}
+  \includegraphics[width=\linewidth]{images/chapter_6/slice_removal_coordination.png}
+  \caption[Slice removal on the coordinators]{Removal of slices on the domain coordinator level illustrated in a sequence diagram. The coordinator ESMF that has been contacted by the host will contact all other domain coordinators to remove the slice and all tunnels that have to be removed with the slice or that need to be adapted. Once everyone reports successful removal, the successful result is reported back to the host. If anyone reported a failure to remove, the host will receive a negative reply. If there is more than one black network, the requests for the CTMF need to be applied on each of them.}
   \label{fig:slice_removal_synchronization}
 \end{figure}
-\begin{figure}[hp]
+\begin{figure}[H]
   \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/6_implementation/slice_creation_esmf_to_dsmf_to_switch.svg}
-  \caption[Sequence diagram showing the removal of slices and tunnels from an edge network.]{Sequence diagram showing the removal of slices and tunnels from an edge network. The ESMF will contact the DSMF, which will then instruct controller, switches and VPN gateway to remove slice and tunnel components. TODO: Update and merge}
+  \includegraphics[width=\linewidth]{images/chapter_6/slice_removal_edge.png}
+  \caption[Slice removal from an edge network]{Sequence diagram showing the removal of slices and tunnels from an edge network. The ESMF will contact the DSMF, which will then instruct controller, switches and VPN gateway to remove slice and tunnel components. Requests might be in larger quantity when multiple slices and tunnels get removed or multiple switches are present. The dotted arrows to the left indicate synchronization efforts from other ESMFs or communication with the requesting host.}
   \label{fig:slice_removal_edge}
 \end{figure}
-\begin{figure}[hp]
+\begin{figure}[H]
   \centering
-  \includesvg[inkscapelatex=false, width=\linewidth]{images/6_implementation/slice_creation_ctmf_to_dtmf.svg}
-  \caption[Sequence diagram showing the removal of tunnels from a black network.]{Sequence diagram showing the removal of tunnels from a black network. The CTMF will contact the DTMF, which will then instruct controller and switches to remove the tunnel components. TODO: Update}
+  \includegraphics[width=\linewidth]{images/chapter_6/slice_removal_bn.png}
+  \caption[Slice removal from a black network]{Sequence diagram showing the removal of tunnels from a black network. The CTMF will contact the DTMF, which will then instruct controller and switches to remove the tunnel components. The dotted arrows to the left indicate synchronization efforts from other ESMFs. If there are multiple switches the requests are repeated for each of them.}
   \label{fig:slice_removal_bn}
 \end{figure}
 
-% TODO: Set the diagrams in a way they stay together
+\newpage
 
 \section{Components}
 In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers (small footprint containers running on the linux platform) \cite{lxc} for use in our testbed \cite{owntb}. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} \cite{iputils}, \textit{net-tools} \cite{net-tools}, \textit{iperf3} \cite{iperf3}, \textit{wireguard} \cite{wireguard}, \textit{tcpdump} \cite{tcpdump}, \textit{ifstat} (part of \textit{iproute2} \cite{iproute2}), \textit{hping3} \cite{hping3} and \textit{sockperf} \cite{sockperf}. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
@@ -242,15 +244,13 @@ Some images have additional software apart from above. These and their functiona
 \paragraph{Controller} The controller is realized by utilizing the RYU controller \cite{ryu} with the common RYU REST API \cite{ryu-rest}.
 \paragraph{VPN gateways} The VPN gateways run a server implementation that allows the creation of wireguard \cite{wireguard} tunnel entries. The details of these tunnel entries are explained below in section \ref{impl_concepts}.
 
-% TODO Link all software components with sources
-
 \section{Concepts and configuration}
 \label{impl_concepts}
 Now that we established how we wish to deploy tunnels and slices, we still need to specify how the exact configuration on the hardware should be performed.
 
 For simplicity of our implementation, we do not deploy bi-directional slices or tunnels, but rather deploy two uni-directional slices or tunnels to build one single bi-directional one.
 
-A summary of all the flow rules can be seen in figure [LINK].
+A summary of all the flow rules can be seen in figures \ref{fig:routing_source}, \ref{fig:routing_destination} and \ref{fig:routing_bn}.
 
 \subsection{General switch configuration}
 We will specify ingress limits on all interfaces, setting the maximum allowed rate and burst to 1Gbit/s. This can of course be adapted for other use cases in the future. This will be realised by OVS using a token bucket filter. This way the maximum needed computational capacity of our switch can be evaluated better and an upper limit is provided.
@@ -262,7 +262,14 @@ We first configure the switches between the origin of our slice and the VPN gate
 
 If there is only one switch, the switch takes the \textit{SRC\_ALL} role, because it contains all functionality of the source network. If there are multiple switches, the first switch will take the \textit{SRC\_ENTRY} role and the last switch the \textit{SRC\_EXIT} role. All switches between will be assigned a \textit{SRC\_TP} role, indicating that they are transport switches on the source network.
 
-Depending on the role we then deploy the following rules:
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{images/chapter_6/routing_source.png}
+  \caption[Routing on the source edge network]{The routing rules on the source edge network for the switches and VPN gateways according to their roles. The dotted lines lead to the first black network switch.}
+  \label{fig:routing_source}
+\end{figure}
+
+Depending on the role we then deploy the following rules (see figure \ref{fig:routing_source}):
 
 \paragraph{SRC\_ALL and SRC\_ENTRY} Will verify that a packet matches a slice including the transport destination and port, as well as the incoming interface for authentication purposes. The switch will then tag the packet with an MPLS label using the slice id as value. The packet will then be forwarded to the next hop.
 
@@ -270,7 +277,14 @@ Depending on the role we then deploy the following rules:
 
 \paragraph{} Similar to the source network, on the destination network the route from the VPN gateway to the destination host will be determined and the switches will be assigned roles. These switches will receive the same roles as on the source network, but will be prefixed with \textit{DST} instead. We thus have \textit{DST\_ENTRY} for the switch after the VPN gateway, then possibly multiple \textit{DST\_TP} swiitches, before reaching the \textit{DST\_EXIT} switch. As previously, these roles can be combined to form a \textit{DST\_ALL} switch.
 
-Depending on the role we then deploy the following rules:
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{images/chapter_6/routing_destination.png}
+  \caption[Routing on the destination edge network]{The routing rules on the destination edge network for the switches and VPN gateways according to their roles. The dotted lines lead to the last black network switch.}
+  \label{fig:routing_destination}
+\end{figure}
+
+Depending on the role we then deploy the following rules (see figure \ref{fig:routing_destination}):
 
 \paragraph{DST\_ENTRY and DST\_TP} Will verify that a packet matches a slice by checking the slice id MPLS label and the inbound interface. Will then forward the packet to the next hop.
 
@@ -298,7 +312,14 @@ When we receive a packet on the GRETAP tunnel we already know which tunnel it is
 
 We will, if there are any switches, assign the same roles as with the slice source or destination, but this time the roles are prefixed with \textit{BN} for "black network". We thus have \textit{BN\_ALL}, \textit{BN\_ENTRY}, \textit{BN\_TP} and \textit{BN\_EXIT}. First we create two queues per switch to the ingress and egress interfaces of the tunnel, one being the queue for forward traffic and the other being the queue for reverse traffic. This is required by wireguard to perform key exchange and rotation. We only need to reserve a small amount of traffic for the reverse direction though, compared to the forward direction.
 
-Afterwards we will establish the following rules depending on the role:
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=10cm]{images/chapter_6/routing_bn.png}
+  \caption[Routing on the black networks]{The routing rules on the black networks for the switches according to their roles. The dotted lines to the left lead to the source edge network and the dotted lines on the right lead to the destination edge network.}
+  \label{fig:routing_bn}
+\end{figure}
+
+Afterwards we will establish the following rules depending on the role (see figure \ref{fig:routing_bn}):
 
 \paragraph{BN\_ALL} We will match all packets from both directions on the correct ingress interface for the UDP destination port and destination address. We will then forward traffic.
 
@@ -314,14 +335,18 @@ For the reverse direction it will match for the correct ingress interface, UDP p
 
 \paragraph{} Concerning the traffic forwarding on a default slice, the same applies as with the source and destination edge networks. Please note however that the VPN gateways will never forward any traffic. Therefore, routing of a default slice (when configured manually) has to be routed around the VPN gateways, for example by using a different link between a \textit{SRC\_EXIT} and \textit{BN\_ENTRY} switch (or other valid combinations).
 
-% TODO: Default action is forward in figure
-% TODO: Insert flow figure on separate page
-
-\section{Challenges}
-Of course we stumbled into some issues while implementing our solution. We will discuss them here and present their solution, so that future implementors will not face the same issues. We will begin with MTU considerations and MPLS label popping in OpenFlow, before presenting checksum offloading issues and write queue overflows in the linux kernel.
+\section{Lessons learned}
+Of course we stumbled into some issues while implementing our solution. We will discuss them here and present their solution, so that future developers will not face the same issues. We will begin with MTU considerations and MPLS label popping in OpenFlow, before presenting checksum offloading issues and write queue overflows in the linux kernel. \cgn{Maybe instead of Challenges, change the heading to Lessons learned. Challenges sound like unsolved problems. However, in this case you faced issues and had solutions for those.}
 
 \subsection{MTU considerations}
-Maybe one of the most obvious issues are MTU considerations. Our multiple MPLS and GRETAP headers will attach information to packets. When packets get close to the network MTU in size, this can lead to fragmentation of packets that would otherwise fit in the MTU. In our case, packets would no longer be delivered after being fragmented. To combat this, a lower MTU than the network MTU should be applied on the hosts. We chose 1300 in our host LXC container image, which is 200 byte smaller than the network MTU. Slightly higher values might be possible, but this has not been investigated.
+Maybe one of the most obvious issues are MTU considerations. Our multiple MPLS and GRETAP headers (see figure \ref{fig:packet_structure}) will attach information to packets, alongside the additional encapsulation by wireguard. When packets get close to the network MTU in size, this can lead to fragmentation of packets that would otherwise fit in the MTU. In our case, packets would no longer be delivered after being fragmented. To combat this, a lower MTU than the network MTU should be applied on the hosts. We chose 1300 in our host LXC container image, which is 200 byte smaller than the network MTU. Slightly higher values might be possible, but this has not been investigated.
+
+\begin{figure}[hp]
+  \centering
+  \includegraphics[width=10cm]{images/chapter_6/packet_structure.png}
+  \caption[Additional headers of packets]{This figure shows the additional headers that a packet receives while traveling through our architecture according to the routing rules specified in section \ref{impl_concepts}. These additional headers decrease our MTU for packets that we can accept. Our payload is in black, layer two to four headers in red and MPLS headers are in blue. Gray is used to indicate encrypted content within the wireguard tunnel, acting as a payload for the tunnel.}
+  \label{fig:packet_structure}
+\end{figure}
 
 \subsection{MPLS label popping in OpenFlow}
 Headaches have been caused due to the MPLS label popping implemented in OpenFlow. The author assumed, that when popping an MPLS label, one has to submit the MPLS label id that should be popped. This would make sense because it is possible to stack multiple MPLS labels and maybe the second or third in the stack should get popped. This is however not the case. Instead one has to specify the ethertype of the resulting packet \cite{openflow}, which would be 2048 (or 0x800) for IPv4 \cite{rfc7042}. This caused corrupt packets on the destination host.

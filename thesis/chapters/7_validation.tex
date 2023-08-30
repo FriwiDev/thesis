@@ -11,11 +11,13 @@ For each experiment:
 As mentioned previously in the methodology in chapter \ref{methodology}, we wish to validate our solution against our requirements provided in section \ref{related_work_requirements}. In this chapter we will thus validate every requirement one after another, beginning with \ref{R1} by conducting our experiments on the protection goals. Afterwards we will check our design and implementation for the remaining requirements, including the requested distributed coordination (\ref{R2}), compatibility outside of our testbench (\ref{R3}) and the flexibility of the solution (\ref{R4}).
 
 \section{Slice isolation}
-To validate the isolation of our slices, we will perform the experiments from \ref{methodology_experiments} on our slicing infrastructure. When all experiments pass, we can claim our isolation as sufficient to our attackers and protection goals.
+To validate the isolation of our slices, we will perform the experiments from section \ref{methodology_experiments} on our slicing infrastructure. For this, we placed our 5 attackers on the network as can be seen in figure \ref{fig:scenario_1} for scenario \ref{S1} and figure \ref{fig:attackers_topo} for scenario \ref{S2} and \ref{S3}. When all experiments pass, we can claim our isolation as sufficient to our attackers and protection goals.
 We will perform the experiments in their numerical ordering.
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\ref{E1}] \textbf{Slice availability and resilience} We conducted the experiment as described on all three scenarios. We will now discuss the results per scenario.
+    \item[\ref{E1}] \textbf{Slice availability and resilience} We conducted the experiment as described on all three scenarios.
+
+    Please note that the following paragraphs only focus on the parameters obtained on the media slice. The values of the control slice were almost identical in all cases and would thus not add any new interesting observations to this chapter. They are included in table \ref{table:validation_qos_results} nonetheless. We will now discuss the results per scenario.
 
     \begin{table}[ht]
         \centering
@@ -23,8 +25,8 @@ We will perform the experiments in their numerical ordering.
              \hline
              \textbf{Characteristic} & \textbf{QoS} & \textbf{S1B} & \textbf{S1E} & \textbf{S2B} & \textbf{S2E} & \textbf{S3B} & \textbf{S3E} \\
              \hline
-             Bandwidth$^M$ [bit/s] & $\geq$8M & 8M & $\approx$ 0.5M & 8M & 8M & 8M & 8M \\
-             Bandwidth$^C$ [bit/s] & $\geq$100K & 100K & $\approx$ 63K & 100K & 100K & 100K & 100K \\
+             Bandwidth$^M$ [Mbit/s] & $\geq$8 & 8 & $\approx$ 0.5 & 8 & 8 & 8 & 8 \\
+             Bandwidth$^C$ [Kbit/s] & $\geq$100 & 100 & $\approx$ 63 & 100 & 100 & 100 & 100 \\
              \hline
              Latency$^M$ [ms] & $<$5 & 0.1 & $\geq$ 2000 & 0.23 & 0.15 & 0.68 & 0.68 \\
              Latency$^C$ [ms] & $<$3 & 0.1 & $\geq$ 2000 & 0.23 & 0.15 & 0.68 & 0.68 \\
@@ -32,8 +34,8 @@ We will perform the experiments in their numerical ordering.
              Jitter$^M$ [ms] & $<$0.5 & 0.17 & $\approx$ 1 & 0.224 & 0.015 & 0.037 & 0.088 \\
              Jitter$^C$ [ms] & $<$0.3 & 0.007 & $\approx$ 30 & 0.034 & 0.011 & 0.032 & 0.061 \\
              \hline
-             Loss rate$^M$ & $<$0.01\% & 0\% & $\approx$ 80\% & 0\% & 0\% & 0\% & 0\% \\
-             Loss rate$^C$ & $<$0.001\% & 0\% & $\approx$ 60\% & 0\% & 0\% & 0\% & 0\% \\
+             Loss rate$^M$ [\%] & $<$0.01 & 0 & $\approx$ 80 & 0 & 0 & 0 & 0 \\
+             Loss rate$^C$ [\%] & $<$0.001 & 0 & $\approx$ 60 & 0 & 0 & 0 & 0 \\
              \hline
         \end{tabular}
         \caption[Results of experiment E1]{Results of experiment E1 in tabular form. All thresholds in the QoS column are being met. For each scenario there are base values (B) and values while under attack (E). M: Values from the media slice. C: Values from the control slice.}
@@ -57,6 +59,8 @@ We will perform the experiments in their numerical ordering.
 
     Under this maximum possible load, we still observe stable results. Packet loss is at 0\%, latency is unchanged at 0.68ms average and jitter is increasing to 0.088ms. Even though the jitter has increased, jitter is still way below the threshold of 0.5ms for the control slice. The same characteristic can be observed on the control slice. The bandwidths are still met with the same characteristics as in the local slicing scenario. We thus also pass with success in our remote slicing scenario.
 
+    \paragraph{} Another interesting observation on all network slicing scenarios is that the first packet delivered through a tunnel takes additional time, most probably due to the wireguard handshake taking place. The initial ping in scenario \ref{S2} can thus take up to about 1ms and for \ref{S3} can take up to 1.5ms. Higher values were not observed thus also not breaking our limits. This behaviour could also be mitigated in the future by sending an initial packet before the first slice of a tunnel is handed over to the tenants.
+
     Due to all thresholds being met in our slicing scenario, we consider experiment \ref{E1} as successfully passed. All results can also be seen in table \ref{table:validation_qos_results}.
 
    \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our ESMF \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against DoS are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the DoS attack, the system quickly recovers and requests for slices go through again.
@@ -76,11 +80,20 @@ Our protection goals of confidentiality (\ref{P1}) and integrity (\ref{P2}) were
 
 Due to our protection goals not being broken, we subsequently pass requirement \ref{R1} for the isolation of our slices, with the slight exclusion mentioned above which does not affect established slices.
 
+\begin{landscape}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\linewidth]{images/chapter_7/attackers_topo.png}
+        \caption[Placement of attackers in scenario S2 and S3]{This figure shows the placement of all attackers in our network slicing scenarios \ref{S2} and \ref{S3}. The red lines show links used by the attackers. The dotted links are bypass links for the attackers around the VPN gateways.}
+        \label{fig:attackers_topo}
+    \end{figure}
+\end{landscape}
+
 \section{Distributed coordination}
 In our design we feature an approach of distributed coordination, where each network domain performs its own decisions concerning resources and deployment of infrastructure. We thus feature a decentralized approach that only requires trust in other entities that they are going to behave according to protocol and honor their service level agreement (SLA). This matches the specification of requirement \ref{R2} which we subsequently pass.
 
 \section{Compatibility}
-In our design and implementation we worked on the creation of VNFs separated by SDN layers. Due to the creation of many separate VNFs, porting one VNF (for example a switch implementation) to another vendor requires relatively few effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using OpenAPI, which will lower the effort for new implementations even more. By using common protocols like OpenFlow where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
+In our design and implementation we worked on the creation of VNFs separated by SDN planes. Due to the creation of many separate VNFs, porting one VNF (for example a switch implementation) to another vendor requires relatively few effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using OpenAPI, which will lower the effort for new implementations even more. By using common protocols like OpenFlow where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
 
 \section{Flexibility}
 As our domain coordinators can coordinate slices to any target network that is reachable, we can also request slices to any host residing in such a network as long as we are permitted to do so. As we can request as many slices as the domain coordinator and other parties allow us, we can theoretically communicate via multiple slices to multiple destinations at the same time. Requirement \ref{R4} is thus passed by our solution.

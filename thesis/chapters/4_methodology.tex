@@ -16,6 +16,8 @@
     \end{itemize}
 \end{itemize}
 \fi
+\cgn{Is it more logical to move this Methodology after Implementation chapter and before Validation one? Naturally, after discussing the related work and discussing their limitation, one would expect to see the proposed solution (with Design and Implementation).}
+\cfw{This chapter is basically split in two parts: Everything until 4.4 covers content that is needed for design and implementation. 4.5 to 4.7 then cover our validation methods. I thus see this chapter as more of a chronological order on how the solution was created and evaluated, before actually performing these actions. The role of the chapter is thus more directed at "what did we do after our research" for me rather than what is immediatly up next in the thesis. Maybe we can discuss this tomorrow in our meeting. It would sure be possible to move 4.5 to 4.7 to the beginning of chapter 7 without many issues.}
 To be able to accurately design, implement and validate our solution we will need to specify our methodology first. To achieve our goal we will use requirement validation. Initially we defined our requirements as stated in section \ref{related_work_requirements}.
 
 In this chapter we will thus choose an accurate environment for our experiments, define a network model, our protection goals and attackers, before finally stating the scenarios we wish to validate and our measurements we wish to obtain on them. We will then state all experiments we will perform that will subsequently be evaluated in the validation chapter (see chapter \ref{validation}).
@@ -33,6 +35,14 @@ As a test environment we want to use a network emulator to be able to easily boo
 
 \section{Network model}
 In the context of our networks, we will establish two different kinds of networks.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{images/chapter_4/network_model.png}
+  \caption[Network model]{Our network model showing the separation of trusted edge networks and semi-trusted black networks. While edge networks are the source and target of our network slice traffic, black networks act as transit networks. There can be multiple black networks between our edge networks, but for simplicity reasons only one of them is indicated in the figure.}
+  \label{fig:network_model}
+\end{figure}
+
 \paragraph{Edge networks}
 are the origin and target of one specific network slice. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture following a zero trust approach, for example as a host established within our edge network.
 \paragraph{Black networks}
@@ -40,7 +50,7 @@ lie between the edge networks and are operating under a service level agreement 
 
 Please note that that one specific network may play different roles for different network slices. One slice may pass through a black network that is also the origin (and thus edge network) of another slice.
 
-% TODO: Add figure
+Our network model can also be seen in figure \ref{fig:network_model}.
 
 \section{Protection Goals}
 \label{protection_goals}
@@ -64,7 +74,7 @@ As previously mentioned, Ruxandra Olimid et. al \cite{SE2} classified threats to
 
 \paragraph{Intra-slice threats} As the last two attackers we will consider attackers attempting to eavesdrop or violate integrity within one of the black networks between our two edge networks. The eavesdropping attacker will only observe traffic attempting to break confidentiality. The integrity attacker will however try to replay and craft new messages (including sending modified packets additionally). Dropping and modifying packets should not be supported by the attacker, as we can not compensate for the subsequently lost packets while only using a single path without resending packets, potentially violating resource guarantees. Eavesdroppers and integrity attackers are not expected on our edge networks, as we trust our local environment infrastructure (but not all tenants).
 
-\paragraph{Exclusions} As it has already been the case with the attacker on integrity, we do not consider active in-path attackers (apart from the integrity attacker), as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application layer, as any component of the application layer that participates in a slice could instruct other components to disrupt the connection or disrupt the connection themselves. To compensate this, routing via multiple alternative paths would be required, introducing redundancy to the network.
+\paragraph{Exclusions} As it has already been the case with the attacker on integrity, we do not consider active in-path attackers (apart from the integrity attacker), as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application plane, as any component of the application plane that participates in a slice could instruct other components to disrupt the connection or disrupt the connection themselves. To compensate this, routing via multiple alternative paths would be required, introducing redundancy to the network.
 
 We also do not include attackers on confidentiality and integrity on the application plane here, as this could be easily solved by using transport layer security (TLS) enabled protocols for communication in the future, which is however also currently out of scope for this thesis. The same applies to a proper authentication scheme on the application plane.
 
@@ -78,21 +88,49 @@ There are also no attackers on our control plane, because all control plane comp
     \item[\namedlabel{A4}{A4}] \textbf{Slice confidentiality} Attempts to eavesdrop within one of the black networks. Attacks protection goal \ref{P1} (confidentiality).
     \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the black networks by replaying or sending additional packets. Will not modify or drop packets, but may send modified packets as additional packets. Attacks protection goal \ref{P2} (integrity).
 \end{description}
-%TODO: Add figure without our specific architecture showing our attackers
+
+Our attackers can also be seen in figure \ref{fig:attacker_model}.
+
+\begin{landscape}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{images/chapter_4/attacker_model.png}
+  \caption[Attacker model]{Our attacker model indicating their location per domain and SDN plane.}
+  \label{fig:attacker_model}
+\end{figure}
+\end{landscape}
 
 \section{Scenarios}
 \label{scenarios}
 We will test three scenarios in total. The first scenario will provide a base case for our two other slicing-enabled scenarios, of which one will be local and the other distributed.
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{S1}{S1}] \textbf{Reference scenario} The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch.
-    \item[\namedlabel{S2}{S2}] \textbf{Local slicing scenario} For our first slicing scenario we will deploy our slicing solution emulating three domains with two edge networks and one black (semi-trusted) network between them. Each domain will have two slicing switches which the traffic of the slices has to pass. One of the simulated hosts will be created on each edge.
-    \item[\namedlabel{S3}{S3}] \textbf{Remote slicing scenario} As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
+    \item[\namedlabel{S1}{S1}] \textbf{Reference scenario} The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. This scenario can be seen in figure \ref{fig:scenario_1}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=12cm]{images/chapter_4/scenario_1.png}
+        \caption[Validation Scenario 1]{Our first scenario \ref{S1} without network slicing.}
+        \label{fig:scenario_1}
+    \end{figure}
+    \item[\namedlabel{S2}{S2}] \textbf{Local slicing scenario} For our first slicing scenario we will deploy our slicing solution emulating three domains with two edge networks and one black (semi-trusted) network between them. Each domain will have two slicing switches which the traffic of the slices has to pass. One of the simulated hosts will be created on each edge. This scenario can be seen in figure \ref{fig:scenario_2}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\textwidth]{images/chapter_4/scenario_2.png}
+        \caption[Validation Scenario 2]{Our second scenario \ref{S2} with network slicing across three domains running on a local test setup (one machine).}
+        \label{fig:scenario_2}
+    \end{figure}
+    \item[\namedlabel{S3}{S3}] \textbf{Remote slicing scenario} As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment. This scenario can be seen in figure \ref{fig:scenario_3}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\textwidth]{images/chapter_4/scenario_3.png}
+        \caption[Validation Scenario 3]{Our last scenario \ref{S3} with network slicing across three domains, deploying one domain per server each. The three servers are connected via a switch.}
+        \label{fig:scenario_3}
+    \end{figure}
 \end{description}
 
 %The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker \ref{A1} will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker \ref{A4} to eavesdrop traffic between the switches. \ref{A2} and \ref{A3} do not apply since there is no slicing infrastructure.
 
-%For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the black network and deploy \ref{A2} and \ref{A3} to the application layer.
+%For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two edge networks and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the black network and deploy \ref{A2} and \ref{A3} to the application plane.
 
 %As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment.
 
@@ -114,13 +152,11 @@ For the bidirectional control and feedback slice, we need far less bandwidth. Th
          Loss rate & $<$ 0.01\% & $<$ 0.001\% \\
     \hline
     \end{tabular}
-    \caption{The guarantees we wish to meet with our slices}
+    \caption[Slice QoS guarantees in our remote surgery example]{The guarantees we wish to meet with our slices concerning our remote surgery example.}
     \label{table:slices}
 \end{table}
 
 The robot example including the bandwidth requirements is taken from Fuhrberg et al. \cite{SE4} in order to be able to compare their solution against our redesigned solution. The values for latency, jitter and loss rate have been altered to reflect our goals and generally provide more strict requirements.
-
-% TODO: Add figures for each scenario (without topology details)
 
 \section{Measurements}
 \label{measurements}
@@ -147,7 +183,7 @@ To send the traffic and observe their result, we will use three different tools:
          Sockperf & \ding{51} & \ding{51} & \ding{51} & \ding{51} \\
     \hline
     \end{tabular}
-    \caption{The measurements obtained on our different tools}
+    \caption[Measurements of different tools]{The measurements obtained on our different tools}
     \label{table:measurements}
 \end{table}
 
@@ -221,7 +257,7 @@ while True:
 
     %While this experiment does not cover all possible integrity violations, the integrity on the black network can be assumed to be protected because our utilization of the wireguard protocol. The wireguard whitepaper proves the resilience of wireguard to replay attacks by using nonces and to message forgery by using authentication tags \cite{wireguard}.
 
-    %TODO: Maybe rather claim integrity as by design, because the experiment does not cover all attacker angles.
+    %This experiment has been removed and integrated into experiment E4. We rather claim integrity as by design of wireguard, because the experiment E5 does not cover all attacker angles.
 
 \end{description}
 

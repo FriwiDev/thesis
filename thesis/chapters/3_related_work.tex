@@ -48,9 +48,7 @@
 \cgn{This paragraph seems to focus on Isolation requirement. If so, please be more explicit about it, e.g., "This section discusses state-of-the-art isolation schemes..." -- This kind of topic sentences help reader's digest.}
 \cfw{I tried to implement this into the paragraph in the related concepts}
 
-In the preceding chapter, we successfully investigated some literature background on our domain, concepts and building blocks for a secure communication solution that will solve our problems. In this chapter we will now present our goals and requirements for a slicing solution, before narrowing the field of research down to related slicing solutions.
-
-%In this chapter we will discuss state-of-the-art isolation schemes, introducing VLANs and VXLANs, network tunnels and network slicing. For network slicing we will then present single and multi-domain slicing schemes, before focusing on security in slicing networks. % TODO: Complete
+In the preceding chapter, we successfully investigated some literature background on our domain, concepts and building blocks for a secure communication solution that will solve our problems. In this chapter we will now present our goals and requirements for a slicing solution, before narrowing the field of research down to related slicing solutions. For this we will discuss state-of-the-art isolation schemes, introducing VLANs and VXLANs, network tunnels and network slicing. For network slicing we will then present single and multi-domain slicing schemes, before focusing on security in slicing networks. Lastly we are going to present our own contribution.
 
 \section{Requirements}
 \label{related_work_requirements}
@@ -87,8 +85,6 @@ All these technologies on their own however still can not provide the network re
 In order to be able to guarantee resources and meet our isolation requirement \ref{R1} we will thus need to resort to a slicing approach.
 
 In the modern context of 5G networks, the term slicing has been established to provide a slice of network, computational or storage resources from a certain network that are guaranteed to be available to an application after their reservation \cite{5G1,5G2,5G3} and that isolate components resource wise. Slicing has the advantage over the previously mentioned VLANs and tunnels, that slices can also provide resource guarantees, while for example in a traditional VLAN setup all VLANs share the same resource pool (without any additional configuration). The same applies to network tunnels. Furthermore 5G network slices can be requested live by users and applications following for example the 3GPP 5G network slicing specification (TS 28.530) \cite{3gpp28.530} that is currently still under development, while VLANs and tunnels are set up by network administrators in advance and do not dynamically change.
-
-% TODO: Insert citation
 
 A network slicing solution thus seems fitting to our requirements. So next we will present some related works that already presented network slicing solutions and compare them to our requirements. We will begin with single-domain network slicing solutions before investigating multi-domain network slicing as the closest matching projects to our solution.
 

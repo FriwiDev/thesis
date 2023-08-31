@@ -1,12 +1,5 @@
 \chapter{Validation}
 \label{validation}
-\iffalse
-For each experiment:
-\begin{itemize}
-    \item Outcome of the experiment
-    \item Is it the outcome we expected?
-\end{itemize}
-\fi
 
 This chapter is split into two parts. First we are going to state how we are going to validate in the methodology section, before performing the actual validation of our requirements on our solution.
 
@@ -77,7 +70,7 @@ For the bidirectional control and feedback slice, we need far less bandwidth. Th
          Loss rate & $<$ 0.01\% & $<$ 0.001\% \\
     \hline
     \end{tabular}
-    \caption[Slice QoS guarantees in our remote surgery example]{The guarantees we wish to meet with our slices concerning our remote surgery example.}
+    \caption[Slice \acrshort{qos} guarantees in our remote surgery example]{The guarantees we wish to meet with our slices concerning our remote surgery example.}
     \label{table:slices}
 \end{table}
 
@@ -89,11 +82,11 @@ Measurements on the resources of a slice will be performed by sending continuous
 
 To send the traffic and observe their result, we will use three different tools:
 
-\paragraph{Iperf3} \cite{iperf3} is a network bandwidth testing tool that also provides data on packet drops and connection jitter. It supports both UDP and TCP.
+\paragraph{Iperf3} \cite{iperf3} is a network bandwidth testing tool that also provides data on packet drops and connection jitter. It supports both \acrshort{udp} and \acrshort{tcp}.
 
-\paragraph{Iputils-ping} \cite{iputils} is a network latency testing tool that provides data on latency, packet drops and jitter. We will not generate traffic using ping, but will rather use it for latency measurements while \textit{iperf3} sends continuous traffic. It will use ICMP as protocol.
+\paragraph{Iputils-ping} \cite{iputils} is a network latency testing tool that provides data on latency, packet drops and jitter. We will not generate traffic using ping, but will rather use it for latency measurements while \textit{iperf3} sends continuous traffic. It will use \acrshort{icmp} as protocol.
 
-\paragraph{Sockperf} \cite{sockperf} is a network bandwidth and latency testing tool that provides data on bandwidth, packet drops, latency and jitter. It supports both UDP and TCP.
+\paragraph{Sockperf} \cite{sockperf} is a network bandwidth and latency testing tool that provides data on bandwidth, packet drops, latency and jitter. It supports both \acrshort{udp} and \acrshort{tcp}.
 
 \paragraph{} More details on this can be seen in table \ref{table:measurements}. We will thus be able to obtain each metric from at least two tools, providing us with the ability to verify their result.
 
@@ -103,7 +96,7 @@ To send the traffic and observe their result, we will use three different tools:
     \hline
     \textbf{Tool} & \textbf{Bandwidth} & \textbf{Packet drops} & \textbf{Latency} & \textbf{Jitter}  \\
     \hline
-         IPerf3   & \ding{51} & UDP only  & TCP only  & UDP only  \\
+         IPerf3   & \ding{51} & \acrshort{udp} only  & \acrshort{tcp} only  & \acrshort{udp} only  \\
          Ping     & \ding{55} & \ding{51} & \ding{51} & \ding{51} \\
          Sockperf & \ding{51} & \ding{51} & \ding{51} & \ding{51} \\
     \hline
@@ -144,7 +137,7 @@ In this section we are now going to state the experiments that we are going to p
 
     We would expect that our slice is isolated from this other traffic and no effects can be seen on the slice concerning the additional traffic in the system.
 
-    \item[\namedlabel{E2}{E2}] \textbf{Application plane availability and resilience (1)} In this experiment we will try to perform DoS on the application plane by spamming unauthenticated requests on the domain coordinator. We will spam the domain coordinator by using a python script that has been self developed and can be found in the sources. It uses multiple threads to spam http requests.
+    \item[\namedlabel{E2}{E2}] \textbf{Application plane availability and resilience (1)} In this experiment we will try to perform \acrshort{dos} on the application plane by spamming unauthenticated requests on the domain coordinator. We will spam the domain coordinator by using a python script that has been self developed and can be found in the sources. It uses multiple threads to spam http requests.
 
     For reproducing purposes, we will measure our achieved request rate by examining the output from our script.
 
@@ -158,12 +151,12 @@ In this section we are now going to state the experiments that we are going to p
 
     \item[\namedlabel{E4}{E4}] \textbf{Slice confidentiality} In this experiment we try to break confidentiality by eavesdropping on the switches of the black network (protection goal \ref{P1}). To achieve this, we are going to use a tool called \textit{tcpdump} \cite{tcpdump} to dump packets passing a black network switch. Tcpdump is a traffic sniffer that will collect packets passing on an interface either to console or to a file.
 
-    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the implementation can be seen below) on the slice initiator that is sending UDP traffic to the remote host. We will then start sniffing on an appropriate switch port of the black network.
+    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the implementation can be seen below) on the slice initiator that is sending \acrshort{udp} traffic to the remote host. We will then start sniffing on an appropriate switch port of the black network.
 
 \begin{lstlisting}[language=python]
 import socket
 
-# Create a UDP socket
+# Create a \acrshort{udp} socket
 socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 while True:
@@ -176,7 +169,7 @@ while True:
 
     %\item[\namedlabel{E5}{E5}] \textbf{Slice integrity} In this final experiment we will try to replay packets from a black network switch by capturing it and delivering it twice. We will use a \textit{qdisc} (part of \textit{iproute2} \cite{iproute2}) for this to multiply our traffic and send every ingress packet twice.
 
-    %To test this, we will establish our slices (apart from scenario \ref{S1} again where no slicing is available) and then install our traffic duplication qdisc on a black network switch. Afterwards we will start sending continuous traffic from one host using our python UDP loop as in experiment \ref{E4}. We will then execute \textit{tcpdump} \cite{tcpdump} on the other host and look for packets that have been delivered twice with the same content.
+    %To test this, we will establish our slices (apart from scenario \ref{S1} again where no slicing is available) and then install our traffic duplication qdisc on a black network switch. Afterwards we will start sending continuous traffic from one host using our python \acrshort{udp} loop as in experiment \ref{E4}. We will then execute \textit{tcpdump} \cite{tcpdump} on the other host and look for packets that have been delivered twice with the same content.
 
     %We expect to see no duplicates being delivered on our receiving host. If there are no duplicates, the experiment succeeds. If there are, we have broken integrity and the experiment fails.
 
@@ -224,7 +217,7 @@ We will perform the experiments in their numerical ordering.
         \centering
         \begin{tabular}{|l|c|c|c|c|c|c|c|}
              \hline
-             \textbf{Characteristic} & \textbf{QoS} & \textbf{S1B} & \textbf{S1E} & \textbf{S2B} & \textbf{S2E} & \textbf{S3B} & \textbf{S3E} \\
+             \textbf{Characteristic} & \textbf{\acrshort{qos}} & \textbf{S1B} & \textbf{S1E} & \textbf{S2B} & \textbf{S2E} & \textbf{S3B} & \textbf{S3E} \\
              \hline
              Bandwidth$^M$ [Mbit/s] & $\geq$8 & 8 & $\approx$ 0.5 & 8 & 8 & 8 & 8 \\
              Bandwidth$^C$ [Kbit/s] & $\geq$100 & 100 & $\approx$ 63 & 100 & 100 & 100 & 100 \\
@@ -239,7 +232,7 @@ We will perform the experiments in their numerical ordering.
              Loss rate$^C$ [\%] & $<$0.001 & 0 & $\approx$ 60 & 0 & 0 & 0 & 0 \\
              \hline
         \end{tabular}
-        \caption[Results of experiment E1]{Results of experiment E1 in tabular form. All thresholds in the QoS column are being met. For each scenario there are base values (B) and values while under attack (E). M: Values from the media slice. C: Values from the control slice.}
+        \caption[Results of experiment E1]{Results of experiment E1 in tabular form. All thresholds in the \acrshort{qos} column are being met. For each scenario there are base values (B) and values while under attack (E). M: Values from the media slice. C: Values from the control slice.}
         \label{table:validation_qos_results}
     \end{table}
 
@@ -268,9 +261,9 @@ We will perform the experiments in their numerical ordering.
 
     \cfw{Is this comparison sufficient?}
 
-   \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our ESMF \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against DoS are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the DoS attack, the system quickly recovers and requests for slices go through again.
+   \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our \acrshort{esmf} \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against \acrshort{dos} are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the \acrshort{dos} attack, the system quickly recovers and requests for slices go through again.
 
-   \item[\ref{E3}] \textbf{Application plane availability and resilience (2)} In this experiment we only sent about 3.000 requests per second to the ESMF \textit{/v1/slice} endpoint, requesting the creation and removal of slices. As expected, our requests apart from the first request got denied due to rate limiting. When attempting to request large quantities of resources we got denied due to resource limitations of our own identity.
+   \item[\ref{E3}] \textbf{Application plane availability and resilience (2)} In this experiment we only sent about 3.000 requests per second to the \acrshort{esmf} \textit{/v1/slice} endpoint, requesting the creation and removal of slices. As expected, our requests apart from the first request got denied due to rate limiting. When attempting to request large quantities of resources we got denied due to resource limitations of our own identity.
 
    When attempting to allocate resources from another identity that is not currently attacking, our slice request went through as normal. Our implementation thus passes this experiment.
 
@@ -279,7 +272,7 @@ We will perform the experiments in their numerical ordering.
 
 We thus passed all experiments that we concluded. Of course experiment \ref{E2} has been a planned failure, but confirms our suspicion that additional measures are needed here. Nonetheless \ref{A2} (and thus \ref{E2}) only affect slice creation and removal and can not affect already established slices.
 
-We thus conclude that our protection goal of availability (\ref{P3}) has been met, excluding slice creation and removal availability jeopardized by attacker \ref{A2}. The same applies to our protection goal of resilience (\ref{P4}), even though the recovery from DoS by attacker \ref{A2} is quick.
+We thus conclude that our protection goal of availability (\ref{P3}) has been met, excluding slice creation and removal availability jeopardized by attacker \ref{A2}. The same applies to our protection goal of resilience (\ref{P4}), even though the recovery from \acrshort{dos} by attacker \ref{A2} is quick.
 
 Our protection goals of confidentiality (\ref{P1}) and integrity (\ref{P2}) were not violated.
 
@@ -289,16 +282,16 @@ Due to our protection goals not being broken, we subsequently pass requirement \
     \begin{figure}[ht]
         \centering
         \includegraphics[width=\linewidth]{images/chapter_7/attackers_topo.png}
-        \caption[Placement of attackers in scenario S2 and S3]{This figure shows the placement of all attackers in our network slicing scenarios \ref{S2} and \ref{S3}. The red lines show links used by the attackers. The dotted links are bypass links for the attackers around the VPN gateways.}
+        \caption[Placement of attackers in scenario S2 and S3]{This figure shows the placement of all attackers in our network slicing scenarios \ref{S2} and \ref{S3}. The red lines show links used by the attackers. The dotted links are bypass links for the attackers around the \acrshort{vpn} gateways.}
         \label{fig:attackers_topo}
     \end{figure}
 \end{landscape}
 
 \subsection{Distributed coordination}
-In our design we feature an approach of distributed coordination, where each network domain performs its own decisions concerning resources and deployment of infrastructure. We thus feature a decentralized approach that only requires trust in other entities that they are going to behave according to protocol and honor their service level agreement (SLA). This matches the specification of requirement \ref{R2} which we subsequently pass.
+In our design we feature an approach of distributed coordination, where each network domain performs its own decisions concerning resources and deployment of infrastructure. We thus feature a decentralized approach that only requires trust in other entities that they are going to behave according to protocol and honor their service level agreement (\acrshort{sla}). This matches the specification of requirement \ref{R2} which we subsequently pass.
 
 \subsection{Compatibility}
-In our design and implementation we worked on the creation of VNFs separated by SDN planes. Due to the creation of many separate VNFs, porting one VNF (for example a switch implementation) to another vendor requires relatively few effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using OpenAPI, which will lower the effort for new implementations even more. By using common protocols like OpenFlow where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
+In our design and implementation we worked on the creation of \acrshort{vnf}s separated by \acrshort{sdn} planes. Due to the creation of many separate \acrshort{vnf}s, porting one \acrshort{vnf} (for example a switch implementation) to another vendor requires relatively few effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using Open\acrshort{api}, which will lower the effort for new implementations even more. By using common protocols like OpenFlow where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
 
 \subsection{Flexibility}
 As our domain coordinators can coordinate slices to any target network that is reachable, we can also request slices to any host residing in such a network as long as we are permitted to do so. As we can request as many slices as the domain coordinator and other parties allow us, we can theoretically communicate via multiple slices to multiple destinations at the same time. Requirement \ref{R4} is thus passed by our solution.

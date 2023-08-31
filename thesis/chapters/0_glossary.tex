@@ -1,9 +1,121 @@
-% Glossary entries
-\newglossaryentry{Software Defined Networking}
+\usepackage{glossaries}% Glossary entries
+\newglossaryentry{openflow}
 {
-    name=Software Defined Networking,
-    description={TBC}
+    name=OpenFlow,
+    description={Protocol to manage flows and obtain information from SDN capable switches}
+}
+
+\newglossaryentry{wireguard}
+{
+    name=wireguard,
+    description={Layer 3 tunnel commonly used to encrypt traffic between multiple participants}
+}
+
+\newglossaryentry{ovs}
+{
+    name=OpenVSwitch,
+    description={Virtual SDN switch implementation}
+}
+
+\newglossaryentry{ryu}
+{
+    name=RYU controller,
+    description={SDN controller implementation}
+}
+
+\newglossaryentry{openvpn}
+{
+    name=OpenVPN,
+    description={Layer 3 VPN solution following a client-server approach}
+}
+
+\newglossaryentry{ethertype}
+{
+    name=ethertype,
+    description={Type of an ethernet packet, as specified by the Internet Assigned Numbers Authority (IANA)}
+}
+
+\newglossaryentry{openapi}
+{
+    name=OpenAPI,
+    description={Provides a common format for REST API specifications}
+}
+
+\newglossaryentry{latency}
+{
+    name=latency,
+    description={The delay of a packet travelling from sender to receiver and back}
+}
+
+\newglossaryentry{jitter}
+{
+    name=jitter,
+    description={The mean deviation of latency in a transmission}
+}
+
+\newglossaryentry{bandwidth}
+{
+    name=bandwidth,
+    description={The amount of data that can be transmitted and received in a certain time window}
+}
+
+\newglossaryentry{lossrate}
+{
+    name=loss rate,
+    description={The percentage of packets lost in a network}
+}
+
+\newglossaryentry{edgenetwork}
+{
+    name=edge network,
+    description={A network located at the edge of a larger compound of networks, oftentimes including client devices}
+}
+
+\newglossaryentry{blacknetwork}
+{
+    name=black network,
+    description={A third party network we do not have insight into, acting as a transit network}
+}
+
+\newglossaryentry{dmz}
+{
+    name=demilitarized zone (DMZ),
+    description={An isolated network protected by a firewall at all entrances, but without protections inside}
+}
+
+\newglossaryentry{zerotrust}
+{
+    name=zero-trust,
+    description={The model of distrusting all tenant devices on a network, without exceptions}
 }
 
 % Acronyms
+\newacronym{iot}{IoT}{Internet of Things}
 \newacronym{sdn}{SDN}{Software Defined Networking}
+\newacronym{api}{API}{Application Programming Interface}
+\newacronym{rest}{REST}{Representational State Transfer}
+\newacronym{http}{HTTP}{Hypertext Transfer Protocol}
+\newacronym{nfv}{NFV}{Network Function Virtualization}
+\newacronym{vnf}{VNF}{Virtual Network Function}
+\newacronym{2pcp}{2PCP}{Two-phase Commit Protocol}
+\newacronym{vpn}{VPN}{Virtual Private Network}
+\newacronym{mpls}{MPLS}{Multi Protocol Label Switching}
+\newacronym{vlan}{VLAN}{Virtual Local Area Network}
+\newacronym{vxlan}{VXLAN}{Virtual Extensible Local Area Network}
+\newacronym{gre}{GRE}{Generic Routing Encapsulation}
+\newacronym{qos}{QoS}{Quality of Service}
+\newacronym{dos}{DoS}{Denial of Service}
+\newacronym{intserv}{IntServ}{Integrated Service}
+\newacronym{diffserv}{DiffServ}{Differentiated Service}
+\newacronym{tx}{TX}{Transmitter}
+\newacronym{udp}{UDP}{User Datagram Protocol}
+\newacronym{tcp}{TCP}{Transmission Control Protocol}
+\newacronym{icmp}{ICMP}{Internet Control Message Protocol}
+\newacronym{lxc}{LXC}{Linux Containers}
+\newacronym{ipv4}{IPv4}{Internet Protocol version 4}
+\newacronym{ipv6}{IPv6}{Internet Protocol version 6}
+\newacronym{sla}{SLA}{Service Level Agreement}
+\newacronym{esmf}{ESMF}{Edge Slice Management Function}
+\newacronym{dsmf}{DSMF}{Domain Slice Management Function}
+\newacronym{ctmf}{CTMF}{Core Tunnel Management Function}
+\newacronym{dtmf}{DTMF}{Domain Tunnel Management Function}

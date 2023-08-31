@@ -1,25 +1,8 @@
 \chapter{Introduction}
-\iffalse
-\begin{itemize}
-    \item Motivation $\rightarrow$ With threats
-    \begin{itemize}
-        \item Focus on the current IoT domain and the existence of critical communication channels
-        \item Provide example of remote surgery
-        \item State some threats to this communication channel (CIA) - those will be picked up and formalized in the related work chapter
-    \end{itemize}
 
-    \item Objective
-    \begin{itemize}
-        \item
-    \end{itemize}
+The current world of network architectures is experiencing a paradigm shift towards the internet of things (\acrshort{iot}) \cite{iot}, which provides new challenges to network engineers. A major challenge is the high volume of data that these \acrshort{iot} devices send through the network due to their quantity deployed. According to a study conducted by Transforma Insights, the number of \acrshort{iot} devices connected worldwide will double from 2023 to 2030, from 15.14 billion to 29.42 billion \cite{iotincrease}. To save bandwidth, the paradigm of edge computing \cite{edgecomputing} is gaining more and more importance, where formerly centralized infrastructure is being decentralized and deployed on the network edges to improve latency, save bandwidth and subsequently also cost.
 
-    \item Structure
-\end{itemize}
-\fi
-
-The current world of network architectures is experiencing a paradigm shift towards the internet of things (IoT) \cite{iot}, which provides new challenges to network engineers. A major challenge is the high volume of data that these IoT devices send through the network due to their quantity deployed. According to a study conducted by Transforma Insights, the number of IoT devices connected worldwide will double from 2023 to 2030, from 15.14 billion to 29.42 billion \cite{iotincrease}. To save bandwidth, the paradigm of edge computing \cite{edgecomputing} is gaining more and more importance, where formerly centralized infrastructure is being decentralized and deployed on the network edges to improve latency, save bandwidth and subsequently also cost.
-
-Another major challenge are the threats originating from IoT devices \cite{iotthreats}. Due to infrequent updates and devices that are possibly malicious from factory, the previously common view of a demilitarized zone (DMZ) on the edge network (for example a company network) has been shifting more towards a zero trust approach. The zero trust model \cite{zerotrust} assumes, that potentially all tenant devices of a network could be malicious and that no one should be trusted at any point in time. All actions thus have to be authenticated and authorized at all times.
+Another major challenge are the threats originating from \acrshort{iot} devices \cite{iotthreats}. Due to infrequent updates and devices that are possibly malicious from factory, the previously common view of a demilitarized zone (DMZ) on the edge network (for example a company network) has been shifting more towards a zero trust approach. The zero trust model \cite{zerotrust} assumes, that potentially all tenant devices of a network could be malicious and that no one should be trusted at any point in time. All actions thus have to be authenticated and authorized at all times.
 
 Appliance of the zero trust model can be especially important in critical contexts. One example that would come to mind would be remote surgery. In a remote surgery, the surgeon might be in another hospital than the patient. This can be important in remote areas where specialized surgeons may not be available or on the battlefield. When attackers manage to interrupt communications or even hijack the robot used to perform the surgery, patients could potentially have life-long impacts or pass away subsequently. Tamara Bonaci et al. \cite{remotesurgeryhijacking} showed that this can be achieved already using the example of the Raven II surgery robot.
 

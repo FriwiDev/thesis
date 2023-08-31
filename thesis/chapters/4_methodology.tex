@@ -1,21 +1,6 @@
 \chapter{Methodology}
 \label{methodology}
-\iffalse
-\begin{itemize}
-    \item Requirement validation as base methodology
-    \item Test environment (Discussion Mininet vs Distrinet vs our solution)
-    \item Protection goals (including metrics like bandwidth and latency)
-    \begin{itemize}
-        \item Questions that can be validated in chapter “Validation” => Protection goal list
-    \end{itemize}
-    \item Attackers
-    \item Deployments
-    \begin{itemize}
-        \item Full local deployment
-        \item Minimal distributed deployment (2 Hosts, 1 real-world SDN Switch)
-    \end{itemize}
-\end{itemize}
-\fi
+
 %\cgn{Is it more logical to move this Methodology after Implementation chapter and before Validation one? Naturally, after discussing the related work and discussing their limitation, one would expect to see the proposed solution (with Design and Implementation).}
 %\cfw{This chapter is basically split in two parts: Everything until 4.4 covers content that is needed for design and implementation. 4.5 to 4.7 then cover our validation methods. I thus see this chapter as more of a chronological order on how the solution was created and evaluated, before actually performing these actions. The role of the chapter is thus more directed at "what did we do after our research" for me rather than what is immediatly up next in the thesis. Maybe we can discuss this tomorrow in our meeting. It would sure be possible to move 4.5 to 4.7 to the beginning of chapter 7 without many issues.}
 To be able to accurately design, implement and validate our solution we will need to specify our methodology first. To achieve our goal we will use requirement validation as an overall strategy. Initially we defined our requirements as stated in section \ref{related_work_requirements}.
@@ -35,7 +20,7 @@ In the context of our networks, we will establish two different kinds of network
 \paragraph{Edge networks}
 are the origin and target of one specific network slice. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture following a zero trust approach, for example as a host established within our edge network.
 \paragraph{Black networks}
-lie between the edge networks and are operating under a service level agreement (SLA). There may be any number of black networks between two edges, including none. A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality or even integrity. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture following a zero trust approach, apart from potential eavesdropping or integrity violation attempts by the transport infrastructure of the black network.
+lie between the edge networks and are operating under a service level agreement (\acrshort{sla}). There may be any number of black networks between two edges, including none. A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality or even integrity. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture following a zero trust approach, apart from potential eavesdropping or integrity violation attempts by the transport infrastructure of the black network.
 
 Please note that that one specific network may play different roles for different network slices. One slice may pass through a black network that is also the origin (and thus edge network) of another slice.
 
@@ -84,7 +69,7 @@ Our attackers can also be seen in figure \ref{fig:attacker_model}.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{images/chapter_4/attacker_model.png}
-  \caption[Attacker model]{Our attacker model indicating their location per domain and SDN plane.}
+  \caption[Attacker model]{Our attacker model indicating their location per domain and \acrshort{sdn} plane.}
   \label{fig:attacker_model}
 \end{figure}
 \end{landscape}

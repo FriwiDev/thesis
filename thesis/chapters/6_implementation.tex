@@ -39,9 +39,9 @@ In this chapter we are going to be more specific about the details of our implem
 In this section we will focus on our specifications. First we will present our protocol specifications for each VNF, before providing communication examples to create and remove a slice.
 
 \subsection{OpenAPI specifications}
-To interconnect our VNFs, we will \cgn{use present or past tense from here instead?} use multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions \cite{openapi}. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project \cite{openapi-generator}. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations. There are other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI \cite{swaggerui} or Redocly \cite{redocly}.
+To interconnect our VNFs, we used multiple REST APIs. Our REST protocol specifications are conveniently provided via OpenAPI descriptions \cite{openapi}. OpenAPI is a project unifying the specification of web protocols by providing protocol descriptions in either JSON or YAML format. This way, our and future implementations of our protocols can auto-generate code to talk to our services for various languages by using the OpenAPI generator project \cite{openapi-generator}. OpenAPI generators take a protocol description and convert them to something else. This can be client or server implementations, but there are also other projects providing support to present the specifications in human-readable form to developers, such as SwaggerUI \cite{swaggerui} or Redocly \cite{redocly}.
 
-We provided \cgn{be consistent on the tense: past or present?} OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis (see appendix \ref{specifications}) in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
+We provided OpenAPI specifications for each service required by our design. The specifications can be found at the end of this thesis (see appendix \ref{specifications}) in human-readable form, or in the accompanying sources in JSON format. We chose to unify the implementations of ESMF and CTMF, as well as the implementations of DSMF and DTMF though, because their implementations are identical apart from enabling or disabling certain functionality.
 
 The basic endpoints of each component can be seen in the tables \ref{table:esmf} through \ref{table:vpn_gateway}. Further details on parameters and responses can be found at the end of this thesis in appendix \ref{specifications}.
 
@@ -236,7 +236,7 @@ As with the previous section, the entire process of removing a slice can also be
 \newpage
 
 \section{Components}
-In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers (small footprint containers running on the linux platform) \cite{lxc} for use in our testbed \cite{owntb}. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} \cite{iputils}, \textit{net-tools} \cite{net-tools}, \textit{iperf3} \cite{iperf3}, \textit{wireguard} \cite{wireguard}, \textit{tcpdump} \cite{tcpdump}, \textit{ifstat} (part of \textit{iproute2} \cite{iproute2}), \textit{hping3} \cite{hping3} and \textit{sockperf} \cite{sockperf}. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
+In general, all of our VNFs have been implemented using python. Any version higher than 3.8 should be compatible. The components are shipped as python packages and are pre-installed into LXC containers (small footprint containers running on the linux platform) \cite{lxc} for use in our validation later. All images come with preinstalled common software and utilities to be able to carry out our validation later and to realize our attackers. Currently included are \textit{iputils-ping} \cite{iputils}, \textit{net-tools} \cite{net-tools}, \textit{iperf3} \cite{iperf3}, \textit{wireguard} \cite{wireguard}, \textit{tcpdump} \cite{tcpdump}, \textit{ifstat} (part of \textit{iproute2} \cite{iproute2}), \textit{hping3} \cite{hping3} and \textit{sockperf} \cite{sockperf}. If a package is missing on certain components, it can be integrated by adapting the setup instructions if required.
 
 Some images have additional software apart from above. These and their functionality are stated here:
 \paragraph{Application plane components} All components on the application plane (ESMF, CTMF, DSMF, DTMF) have their designated server implementation running, performing their coordination and management duties described in section \ref{impl_specification}.
@@ -246,14 +246,14 @@ Some images have additional software apart from above. These and their functiona
 
 \section{Concepts and configuration}
 \label{impl_concepts}
-Now that we established how we wish to deploy tunnels and slices, we still need to specify how the exact configuration on the hardware should be performed.
+Now that we established how we wish to deploy tunnels and slices, we still needed to specify how the exact configuration on the hardware should be performed.
 
 For simplicity of our implementation, we do not deploy bi-directional slices or tunnels, but rather deploy two uni-directional slices or tunnels to build one single bi-directional one.
 
 A summary of all the flow rules can be seen in figures \ref{fig:routing_source}, \ref{fig:routing_destination} and \ref{fig:routing_bn}.
 
 \subsection{General switch configuration}
-We will specify ingress limits on all interfaces, setting the maximum allowed rate and burst to 1Gbit/s. This can of course be adapted for other use cases in the future. This will be realised by OVS using a token bucket filter. This way the maximum needed computational capacity of our switch can be evaluated better and an upper limit is provided.
+To configure a switch we first specify ingress limits on all interfaces, setting the maximum allowed rate and burst to 1Gbit/s. This can of course be adapted for other use cases in the future. This is realised by OVS using a token bucket filter. This way the maximum needed computational capacity of our switch can be evaluated better and an upper limit is provided.
 
 \subsection{Slice configuration}
 Slices are configured by deploying flows to our slice switches. For this, we install queues to be used by our flows on each switch participating in the slice first that will then be used by our slice flows. To begin creating the flows the switches are first assigned roles.
@@ -290,7 +290,7 @@ Depending on the role we then deploy the following rules (see figure \ref{fig:ro
 
 \paragraph{DST\_ALL and DST\_EXIT} Will verify that a packet matches a slice by checking the slice id MPLS label and the inbound interface. Will then remove the slice id MPLS label and forward the packet to the next hop. This way the destination host will receive the original packet without any MPLS labels or other additional headers attached to it.
 
-\paragraph{} All switches may also forward traffic on a default slice, where all other traffic resides. This is however not subject to our coordination and thus also not part of our implementation. The default slices will thus be manually configured in our experiments with adequate resource limitations to not impede on our isolated slices. This feature could be added to the implementation in the future to dynamically resize the default slice and to not underprovision the traffic allocation to all other devices. Without any additional configuration currently all other traffic is blocked.
+\paragraph{} All switches may also forward traffic on a default slice, where all other traffic resides. This is however not subject to our coordination and thus also not part of our implementation. The default slices will thus be manually configured in our validation experiments later with adequate resource limitations to not impede on our isolated slices. This feature could be added to the implementation in the future to dynamically resize the default slice and to not underprovision the traffic allocation to all other devices. Without any additional configuration currently all other traffic is blocked.
 
 \paragraph{} As one can see, there are multiple switch roles per network that employ the same rules. This has been implemented this way to provide flexibility for future adaptions, so that potentially different routing rules can be realized in the future, where these roles would not behave identical. There always has to be at least one switch on the source network and on the destination network before and after the VPN gateway respectively however.
 
@@ -314,7 +314,7 @@ We will, if there are any switches, assign the same roles as with the slice sour
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=10cm]{images/chapter_6/routing_bn.png}
+  \includegraphics[width=\linewidth]{images/chapter_6/routing_bn.png}
   \caption[Routing on the black networks]{The routing rules on the black networks for the switches according to their roles. The dotted lines to the left lead to the source edge network and the dotted lines on the right lead to the destination edge network.}
   \label{fig:routing_bn}
 \end{figure}
@@ -336,7 +336,9 @@ For the reverse direction it will match for the correct ingress interface, UDP p
 \paragraph{} Concerning the traffic forwarding on a default slice, the same applies as with the source and destination edge networks. Please note however that the VPN gateways will never forward any traffic. Therefore, routing of a default slice (when configured manually) has to be routed around the VPN gateways, for example by using a different link between a \textit{SRC\_EXIT} and \textit{BN\_ENTRY} switch (or other valid combinations).
 
 \section{Lessons learned}
-Of course we stumbled into some issues while implementing our solution. We will discuss them here and present their solution, so that future developers will not face the same issues. We will begin with MTU considerations and MPLS label popping in OpenFlow, before presenting checksum offloading issues and write queue overflows in the linux kernel. \cgn{Maybe instead of Challenges, change the heading to Lessons learned. Challenges sound like unsolved problems. However, in this case you faced issues and had solutions for those.}
+Of course we stumbled into some issues while implementing our solution. We will discuss them here and present their solution, so that future developers will not face the same issues. We will begin with MTU considerations and MPLS label popping in OpenFlow, before presenting checksum offloading issues and write queue overflows in the linux kernel.
+
+%\cgn{Maybe instead of Challenges, change the heading to Lessons learned. Challenges sound like unsolved problems. However, in this case you faced issues and had solutions for those.}
 
 \subsection{MTU considerations}
 Maybe one of the most obvious issues are MTU considerations. Our multiple MPLS and GRETAP headers (see figure \ref{fig:packet_structure}) will attach information to packets, alongside the additional encapsulation by wireguard. When packets get close to the network MTU in size, this can lead to fragmentation of packets that would otherwise fit in the MTU. In our case, packets would no longer be delivered after being fragmented. To combat this, a lower MTU than the network MTU should be applied on the hosts. We chose 1300 in our host LXC container image, which is 200 byte smaller than the network MTU. Slightly higher values might be possible, but this has not been investigated.
@@ -344,7 +346,7 @@ Maybe one of the most obvious issues are MTU considerations. Our multiple MPLS a
 \begin{figure}[hp]
   \centering
   \includegraphics[width=10cm]{images/chapter_6/packet_structure.png}
-  \caption[Additional headers of packets]{This figure shows the additional headers that a packet receives while traveling through our architecture according to the routing rules specified in section \ref{impl_concepts}. These additional headers decrease our MTU for packets that we can accept. Our payload is in black, layer two to four headers in red and MPLS headers are in blue. Gray is used to indicate encrypted content within the wireguard tunnel, acting as a payload for the tunnel.}
+  \caption[Additional headers of packets]{This figure shows the additional headers that a packet receives while traveling through our architecture according to the routing rules specified in section \ref{impl_concepts}. These additional headers decrease our MTU for packets that we can accept. Our payload is in white, layer two to four headers in red and MPLS headers are in blue. Gray is used to indicate encrypted content within the wireguard tunnel, acting as a payload for the tunnel.}
   \label{fig:packet_structure}
 \end{figure}
 
@@ -361,10 +363,10 @@ ethtool --offload $INTF_NAME tx off
 More information on this can be found in the linux kernel documentation \cite{txoffload}.
 
 \subsection{Write queue overflow}
-While testing in our local slicing scenario \ref{S2}, we noticed that packets were being dropped on the VPN gateway. We got curious about this, because traffic from the adversaries was not even flowing through the VPN gateways, but would rather flow around them (as described in section \ref{impl_tunnel_config}). This made no sense in the beginning. We noticed that packets were received by the VPN gateway, but were dropped on the tunnel interface before entering the wireguard tunnel.
+While testing our slicing architecture locally, we noticed that packets were being dropped on the VPN gateway. We got curious about this, because traffic from the adversaries was not even flowing through the VPN gateways, but would rather flow around them (as described in section \ref{impl_tunnel_config}). This made no sense in the beginning. We noticed that packets were received by the VPN gateway, but were dropped on the tunnel interface before entering the wireguard tunnel.
 
 Our first measure was to increase the TX (write) queue size, which improved the result but still saw dropped packets. After trying some other approaches which all failed to solve the problem, we finally found the solution.
 
 By pinning the adversaries to certain CPU threads that they can use, the TX queue would no longer overflow. Interesting was, that we could even pin the attackers to all but one thread to stop packets from dropping. We assume that this happens due to CPU spikes caused by the adversaries while using \textit{hping3}, which stole enough computational time from the VPN gateways to make them drop packets.
 
-Subsequently we stuck to the CPU pinning of the attackers, but still assigned all but one or two threads to them which has next to negligible impact on them (see the experiment descriptions for the thread assignment to adversaries). This is also a realistic approach, as usually in a real-world network, attackers would not share the same CPU with our switches or VPN gateways. This can not be the case in container setups, but there one could simply also apply limits to containers as is common practice anyways in modern setups.
+Subsequently we stuck to the CPU pinning of the attackers, but still assigned all but one or two threads to them which should have next to negligible impact and is more than generous (30 out of 32 threads and 3 out of 4 threads in our tests). This is also a realistic approach, as usually in a real-world network, attackers would not share the same CPU with our switches or VPN gateways. This may not always be the case in container setups, but there one could simply also apply limits to containers as is common practice anyways in modern setups.

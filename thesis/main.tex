@@ -7,7 +7,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{tabularx}
 \usepackage{pdflscape}
-\usepackage{glossaries}
+\usepackage[acronym]{glossaries}
 \usepackage{float}
 \emergencystretch=1em
 
@@ -69,24 +69,24 @@
 \addbibresource{bibliographies/4_methodology.bib}
 \addbibresource{bibliographies/6_implementation.bib}
 
-\title{Thesis}
-\author{Fritz Windisch}
-\date{September 2023}
-
 % Glossary and acronyms
-\makeglossaries
 \loadglsentries{chapters/0_glossary}
+\makeglossaries
 
 \begin{document}
 
-\maketitle
+\pagenumbering{gobble}
+\include{title}
+\cleardoublepage
+\pagenumbering{arabic}
+
 \include{chapters/0_abstract}
 \include{chapters/0_statement_of_authorship}
 \include{chapters/0_acknowledgements}
 
 % Print glossaries and acronyms
 \clearpage
-\printglossary
+\printglossary[type=main, title={Glossary}]
 \printglossary[type=\acronymtype, title=Acronyms]
 
 \tableofcontents

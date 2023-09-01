@@ -7,34 +7,38 @@ To be able to accurately design, implement and validate our solution we will nee
 
 In this chapter we will thus define a network model, our protection goals and attackers. Our validation methodology is stated later in section \ref{validation_methodology}.
 
+
 \section{Network model}
 In the context of our networks, we will establish two different kinds of networks.
 
 \begin{figure}[ht]
-  \centering
-  \includegraphics[width=\textwidth]{images/chapter_4/network_model.png}
-  \caption[Network model]{Our network model showing the separation of trusted edge networks and semi-trusted black networks. While edge networks are the source and target of our network slice traffic, black networks act as transit networks. There can be multiple black networks between our edge networks, but for simplicity reasons only one of them is indicated in the figure.}
-  \label{fig:network_model}
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter_4/network_model.png}
+    \caption[Network model]{Our network model showing the separation of trusted \gls{edgenetwork}s and semi-trusted \gls{blacknetwork}s. While \gls{edgenetwork}s are the source and target of our network slice traffic, \gls{blacknetwork}s act as transit networks. There can be multiple \gls{blacknetwork}s between our \gls{edgenetwork}s, but for simplicity reasons only one of them is indicated in the figure.}
+    \label{fig:network_model}
 \end{figure}
 
 \paragraph{Edge networks}
-are the origin and target of one specific network slice. Each edge network is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture following a zero trust approach, for example as a host established within our edge network.
-\paragraph{Black networks}
-lie between the edge networks and are operating under a service level agreement (\acrshort{sla}). There may be any number of black networks between two edges, including none. A black network acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the black network will act according to protocol, but it might be interested in breaking confidentiality or even integrity. As with our edge networks, we expect attackers to be established outside of the switching and slicing architecture following a zero trust approach, apart from potential eavesdropping or integrity violation attempts by the transport infrastructure of the black network.
+are the origin and target of one specific network slice. Each \gls{edgenetwork} is partially trusted by us, because we or another trusted party operate the core infrastructure. We only expect threats from adversaries outside of our switches or slicing architecture following a \gls{zerotrust} approach, for example as a host established within our \gls{edgenetwork}.
 
-Please note that that one specific network may play different roles for different network slices. One slice may pass through a black network that is also the origin (and thus edge network) of another slice.
+\paragraph{Black networks}
+lie between the \gls{edgenetwork}s and are operating under a service level agreement (\acrshort{sla}). There may be any number of \gls{blacknetwork}s between two edges, including none. A \gls{blacknetwork} acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the \gls{blacknetwork} will act according to protocol, but it might be interested in breaking confidentiality or even integrity. As with our \gls{edgenetwork}s, we expect attackers to be established outside of the switching and slicing architecture following a \gls{zerotrust} approach, apart from potential eavesdropping or integrity violation attempts by the transport infrastructure of the \gls{blacknetwork}.
+
+Please note that that one specific network may play different roles for different network slices. One slice may pass through a \gls{blacknetwork} that is also the origin (and thus \gls{edgenetwork}) of another slice.
 
 Our network model can also be seen in figure \ref{fig:network_model}.
 
+
 \section{Protection Goals}
 \label{protection_goals}
-The next question we posed was what we actually want to protect from our attackers. In general we want to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include bandwidth, latency, jitter, loss rate and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our edge networks. We do not require this protection on our edge networks, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
+The next question we posed was what we actually want to protect from our attackers. In general we want to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include \gls{bandwidth}, \gls{latency}, \gls{jitter}, \gls{lossrate} and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our \gls{edgenetwork}s. We do not require this protection on our \gls{edgenetwork}s, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{P1}{P1}] \textbf{Confidentiality} Traffic needs to be protected from disclosure outside of the edge networks.
-    \item[\namedlabel{P2}{P2}] \textbf{Integrity} Traffic needs to be protected from modification by attackers outside of our path on the edge networks and from attackers on the black network.
+    \item[\namedlabel{P1}{P1}] \textbf{Confidentiality} Traffic needs to be protected from disclosure outside of the \gls{edgenetwork}s.
+    \item[\namedlabel{P2}{P2}] \textbf{Integrity} Traffic needs to be protected from modification by attackers outside of our path on the \gls{edgenetwork}s and from attackers on the \gls{blacknetwork}.
     \item[\namedlabel{P3}{P3}] \textbf{Availability} Slices need to be available for communication and deliver packets to the recipient at all times during their lifespan.
-    \item[\namedlabel{P4}{P4}] \textbf{Resilience} Slices need to provide their guaranteed network resources with their specified bandwidth, latency, jitter and loss rate, even when the network is under attack.
+    \item[\namedlabel{P4}{P4}] \textbf{Resilience} Slices need to provide their guaranteed network resources with their specified \gls{bandwidth}, \gls{latency}, \gls{jitter} and \gls{lossrate}, even when the network is under attack.
 \end{description}
+
 
 \section{Threats and Attackers}
 \label{adversaries}
@@ -46,7 +50,7 @@ As previously mentioned, Ruxandra Olimid et. al \cite{SE2} classified threats to
 
 \paragraph{Life-cycle threats} For life-cycle threats we will introduce two attackers, one spamming our application plane with arbitrary requests and one spamming our slice coordinators with valid requests. We hope to achieve denial of service for new slice registrations with the first attacker and an overload of network resources by the second attacker.
 
-\paragraph{Intra-slice threats} As the last two attackers we will consider attackers attempting to eavesdrop or violate integrity within one of the black networks between our two edge networks. The eavesdropping attacker will only observe traffic attempting to break confidentiality. The integrity attacker will however try to replay and craft new messages (including sending modified packets additionally). Dropping and modifying packets should not be supported by the attacker, as we can not compensate for the subsequently lost packets while only using a single path without resending packets, potentially violating resource guarantees. Eavesdroppers and integrity attackers are not expected on our edge networks, as we trust our local environment infrastructure (but not all tenants).
+\paragraph{Intra-slice threats} As the last two attackers we will consider attackers attempting to eavesdrop or violate integrity within one of the \gls{blacknetwork}s between our two \gls{edgenetwork}s. The eavesdropping attacker will only observe traffic attempting to break confidentiality. The integrity attacker will however try to replay and craft new messages (including sending modified packets additionally). Dropping and modifying packets should not be supported by the attacker, as we can not compensate for the subsequently lost packets while only using a single path without resending packets, potentially violating resource guarantees. Eavesdroppers and integrity attackers are not expected on our \gls{edgenetwork}s, as we trust our local environment infrastructure (but not all tenants).
 
 \paragraph{Exclusions} As it has already been the case with the attacker on integrity, we do not consider active in-path attackers (apart from the integrity attacker), as they could disrupt communication at any time. If resilience against these kinds of attacks is needed, the solution would need to be extended to include multiple paths. This is however out of scope for this thesis. Apart from all components and links used by the network slice, in-path attackers contain our entire application plane, as any component of the application plane that participates in a slice could instruct other components to disrupt the connection or disrupt the connection themselves. To compensate this, routing via multiple alternative paths would be required, introducing redundancy to the network.
 
@@ -59,17 +63,17 @@ There are also no attackers on our control plane, because all control plane comp
     \item[\namedlabel{A1}{A1}] \textbf{Slice availability and resilience} Overloads the network by sending a lot of traffic through another slice that has shared components and network links with our slice that should be protected. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
     \item[\namedlabel{A2}{A2}] \textbf{Application plane availability and resilience (1)} Spams invalid slice requests on the exposed application plane components attempting to disrupt the creation of new slices. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
     \item[\namedlabel{A3}{A3}] \textbf{Application plane availability and resilience (2)} Spams valid authenticated slice requests on the exposed application plane components attempting to overload the network by capacity or frequent slice creation and removal. Attacks protection goals \ref{P3} (availability) and \ref{P4} (resilience).
-    \item[\namedlabel{A4}{A4}] \textbf{Slice confidentiality} Attempts to eavesdrop within one of the black networks. Attacks protection goal \ref{P1} (confidentiality).
-    \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the black networks by replaying or sending additional packets. Will not modify or drop packets, but may send modified packets as additional packets. Attacks protection goal \ref{P2} (integrity).
+    \item[\namedlabel{A4}{A4}] \textbf{Slice confidentiality} Attempts to eavesdrop within one of the \gls{blacknetwork}s. Attacks protection goal \ref{P1} (confidentiality).
+    \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the \gls{blacknetwork}s by replaying or sending additional packets. Will not modify or drop packets, but may send modified packets as additional packets. Attacks protection goal \ref{P2} (integrity).
 \end{description}
 
 Our attackers can also be seen in figure \ref{fig:attacker_model}.
 
 \begin{landscape}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{images/chapter_4/attacker_model.png}
-  \caption[Attacker model]{Our attacker model indicating their location per domain and \acrshort{sdn} plane.}
-  \label{fig:attacker_model}
-\end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=\linewidth]{images/chapter_4/attacker_model.png}
+        \caption[Attacker model]{Our attacker model indicating their location per domain and \acrshort{sdn} plane.}
+        \label{fig:attacker_model}
+    \end{figure}
 \end{landscape}

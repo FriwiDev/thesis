@@ -5,8 +5,8 @@ Considering our remote surgery example and the threats we face, we now want to e
 %In this chapter we will establish some common terms concerning the technical background of this thesis. First we will describe our domain of network security and edge computing, before introducing key technologies that have been used such as software defined networks (\acrshort{sdn}), network function virtualization (\acrshort{nfv}), service function chaining (SFC), virtual private networks (\acrshort{vpn}) and multi protocol label switching (\acrshort{mpls}). Lastly we will focus on concepts like quality of service (\acrshort{qos}) and network slicing.
 
 %\cgn{The current content of the background already contain good building blocks. However, it is hard to see the coherent connections between the blocks. I suggest a different order of writing: \begin{enumerate}
-%    \item Use case: Human-Machine (or robot) interaction -- HCI (?) -- because networks are built for a purpose. And the purpose here is real-time communication between humans and robots, requiring multiple modalities (video, video, control, haptics, etc.). Multiple modalities with different requirements on bandwidths, delay, jitter, etc. raise the need for \acrshort{qos} and slicing.
-%    \item Network domains and edge computing: to enable low-latency communication with direct edge-to-edge connections via autonomous systems. This sections, therefore, includes enabling technologies, such as \acrshort{nfv}/\acrshort{sdn}
+%    \item Use case: Human-Machine (or robot) interaction -- HCI (?) -- because networks are built for a purpose. And the purpose here is real-time communication between humans and robots, requiring multiple modalities (video, video, control, haptics, etc.). Multiple modalities with different requirements on \gls{bandwidth}s, delay, jitter, etc. raise the need for \acrshort{qos} and slicing.
+%    \item Network domains and edge computing: to enable low-\gls{latency} communication with direct edge-to-edge connections via autonomous systems. This sections, therefore, includes enabling technologies, such as \acrshort{nfv}/\acrshort{sdn}
 %    \item \acrshort{mpls} (for tunneling / routing between AS) and \acrshort{vpn}
 %    \item Service differentiation (\acrshort{qos}, slicing)
 %    \item (Network) Security, especially for mission critical use cases. At this point, it is natural to discuss the (security) requirements for the systems or networks you will discuss in Related work.
@@ -14,6 +14,7 @@ Considering our remote surgery example and the threats we face, we now want to e
 %By the way, I am unsure about the role of \acrshort{2pcp} and SFC in this thesis. However, it is possible that I didn't read it through. Therefore, as long as you can find a logical order for them, it should be good.
 %}
 %\cfw{I tried to spin the order by the three categories I used, structuring the content by the similarity of role in this thesis. Maybe the story reference could be placed in the beginning of the background and I could introduce the story as motivation in the introduction. I guess I could still spin the story in a way that it makes sense to begin with network security though, because consequences of failure could have been averted by designing the network with security in mind, introducing our domain. Then we can go to edge-computing to understand in which domain we are working. ("But to understand how we can secure our communications in the future, we must first understand or domain...") Then I could move up the concepts to say "this is how we could have had more security" and then state the building blocks (enabling technologies) that will help us build a better solution. This way I could connect all the blocks with a story by stating their relevance in the beginning and providing some links. Does that sound like a good idea? :) }
+
 
 \section{Domain}
 Considering our domain we locate ourselves in the network security context. We will thus first shed some light on this topic, because without knowing what security is we can not claim that something is secure. Afterwards we will focus on our general network architecture that we wish to secure communications on, which is edge computing.
@@ -24,10 +25,15 @@ In order to secure communications in a network, we have to first define what net
 Another view on network security can be from the cryptographical standpoint \cite{netsec}. Cryptography plays a key role in network security, because it can be used to achieve four of the major goals of security in network contexts: confidentiality, integrity, authentication and non-repudiation \cite{cryptography}. In this context often times security games are played to define what an attacker may know or not know at a certain point of a secure protocol, e.g. a key exchange, and what the attacker can possibly guess \cite{games}. The assumption generally is, that while some parties are honest and behaving according to protocol, some malicious actors will participate in the protocol. These malicious actors should (hopefully) never reach their goal concerning the protection goals from above.
 
 So while the two views presented so far are of different nature, what combines them is the set of major protection goals on a network. Here are some of the most noteworthy \cite{goals}:
+
 \paragraph{Confidentiality} Information that is only meant to be viewed by certain parties must not be disclosed to other parties.
+
 \paragraph{Integrity} Information has to be protected against modification or forgery by malicious actors.
+
 \paragraph{Availability} Information has to be available according to the service specifications.
+
 \paragraph{Controlled access} Actors must not be able to perform actions on objects they are not permitted to.
+
 \paragraph{Non-repudiation} Actors must not be able to claim that they did not take part in an action.
 
 \cts{one could argue that authentication is less of a goal than a service, but controlled access would be a goal (note the Schaefer/Rossberg book, which picks the five of CIA + controlled access + non-rep ;)}
@@ -63,28 +69,35 @@ In our use case, we wish to communicate between two networks that are connected 
 
 Edge computing \cite{edgecomputing} refers to this relatively new approach, performing computations at the network edges, closer to the end user. As previously mentioned, the internet of today still follows a mostly centralized approach with servers clustered in data centers while users remain at the edges of the network.
 
-This provides some challenges to the network though, because the traffic has to be transported over long distances. This has significant impact on latency, bandwidth at central hubs, security and privacy. By moving the computational resources (e.g. servers) closer to the user at the network edge, we can reply to requests from the user with less delay, with less transportation distance (and thus cost) and with more security and privacy in mind due to decentralization.
+This provides some challenges to the network though, because the traffic has to be transported over long distances. This has significant impact on \gls{latency}, \gls{bandwidth} at central hubs, security and privacy. By moving the computational resources (e.g. servers) closer to the user at the network edge, we can reply to requests from the user with less delay, with less transportation distance (and thus cost) and with more security and privacy in mind due to decentralization.
 
 This also reduces the possible single points of failure because there is no central infrastructure anymore that could render a service unusable for all users. Edge computing has gained additional traction in recent developments due to the emergence of \acrshort{iot} in our everyday lifes. With a lot of data being collected by \acrshort{iot} devices, edge computing can be used to bundle all traffic generated by a users \acrshort{iot} devices closer to their origin, reducing the overall load of networks and thus their operational cost.
+
 
 \section{Concepts}
 \label{bg_concepts}
 Next, we will focus on the central concepts that we can use to secure our communications in the edge computing context. For this, we need to know what a good and stable communications channel is compared to a bad one. Therefore we will introduce quality of service (\acrshort{qos}) and different metrics associated with it. Afterwards we are going to establish network slicing as a concept to help us guarantee meeting certain \acrshort{qos} parameters for our communications, which will help us eliminate our threats later.
 
 \subsection{Quality of Service (QoS)}
-% TODO: Maybe find a better base source for this chapter? --> It is hard to find a good source for such an old and basic term, thus the IP has been included for intial references of latency (delay), throughput and loss rate (high-reliability). The main qos source mentions the 4 terms below (as many other papers do).
+% TODO: Maybe find a better base source for this chapter? --> It is hard to find a good source for such an old and basic term, thus the IP has been included for intial references of \gls{latency} (delay), throughput and \gls{lossrate} (high-reliability). The main qos source mentions the 4 terms below (as many other papers do).
 For now, we just talked about securing our communications to always have an usable connection. But so far we have not talked about how a connection can be guaranteed to remain usable at all times. For this, the concept of quality of service (\acrshort{qos}) has been created.
 
 Quality of service \cite{qos, rfc791} refers to assigning traffic to flows for which certain guarantees are to be uphold. These guarantees are usually measured in different metrics, of which the major four are outlined here:
+
 \paragraph{Latency} The two-way delay for a packet travelling from flow start to finish and back.
-\paragraph{Jitter} The mean deviation of latency from the mean latency (standard deviation).
+
+\paragraph{Jitter} The mean deviation of \gls{latency} from the mean \gls{latency} (standard deviation).
+
 \paragraph{Throughput} The number of bits transferable in one direction via the traffic flow in a certain time.
-\paragraph{Loss rate} The number of lost packets divided by the total amount of packets. The loss rate is especially relevant in contexts where data needs to be transmitted again when lost, because the lost data will then need to be requested again and will be delivered delayed, thus at least doubling the latency.
+
+\paragraph{Loss rate} The number of lost packets divided by the total amount of packets. The \gls{lossrate} is especially relevant in contexts where data needs to be transmitted again when lost, because the lost data will then need to be requested again and will be delivered delayed, thus at least doubling the \gls{latency}.
 
 \paragraph{}Securing these guarantees is an important task in network security, as violation of them could result in service level agreements (\acrshort{sla}s) being broken and violation of availability as one of our main goals.
 
 To determine the flow for a certain packet, two main approaches exist \cite{serv}:
-\paragraph{\acrshort{intserv}} Integrated Services \cite{rfc1633} negotiate flows beforehand with all participating network nodes. Packets are then assigned to flows based on pre-negotiated parameters. The advantage of this approach is that bandwidth and other assigned guarantees can be planned by the participating network providers in advance.
+
+\paragraph{\acrshort{intserv}} Integrated Services \cite{rfc1633} negotiate flows beforehand with all participating network nodes. Packets are then assigned to flows based on pre-negotiated parameters. The advantage of this approach is that \gls{bandwidth} and other assigned guarantees can be planned by the participating network providers in advance.
+
 \paragraph{\acrshort{diffserv}} Differentiated Services \cite{rfc2474} on the other hand match quality of service on a per packet basis, normally by using the \acrshort{ipv4}/\acrshort{ipv6} differentiated services (DS) header field. The advantage of this approach is that it provides flexibility to the sender of packets who can assign priorities per packet. The disadvantage is of course that network operators can not plan ahead accurately before packets arrive and providing guarantees will be challenging.
 
 \subsection{Network Slicing}
@@ -93,6 +106,7 @@ Now that we know what we can guarantee to a communication flow, we still have to
 Network Slicing \cite{slicing} refers to partitioning part of the resources of a network to new virtual networks. Partitioned resources can include network resources, computational resources and storage resources. The result are multiple virtual networks that each have a slice of the resources of the underlying network available and guaranteed to them. In order to guarantee these resources to the owners of a slice, the slices need to be isolated from a resource perspective.
 
 The latest developments in the field are part of the 5G standard, where applications can request slices of network resources to leverage uninterrupted communication afterwards. Apart from 5G also other applications leverage this approach already, for example by partitioning network links on nodes with multiple virtual machines.
+
 
 \section{Enabling technologies}
 In our concepts (section \ref{bg_concepts}) we stated that we want to isolate communication flows by performing network slicing. But in order to create network slices, we need technologies supporting us at this task. We will first focus on how we can orchestrate such a dynamic network, focusing on software defined networking (\acrshort{sdn}), network function virtualization (\acrshort{nfv}) and synchronization paradigms such as the two-phase commit protocol (\acrshort{2pcp}). Afterwards we will discuss some means to provide private and resource isolated communications through multiple networks in the form of virtual private networks (\acrshort{vpn}).
@@ -107,17 +121,17 @@ To achieve this, software defined networking partitions the network into three m
 %\cfw{I changed "layer" to "part of the infrastructure" below - hopefully now everything is correct :)}
 
 \begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{images/chapter_2/sdn.png}
-  \caption[Software defined networking (\acrshort{sdn})]{The three planes of software defined networks: application plane, control plane and data plane. Application and control plane are connected via northbound \acrshort{api}s, while control and data plane are connected via southbound \acrshort{api}s like OpenFlow.}
-  \label{fig:sdn}
+    \centering
+    \includegraphics[width=\linewidth]{images/chapter_2/sdn.png}
+    \caption[Software defined networking (\acrshort{sdn})]{The three planes of software defined networks: application plane, control plane and data plane. Application and control plane are connected via northbound \acrshort{api}s, while control and data plane are connected via southbound \acrshort{api}s like \Gls{openflow}.}
+    \label{fig:sdn}
 \end{figure}
 
 \paragraph{Data plane} This is the part of the infrastructure actually performing the work on the data to be transmitted. It is usually being realized by switches or other hardware that is used to perform work on the network traffic itself.
 
 \paragraph{Control plane} The control plane consists of \acrshort{sdn} controllers that instruct the data plane components on how to handle data via a so called southbound \acrshort{api}. The data plane components will also contact the control plane when instructions for a certain type of traffic are needed that no rules have been defined for yet.
 
-A commonly used protocol and the defacto standard for this southbound \acrshort{api} is called OpenFlow \cite{openflow} and is currently supported by a wide range of \acrshort{sdn} capable switches. With OpenFlow, traffic is being classified into flows via flow matching tables. After traffic has been assigned to a flow, the actions that have been defined for this flow will be applied on the traffic by the data plane components. Actions include dropping traffic, queuing traffic, outputting traffic on a specific port and modifying traffic in various ways.
+A commonly used protocol and the defacto standard for this southbound \acrshort{api} is called \Gls{openflow} \cite{openflow} and is currently supported by a wide range of \acrshort{sdn} capable switches. With OpenFlow, traffic is being classified into flows via flow matching tables. After traffic has been assigned to a flow, the actions that have been defined for this flow will be applied on the traffic by the data plane components. Actions include dropping traffic, queuing traffic, outputting traffic on a specific port and modifying traffic in various ways.
 
 \paragraph{Application plane} This plane is used to configure the \acrshort{sdn} controllers via a northbound \acrshort{api}. This can include end applications and users that want to manage and monitor the network.
 
@@ -146,17 +160,16 @@ Now the coordinator will proceed to the completion phase and can observe two dif
 
 The two-phase commit protocol can not recover from a failure of the coordinator during the entire transaction or a participant during the commit phase, making it possible that an invalid state is left after a failure. We will talk about we how we can secure this later in the thesis.
 
-
 \subsection{Virtual Private Networks (VPN)}
 In order to isolate our communications and guarantee our network resources, we will use virtual private networks (\acrshort{vpn}s).
 
-A virtual private network \cite{vpn} is a virtual network overlayed on top of a real-world network providing private communication channels between their participants. With a lot of \acrshort{vpn} approaches and implementations in existence, they can still be distinguished by classifying them per network layer. For example there are optical \acrshort{vpn} on the physical network layer, tunnels like multi protocol label switching (\acrshort{mpls}, see section \ref{mpls}) on the ethernet layer and tunnels like wireguard \cite{wireguard} on the IP layer. While some only participate in routing (e.g. \acrshort{mpls}), others may also encrypt traffic (e.g. wireguard). Which \acrshort{vpn} is the correct choice thus heavily depends on the use case.
+A virtual private network \cite{vpn} is a virtual network overlayed on top of a real-world network providing private communication channels between their participants. With a lot of \acrshort{vpn} approaches and implementations in existence, they can still be distinguished by classifying them per network layer. For example there are optical \acrshort{vpn} on the physical network layer, tunnels like multi protocol label switching (\acrshort{mpls}, see section \ref{mpls}) on the ethernet layer and tunnels like \gls{wireguard} \cite{wireguard} on the IP layer. While some only participate in routing (e.g. \acrshort{mpls}), others may also encrypt traffic (e.g. \gls{wireguard}). Which \acrshort{vpn} is the correct choice thus heavily depends on the use case.
 
-\paragraph{Wireguard} One of the most prominent \acrshort{vpn} solutions used today is wireguard \cite{wireguard}. Wireguard builds a tunnel between multiple participants (can be more than two) which then form a new virtual network. The participants can then communicate via the encrypted channels established by wireguard, which can thus traverse untrusted terrain without the fear of someone obtaining confidential information \cite{wireguard}.
+\paragraph{Wireguard} One of the most prominent \acrshort{vpn} solutions used today is \gls{wireguard} \cite{wireguard}. \Gls{wireguard} builds a tunnel between multiple participants (can be more than two) which then form a new virtual network. The participants can then communicate via the encrypted channels established by \gls{wireguard}, which can thus traverse untrusted terrain without the fear of someone obtaining confidential information \cite{wireguard}.
 
-Furthermore wireguard also provides protections against attacks on integrity of data according to their whitepaper \cite{wireguard}. An attacker may not produce ciphertext themselves, because traffic is encrypted and guessing valid ciphertext that will successfully decrypt "has a negligible probability" \cite{wireguardcrypto}. To achieve protection against replaying of packets, they use nonces that are never reused but accepted in a historical window of about 2000 entries \cite{wireguardproto}. When a packet has already been received, subsequent packets are thus dropped. An attacker may however drop certain packets if he chooses to do so, which the tunnel can of course not recover.
+Furthermore \gls{wireguard} also provides protections against attacks on integrity of data according to their whitepaper \cite{wireguard}. An attacker may not produce ciphertext themselves, because traffic is encrypted and guessing valid ciphertext that will successfully decrypt "has a negligible probability" \cite{wireguardcrypto}. To achieve protection against replaying of packets, they use nonces that are never reused but accepted in a historical window of about 2000 entries \cite{wireguardproto}. When a packet has already been received, subsequent packets are thus dropped. An attacker may however drop certain packets if he chooses to do so, which the tunnel can of course not recover.
 
-\paragraph{Open\acrshort{vpn}} Another commonly used implementation is Open\acrshort{vpn} \cite{openvpn}, which uses a slightly different approach. While Open\acrshort{vpn} also encrypts traffic, it can be used to connect to a remote network securely and reach nodes on this remote network. For this, Open\acrshort{vpn} uses a more traditional client server approach, where the server would expose devices on his network to the client, announcing routes to the client and forwarding traffic.
+\paragraph{\Gls{openvpn}} Another commonly used implementation is \Gls{openvpn} \cite{openvpn}, which uses a slightly different approach. While \Gls{openvpn} also encrypts traffic, it can be used to connect to a remote network securely and reach nodes on this remote network. For this, \Gls{openvpn} uses a more traditional client server approach, where the server would expose devices on his network to the client, announcing routes to the client and forwarding traffic.
 
 \paragraph{Multi Protocol Label Switching (\acrshort{mpls})}
 \label{mpls}

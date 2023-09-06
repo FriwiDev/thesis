@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{xcolor}
+% Height: 297mm+2cm
+% Width: 210mm*2+2cm+up to 4cm book back
+\usepackage[paperwidth=480mm,paperheight=317mm, margin=0mm, top=30mm]{geometry}
+
+% TUD color as background
+\definecolor{TUD}{HTML}{00305D}
+\pagecolor{TUD}
+
+% Text color -> white
+% see https://tex.stackexchange.com/questions/26549/how-do-i-globally-set-the-text-color-in-xelatex
+\makeatletter
+\newcommand{\globalcolor}[1]{%
+  \color{#1}\global\let\default@color\current@color
+}
+\makeatother
+
+\AtBeginDocument{\globalcolor{white}}
+
+\begin{document}
+\hspace{280mm} \includegraphics[]{tud.png} \\[3mm]
+
+\hline
+\vspace{10mm}
+\hspace{280mm} % 210mm + 1cm + 4cm book back + small offset
+\Huge Distributed isolated micro-segmentation
+
+
+\hspace{280mm}
+\Huge in edge-computing domains
+
+\vspace{20mm}
+\hspace{280mm}
+\LARGE Fritz Windisch
+\end{document}

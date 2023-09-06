@@ -24,21 +24,21 @@ As a test environment we want to use a network emulator to be able to easily boo
 We will test three scenarios in total. The first scenario will provide a base case for our two other slicing-enabled scenarios, of which one will be local and the other distributed.
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{S1}{S1}] \textbf{Reference scenario} The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. This scenario can be seen in figure \ref{fig:scenario_1}.
+    \item[\namedlabel{S1}{S1}] \textbf{Reference scenario} The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. This scenario can be seen in Figure \ref{fig:scenario_1}.
     \begin{figure}[ht]
         \centering
         \includegraphics[width=6cm]{images/chapter_7/scenario_1.png}
         \caption[Validation Scenario 1]{Our first scenario \ref{S1} without network slicing.}
         \label{fig:scenario_1}
     \end{figure}
-    \item[\namedlabel{S2}{S2}] \textbf{Local slicing scenario} For our first slicing scenario we will deploy our slicing solution emulating three domains with two \gls{edgenetwork}s and one black (semi-trusted) network between them. Each domain will have two slicing switches which the traffic of the slices has to pass. One of the simulated hosts will be created on each edge. This scenario can be seen in figure \ref{fig:scenario_2}.
+    \item[\namedlabel{S2}{S2}] \textbf{Local slicing scenario} For our first slicing scenario we will deploy our slicing solution emulating three domains with two \gls{edgenetwork}s and one black (semi-trusted) network between them. Each domain will have two slicing switches which the traffic of the slices has to pass. One of the simulated hosts will be created on each edge. This scenario can be seen in Figure \ref{fig:scenario_2}.
     \begin{figure}[ht]
         \centering
         \includegraphics[width=8cm]{images/chapter_7/scenario_2.png}
         \caption[Validation Scenario 2]{Our second scenario \ref{S2} with network slicing across three domains running on a local test setup (one machine).}
         \label{fig:scenario_2}
     \end{figure}
-    \item[\namedlabel{S3}{S3}] \textbf{Remote slicing scenario} As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment. This scenario can be seen in figure \ref{fig:scenario_3}.
+    \item[\namedlabel{S3}{S3}] \textbf{Remote slicing scenario} As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment. This scenario can be seen in Figure \ref{fig:scenario_3}.
     \begin{figure}[ht]
         \centering
         \includegraphics[width=8cm]{images/chapter_7/scenario_3.png}
@@ -57,7 +57,7 @@ For each scenario we will try to establish two network slices in total. As an ex
 
 One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small \gls{lossrate} for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not provide an essential problem. \Gls{jitter} may occur as we can buffer our video stream data for short amounts of time, however we want our \gls{latency} to be low so our frames appear in almost real time.
 
-For the bidirectional control and feedback slice, we need far less \gls{bandwidth}. The \gls{lossrate} needs to be lower than with the video stream to be in control at all times. Also we require a low \gls{latency} and low \gls{jitter} to be able to react in real time and without any inaccurate movements. We will thus apply the resource guarantees in table \ref{table:slices} to all of our scenarios.
+For the bidirectional control and feedback slice, we need far less \gls{bandwidth}. The \gls{lossrate} needs to be lower than with the video stream to be in control at all times. Also we require a low \gls{latency} and low \gls{jitter} to be able to react in real time and without any inaccurate movements. We will thus apply the resource guarantees in Table \ref{table:slices} to all of our scenarios.
 
 \begin{table}[ht]
     \centering
@@ -89,7 +89,7 @@ To send the traffic and observe their result, we will use three different tools:
 
 \paragraph{Sockperf} \cite{sockperf} is a network \gls{bandwidth} and \gls{latency} testing tool that provides data on \gls{bandwidth}, packet drops, \gls{latency} and \gls{jitter}. It supports both \acrshort{udp} and \acrshort{tcp}.
 
-\paragraph{} More details on this can be seen in table \ref{table:measurements}. We will thus be able to obtain each metric from at least two tools, providing us with the ability to verify their result.
+\paragraph{} More details on this can be seen in Table \ref{table:measurements}. We will thus be able to obtain each metric from at least two tools, providing us with the ability to verify their result.
 
 \begin{table}[ht]
     \centering
@@ -130,7 +130,7 @@ In this section we are now going to state the experiments that we are going to p
 \begin{description}[style=multiline, labelwidth=0.7cm]
     \item[\namedlabel{E1}{E1}] \textbf{Slice availability and resilience} In this experiment we want to test whether the slice isolation is working as expected. For this, we will place one attacking host on each of the edges, which send traffic along the same path that our slice is taking by using \textit{hping3} \cite{hping3}. Hping3 is a tool to spam traffic on network interfaces. We only investigate flooding traffic parallel to a slice originating from the edge networks, as the technical implementation and components are the same throughout the network and flooding on different switches should never achieve different results. By flooding from one edge network to the other, we will maximize the path shared by our clean and adversary traffic.
 
-    We will establish our test slices specified in section \ref{scenarios} and obtain base measurements using the three tools mentioned in section \ref{measurements} without activating the attackers yet. For scenario \ref{S1} where no slicing setup is available, we will perform all measurements without setting up slices in advance. Afterwards we will activate the attackers and increase the traffic produced by hping3 while continuing our measurements until either the isolation fails or the attackers have reached their maximum possible capacity. The maximum possible computational power the attackers get in a simulated environment is 30 out of 32 in our local environments \ref{S1} and \ref{S2}, and 3 out of 4 per server in our remote slicing environment \ref{S3}, so there is still some computational capacity available for the scenarios, which is more than generous to the attackers.
+    We will establish our test slices specified in Section \ref{scenarios} and obtain base measurements using the three tools mentioned in Section \ref{measurements} without activating the attackers yet. For scenario \ref{S1} where no slicing setup is available, we will perform all measurements without setting up slices in advance. Afterwards we will activate the attackers and increase the traffic produced by hping3 while continuing our measurements until either the isolation fails or the attackers have reached their maximum possible capacity. The maximum possible computational power the attackers get in a simulated environment is 30 out of 32 in our local environments \ref{S1} and \ref{S2}, and 3 out of 4 per server in our remote slicing environment \ref{S3}, so there is still some computational capacity available for the scenarios, which is more than generous to the attackers.
 
     We will also install a large number of flow entries with higher priority on the switches subsequently to test whether a large number of flows (number of attacker threads mentioned above) compromises our isolation efforts. The maximum number of flows uses the same reasoning as above. In a real-world network we can also decide how many local participants may route their traffic via our switches, where we need to scale our infrastructure according to the number of participants. It thus makes sense to determine attacker capacity by our own capacity, apart from the fact that we are locked to it by the sheer capacity we possess in our simulated environments.
 
@@ -200,20 +200,20 @@ We do not conduct a fifth experiment for the fifth attacker, because we already 
     \label{table:experiment_coverage}
 \end{table}
 
-In table \ref{table:experiment_coverage} we give an overview over our experiment coverage.
+In Table \ref{table:experiment_coverage} we give an overview over our experiment coverage.
 
 
 \section{Requirement validation}
-As mentioned previously in the methodology in chapter \ref{methodology}, we wish to validate our solution against our requirements provided in section \ref{related_work_requirements}. In this section we will thus validate every requirement one after another, beginning with \ref{R1} by conducting our experiments on the protection goals. Afterwards we will check our design and implementation for the remaining requirements, including the requested distributed coordination (\ref{R2}), compatibility outside of our testbench (\ref{R3}) and the flexibility of the solution (\ref{R4}).
+As mentioned previously in the methodology in Chapter \ref{methodology}, we wish to validate our solution against our requirements provided in Section \ref{related_work_requirements}. In this section we will thus validate every requirement one after another, beginning with \ref{R1} by conducting our experiments on the protection goals. Afterwards we will check our design and implementation for the remaining requirements, including the requested distributed coordination (\ref{R2}), compatibility outside of our testbench (\ref{R3}) and the flexibility of the solution (\ref{R4}).
 
 \subsection{Slice isolation}
-To validate the isolation of our slices, we will perform the experiments from section \ref{methodology_experiments} on our slicing infrastructure. For this, we placed our 5 attackers on the network as can be seen in figure \ref{fig:scenario_1} for scenario \ref{S1} and figure \ref{fig:attackers_topo} for scenario \ref{S2} and \ref{S3}. When all experiments pass, we can claim our isolation as sufficient to our attackers and protection goals.
+To validate the isolation of our slices, we will perform the experiments from Section \ref{methodology_experiments} on our slicing infrastructure. For this, we placed our 5 attackers on the network as can be seen in Figure \ref{fig:scenario_1} for scenario \ref{S1} and Figure \ref{fig:attackers_topo} for scenario \ref{S2} and \ref{S3}. When all experiments pass, we can claim our isolation as sufficient to our attackers and protection goals.
 We will perform the experiments in their numerical ordering.
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
     \item[\ref{E1}] \textbf{Slice availability and resilience} We conducted the experiment as described on all three scenarios.
 
-    Please note that the following paragraphs only focus on the parameters obtained on the media slice. The values of the control slice were almost identical in all cases and would thus not add any new interesting observations to this chapter. They are included in table \ref{table:validation_qos_results} nonetheless. We will now discuss the results per scenario.
+    Please note that the following paragraphs only focus on the parameters obtained on the media slice. The values of the control slice were almost identical in all cases and would thus not add any new interesting observations to this chapter. They are included in Table \ref{table:validation_qos_results} nonetheless. We will now discuss the results per scenario.
 
     \begin{table}[ht]
         \centering
@@ -257,7 +257,7 @@ We will perform the experiments in their numerical ordering.
 
     \paragraph{} Another interesting observation on all network slicing scenarios is that the first packet delivered through a tunnel takes additional time, most probably due to the \gls{wireguard} handshake taking place. The initial ping in scenario \ref{S2} can thus take up to about 1ms and for \ref{S3} can take up to 1.5ms. Higher values were not observed thus also not breaking our limits. This behaviour could also be mitigated in the future by sending an initial packet before the first slice of a tunnel is handed over to the tenants.
 
-    Due to all thresholds being met in our slicing scenario, we consider experiment \ref{E1} as successfully passed. All results can also be seen in table \ref{table:validation_qos_results}.
+    Due to all thresholds being met in our slicing scenario, we consider experiment \ref{E1} as successfully passed. All results can also be seen in Table \ref{table:validation_qos_results}.
 
     \paragraph{} Interestingly, these results differ in all slicing scenarios from the results that Fuhrberg et al. \cite{SE4} obtained in their architecture. Even when adding more flows to the switches or removing ingress limits for the attackers our isolation does not seem to break, while their architecture broke isolation significantly with only 10Gbit/s of traffic. In this case their solution remained at 4.5Mbit/s media slice throughput and 0.1Mbit/s control slice throughput (their scenario 4.2). It thus remains an open challenge to figure out why their results differ from ours even when removing our additional protections. One possible explanation could be that their default slice does not appear to be limited in \gls{bandwidth} as opposed to ours. This would still require some further investigation though.
 

@@ -5,9 +5,9 @@ This chapter is centered around the components and concepts embodied in our netw
 
 
 \section{Components}
-In order to present our components to achieve a network slicing architecture, we will group them by \acrshort{sdn} plane. We will begin by inspecting the data plane, followed by the control plane and conclude with the application plane. In figure \ref{fig:topology} you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain. All components described below are virtual network functions (\acrshort{vnf}s).
+In order to present our components to achieve a network slicing architecture, we will group them by \acrshort{sdn} plane. We will begin by inspecting the data plane, followed by the control plane and conclude with the application plane. In Figure \ref{fig:topology} you can already see the final result of our suggested topology, where the links that are used by the slice are marked green. Please note that other network architectures are possible as well and this is only an example topology. The focus is on the application and control plane components per network domain. All components described below are virtual network functions (\acrshort{vnf}s).
 
-The presented components are partially sourced from Fuhrberg et al. \cite{SE4}. Our contribution is the addition of specialized components for the \gls{blacknetwork}, the redesign of logic on each of the components for our new distributed slice management approach and for the other concepts introduced in section \ref{design_concepts}.
+The presented components are partially sourced from Fuhrberg et al. \cite{SE4}. Our contribution is the addition of specialized components for the \gls{blacknetwork}, the redesign of logic on each of the components for our new distributed slice management approach and for the other concepts introduced in Section \ref{design_concepts}.
 
 %\begin{landscape}
     \begin{figure}[ht]
@@ -43,7 +43,7 @@ Apart from this infrastructure service we will need to establish a domain coordi
 
 While \acrshort{esmf} and \acrshort{dsmf} allow the creation of slices and tunnels on their respective domain, versions of them also exist with reduced functionality for \gls{blacknetwork}s that do not wish to offer their tenants slice support. The \acrshort{esmf} will be replaced with a core tunnel management function (\acrshort{ctmf}) and the \acrshort{dsmf} will be replaced with a domain tunnel management function (\acrshort{dtmf}). A \acrshort{ctmf} will never initiate a new tunnel but rather receive tunnel requests from coordinating \acrshort{esmf}s. Also a \acrshort{ctmf} will never accept slice requests from tenants of their domain. They will thus only talk to an \acrshort{esmf} of another domain to coordinate new tunnels or with their own \acrshort{dtmf} to deploy tunnels to their infrastructure and to check for resource availability. A \acrshort{ctmf} may only talk to a \acrshort{dtmf} and an \acrshort{esmf} may only talk to a \acrshort{dsmf}, depending on the network role. \acrshort{ctmf} and \acrshort{dtmf} may only be deployed on \gls{blacknetwork}s that are exclusively \gls{blacknetwork}s, requiring their network domain to never be the beginning nor the end of a slice.
 
-\paragraph{} After joining the different \acrshort{sdn} planes we thus reach our design topology (see figure \ref{fig:topology} for an example topology) that has the separation of different virtual network functions (\acrshort{vnf}s) in mind.
+\paragraph{} After joining the different \acrshort{sdn} planes we thus reach our design topology (see Figure \ref{fig:topology} for an example topology) that has the separation of different virtual network functions (\acrshort{vnf}s) in mind.
 
 
 \section{Concepts}

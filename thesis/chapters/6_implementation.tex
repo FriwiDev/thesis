@@ -15,7 +15,7 @@ We provide \Gls{openapi} specifications for each service required by our design.
 
 The basic endpoints of each component can be seen in the tables \ref{table:esmf} through \ref{table:vpn_gateway}. Further details on parameters and responses can be found at the end of this thesis in appendix \ref{specifications}.
 
-All \acrshort{vnf}s provide endpoints for authentication (apart from the \acrshort{sdn} controller). This is currently just a placeholder to establish a real authentication scheme later. In the current specification the authentication endpoint takes no parameters and returns a predefined token. All the other endpoints then take this token to authorize requests. The details on how these endpoints work together can then be seen in section \ref{impl_communication}, where we take a closer look on the creation and removal of a slice.
+All \acrshort{vnf}s provide endpoints for authentication (apart from the \acrshort{sdn} controller). This is currently just a placeholder to establish a real authentication scheme later. In the current specification the authentication endpoint takes no parameters and returns a predefined token. All the other endpoints then take this token to authorize requests. The details on how these endpoints work together can then be seen in Section \ref{impl_communication}, where we take a closer look on the creation and removal of a slice.
 
 \begin{table}[htp]
     \begin{tabularx}{\textwidth}{ |l|X| }
@@ -150,9 +150,9 @@ While as previously mentioned the two-phase commit protocol can not recover from
 
 When slice or tunnel parts that need to be deployed are within a remote network, the \acrshort{ctmf} or \acrshort{esmf} of the remote network is instructed to carry out the tasks on their respective domain. A \acrshort{ctmf} will never obtain information on slices, but rather receive only the tunnel information (apart from tunnel keys). Currently, the instruction from the coordinating \acrshort{esmf} is simply forwarded to the \acrshort{dtmf} or \acrshort{dsmf} of the corresponding domain. This way the local requests as well as the remote requests end up on the infrastructure coordinators of the respective domains. Of course the forwarding \acrshort{esmf} and \acrshort{ctmf} can perform checks on these slice and tunnel requests.
 
-So now as we synchronized state sufficiently, we can focus on the actual deployment of the components. As previously mentioned, the infrastructure coordinator (\acrshort{dtmf} or \acrshort{dsmf}) will receive reservations for slices or tunnels. These reservations are stored locally after checking for feasibility (whether resources are available considering all other deployments and reservations). Then we will either receive a deployment request or a removal request. If we receive a removal request, we simply drop the reservation. If we receive a deployment request, we contact the switches to create queues and ingress limits via a \acrshort{rest} \acrshort{api} (see table \ref{table:switch}), the controller via another \acrshort{rest} \acrshort{api} (see table \ref{table:controller}) to deploy our flows, and the \acrshort{vpn} gateways to deploy our tunnel entries and exits via yet another \acrshort{rest} \acrshort{api} (see table \ref{table:vpn_gateway}). To get information about what is deployed per slice and tunnel, please have a look at section \ref{impl_concepts}.
+So now as we synchronized state sufficiently, we can focus on the actual deployment of the components. As previously mentioned, the infrastructure coordinator (\acrshort{dtmf} or \acrshort{dsmf}) will receive reservations for slices or tunnels. These reservations are stored locally after checking for feasibility (whether resources are available considering all other deployments and reservations). Then we will either receive a deployment request or a removal request. If we receive a removal request, we simply drop the reservation. If we receive a deployment request, we contact the switches to create queues and ingress limits via a \acrshort{rest} \acrshort{api} (see Table \ref{table:switch}), the controller via another \acrshort{rest} \acrshort{api} (see Table \ref{table:controller}) to deploy our flows, and the \acrshort{vpn} gateways to deploy our tunnel entries and exits via yet another \acrshort{rest} \acrshort{api} (see Table \ref{table:vpn_gateway}). To get information about what is deployed per slice and tunnel, please have a look at Section \ref{impl_concepts}.
 
-The entire process of creating a slice can also be seen in our three diagrams for the state synchronization (see figure \ref{fig:slice_creation_synchronization}), the communication on the \gls{edgenetwork}s (see figure \ref{fig:slice_creation_edge}) and on our \gls{blacknetwork}s (see figure \ref{fig:slice_creation_bn}). Please note that the diagrams are based on using only one \gls{blacknetwork}. Of course multiple \gls{blacknetwork}s would be possible as well by repeating the communication to our \gls{blacknetwork} for every other \gls{blacknetwork}.
+The entire process of creating a slice can also be seen in our three diagrams for the state synchronization (see Figure \ref{fig:slice_creation_synchronization}), the communication on the \gls{edgenetwork}s (see Figure \ref{fig:slice_creation_edge}) and on our \gls{blacknetwork}s (see Figure \ref{fig:slice_creation_bn}). Please note that the diagrams are based on using only one \gls{blacknetwork}. Of course multiple \gls{blacknetwork}s would be possible as well by repeating the communication to our \gls{blacknetwork} for every other \gls{blacknetwork}.
 
 \newpage
 
@@ -182,7 +182,7 @@ In order to remove a slice the steps mentioned above are basically reversed. In 
 
 As for the creation of one or multiple slices, the coordinating \acrshort{esmf} is contacted again to remove these slices. The \acrshort{esmf} will create a list of all slices and tunnels affected and issue a removal for them. A tunnel is removed when no slices remain on the tunnel, else the tunnel may be adapted to include less capacity. The \acrshort{esmf} will contact all other participating domain coordinators and state slices and tunnels to be removed. Each domain coordinator, including the coordinating \acrshort{esmf} will then contact the infrastructure coordinator of their domain requesting a removal of all tunnels and slices that are supposed to be removed. The infrastructure providers will then use the before mentioned \acrshort{api}s to remove all components. When everyone reports back a positive result, the host is informed about the positive result of the removal.
 
-As with the previous section, the entire process of removing a slice can also be viewed as sequence diagrams for the state synchronization (see figure \ref{fig:slice_removal_synchronization}), the communication on the \gls{edgenetwork}s (see figure \ref{fig:slice_removal_edge}) and on our \gls{blacknetwork}s (see figure \ref{fig:slice_removal_bn}).
+As with the previous section, the entire process of removing a slice can also be viewed as sequence diagrams for the state synchronization (see Figure \ref{fig:slice_removal_synchronization}), the communication on the \gls{edgenetwork}s (see Figure \ref{fig:slice_removal_edge}) and on our \gls{blacknetwork}s (see Figure \ref{fig:slice_removal_bn}).
 
 \begin{figure}[H]
     \centering
@@ -211,13 +211,13 @@ In general, all of our \acrshort{vnf}s have been implemented using python. Any v
 
 Some images have additional software apart from above. These and their functionality are stated here:
 
-\paragraph{Application plane components} All components on the application plane (\acrshort{esmf}, \acrshort{ctmf}, \acrshort{dsmf}, \acrshort{dtmf}) have their designated server implementation running, performing their coordination and management duties described in section \ref{impl_specification}.
+\paragraph{Application plane components} All components on the application plane (\acrshort{esmf}, \acrshort{ctmf}, \acrshort{dsmf}, \acrshort{dtmf}) have their designated server implementation running, performing their coordination and management duties described in Section \ref{impl_specification}.
 
 \paragraph{Switches} The switches currently use \Gls{ovs} (OVS) \cite{openvswitch} to deploy \acrshort{sdn} switch functionality. Additionally a switch server implementation is executed which issues commands to manage queues and ingress policies on switch ports.
 
 \paragraph{Controller} The controller is realized by utilizing the \Gls{ryu} \cite{ryu} with the common RYU \acrshort{rest} \acrshort{api} \cite{ryu-rest}.
 
-\paragraph{\acrshort{vpn} gateways} The \acrshort{vpn} gateways run a server implementation that allows the creation of \gls{wireguard} \cite{wireguard} tunnel entries. The details of these tunnel entries are explained below in section \ref{impl_concepts}.
+\paragraph{\acrshort{vpn} gateways} The \acrshort{vpn} gateways run a server implementation that allows the creation of \gls{wireguard} \cite{wireguard} tunnel entries. The details of these tunnel entries are explained below in Section \ref{impl_concepts}.
 
 
 \section{Concepts and configuration}
@@ -245,7 +245,7 @@ If there is only one switch, the switch takes the \textit{SRC\_ALL} role, becaus
     \label{fig:routing_source}
 \end{figure}
 
-Depending on the role we then deploy the following rules (see figure \ref{fig:routing_source}):
+Depending on the role we then deploy the following rules (see Figure \ref{fig:routing_source}):
 
 \paragraph{SRC\_ALL and SRC\_ENTRY} Will verify that a packet matches a slice including the transport destination and port, as well as the incoming interface for authentication purposes. The switch will then tag the packet with an \acrshort{mpls} label using the slice ID as value. The packet will then be forwarded to the next hop.
 
@@ -260,7 +260,7 @@ Depending on the role we then deploy the following rules (see figure \ref{fig:ro
     \label{fig:routing_destination}
 \end{figure}
 
-Depending on the role we then deploy the following rules (see figure \ref{fig:routing_destination}):
+Depending on the role we then deploy the following rules (see Figure \ref{fig:routing_destination}):
 
 \paragraph{DST\_ENTRY and DST\_TP} Will verify that a packet matches a slice by checking the slice ID \acrshort{mpls} label and the inbound interface. Will then forward the packet to the next hop.
 
@@ -295,7 +295,7 @@ We will, if there are any switches, assign the same roles as with the slice sour
     \label{fig:routing_bn}
 \end{figure}
 
-Afterwards we will establish the following rules depending on the role (see figure \ref{fig:routing_bn}):
+Afterwards we will establish the following rules depending on the role (see Figure \ref{fig:routing_bn}):
 
 \paragraph{BN\_ALL} We will match all packets from both directions on the correct ingress interface for the \acrshort{udp} destination port and destination address. We will then forward traffic.
 
@@ -318,12 +318,12 @@ Of course we encountered some issues while implementing our solution. We will di
 %\cgn{Maybe instead of Challenges, change the heading to Lessons learned. Challenges sound like unsolved problems. However, in this case you faced issues and had solutions for those.}
 
 \subsection{MTU considerations}
-Maybe one of the most obvious issues are MTU considerations. Our multiple \acrshort{mpls} and \acrshort{gre}TAP headers (see figure \ref{fig:packet_structure}) will attach information to packets, alongside the additional encapsulation by \gls{wireguard}. When packets get close to the network MTU in size, this can lead to fragmentation of packets that would otherwise fit in the MTU. In our case, packets would no longer be delivered after being fragmented. To combat this, a lower MTU than the network MTU should be applied on the hosts. We chose 1300 in our host \acrshort{lxc} container image, which is 200 byte smaller than the network MTU. Slightly higher values might be possible, but this has not been investigated.
+Maybe one of the most obvious issues are MTU considerations. Our multiple \acrshort{mpls} and \acrshort{gre}TAP headers (see Figure \ref{fig:packet_structure}) will attach information to packets, alongside the additional encapsulation by \gls{wireguard}. When packets get close to the network MTU in size, this can lead to fragmentation of packets that would otherwise fit in the MTU. In our case, packets would no longer be delivered after being fragmented. To combat this, a lower MTU than the network MTU should be applied on the hosts. We chose 1300 in our host \acrshort{lxc} container image, which is 200 byte smaller than the network MTU. Slightly higher values might be possible, but this has not been investigated.
 
 \begin{figure}[hp]
     \centering
     \includegraphics[width=10cm]{images/chapter_6/packet_structure.png}
-    \caption[Additional headers of packets]{This figure shows the additional headers that a packet receives while traveling through our architecture according to the routing rules specified in section \ref{impl_concepts}. These additional headers decrease our MTU for packets that we can accept. Our payload is in white, layer two to four headers in red and \acrshort{mpls} headers are in blue. Gray is used to indicate encrypted content within the \gls{wireguard} tunnel, acting as a payload for the tunnel.}
+    \caption[Additional headers of packets]{This figure shows the additional headers that a packet receives while traveling through our architecture according to the routing rules specified in Section \ref{impl_concepts}. These additional headers decrease our MTU for packets that we can accept. Our payload is in white, layer two to four headers in red and \acrshort{mpls} headers are in blue. Gray is used to indicate encrypted content within the \gls{wireguard} tunnel, acting as a payload for the tunnel.}
     \label{fig:packet_structure}
 \end{figure}
 
@@ -340,7 +340,7 @@ ethtool --offload $INTF_NAME tx off
 More information on this can be found in the linux kernel documentation \cite{txoffload}.
 
 \subsection{Write queue overflow}
-While testing our slicing architecture locally, we noticed that packets were being dropped on the \acrshort{vpn} gateway. We decided to investigate this in more detail, because traffic from the adversaries was not even flowing through the \acrshort{vpn} gateways, but would rather flow around them (as described in section \ref{impl_tunnel_config}). This was very unexpected for us in the beginning. We noticed that packets were received by the \acrshort{vpn} gateway, but were dropped on the tunnel interface before entering the \gls{wireguard} tunnel.
+While testing our slicing architecture locally, we noticed that packets were being dropped on the \acrshort{vpn} gateway. We decided to investigate this in more detail, because traffic from the adversaries was not even flowing through the \acrshort{vpn} gateways, but would rather flow around them (as described in Section \ref{impl_tunnel_config}). This was very unexpected for us in the beginning. We noticed that packets were received by the \acrshort{vpn} gateway, but were dropped on the tunnel interface before entering the \gls{wireguard} tunnel.
 
 Our first measure was to increase the \acrshort{tx} (write) queue size, which improved the result but still saw dropped packets. After trying some other approaches which all failed to solve the problem, we finally found the solution.
 

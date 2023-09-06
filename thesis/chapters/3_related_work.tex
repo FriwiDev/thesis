@@ -19,7 +19,7 @@ In this thesis we wish to build a topology with a distributed control plane and 
 To achieve these goals, we impose the following requirements:
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{R1}{R1}] \textbf{Slice isolation} We want our slices to be fully isolated concerning network resources. Adversaries (see section \ref{adversaries}) should not be able to violate our protection goals (see section \ref{protection_goals}).
+    \item[\namedlabel{R1}{R1}] \textbf{Slice isolation} We want our slices to be fully isolated concerning network resources. Adversaries (see Section \ref{adversaries}) should not be able to violate our protection goals (see Section \ref{protection_goals}).
     \item[\namedlabel{R2}{R2}] \textbf{Distributed coordination} We want to build a slicing network that spans multiple domains that are administered by multiple parties. We require this to be able to establish slicing communication over participating third party networks such as the DFN (German Research Network) without requiring to trust the 3rd-party networks apart from respecting their \acrshort{sla} (service level agreement). This includes a fully distributed control and data plane.
     \item[\namedlabel{R3}{R3}] \textbf{Compatibility} We want our solution to be able to run on real-world networks to be able to obtain real-world results apart from small local testbenches. This is also important to be able to evaluate our \acrshort{qos} requirements on specialized hardware like real-world switches that can leverage hardware acceleration.
     \item[\namedlabel{R4}{R4}] \textbf{Flexibility} We want to be able to create slices from an arbitrary amount of networks to an arbitrary amount of other networks. While one slice must only connect two networks, other networks should be reachable as well, as most modern applications wish to reach out to multiple parties in multiple destinations.
@@ -95,7 +95,7 @@ While Fuhrberg et. al \cite{SE4} attempt to investigate their slice isolation in
 
 
 \section{Our contribution}
-In this thesis we will redesign the solution suggested by Fuhrberg et al. \cite{SE4} to match our requirements and to be able to obtain a validation of security in our network slicing solution. This way we can be confident about our suggested solution and meet our isolation requirement \ref{R1} by employing fitting security policies and evaluating security similar to their approach. The other requirements will be addressed in the redesign of the topology in chapter \ref{design}. The resulting solution should then be fit to isolate communications and guarantee resources in our networks.
+In this thesis we will redesign the solution suggested by Fuhrberg et al. \cite{SE4} to match our requirements and to be able to obtain a validation of security in our network slicing solution. This way we can be confident about our suggested solution and meet our isolation requirement \ref{R1} by employing fitting security policies and evaluating security similar to their approach. The other requirements will be addressed in the redesign of the topology in Chapter \ref{design}. The resulting solution should then be fit to isolate communications and guarantee resources in our networks.
 
 
 %\cgn{How about positioning the requirement up front in this chapter and justify them? After that you can describe and criticize related work against the set of requirements.}

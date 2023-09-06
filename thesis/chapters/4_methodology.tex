@@ -3,9 +3,9 @@
 
 %\cgn{Is it more logical to move this Methodology after Implementation chapter and before Validation one? Naturally, after discussing the related work and discussing their limitation, one would expect to see the proposed solution (with Design and Implementation).}
 %\cfw{This chapter is basically split in two parts: Everything until 4.4 covers content that is needed for design and implementation. 4.5 to 4.7 then cover our validation methods. I thus see this chapter as more of a chronological order on how the solution was created and evaluated, before actually performing these actions. The role of the chapter is thus more directed at "what did we do after our research" for me rather than what is immediatly up next in the thesis. Maybe we can discuss this tomorrow in our meeting. It would sure be possible to move 4.5 to 4.7 to the beginning of chapter 7 without many issues.}
-To be able to accurately design, implement and validate our solution we will need to specify our methodology first. To achieve our goal we will use requirement validation as an overall strategy. Initially we defined our requirements as stated in section \ref{related_work_requirements}.
+To be able to accurately design, implement and validate our solution we will need to specify our methodology first. To achieve our goal we will use requirement validation as an overall strategy. Initially we defined our requirements as stated in Section \ref{related_work_requirements}.
 
-In this chapter we will thus define a network model, our protection goals and attackers. Our validation methodology is stated later in section \ref{validation_methodology}.
+In this chapter we will thus define a network model, our protection goals and attackers. Our validation methodology is stated later in Section \ref{validation_methodology}.
 
 
 \section{Network model}
@@ -26,7 +26,7 @@ lie between the \gls{edgenetwork}s and are operating under a service level agree
 
 Please note that one specific network may play different roles for different network slices. One slice may pass through a \gls{blacknetwork} that is also the origin (and thus \gls{edgenetwork}) of another slice.
 
-Our network model can also be seen in figure \ref{fig:network_model}.
+Our network model can also be seen in Figure \ref{fig:network_model}.
 
 
 \section{Protection Goals}
@@ -67,7 +67,7 @@ There are also no attackers on our control plane, because all control plane comp
     \item[\namedlabel{A5}{A5}] \textbf{Slice integrity} Attempts to modify contents of a slice within one of the \gls{blacknetwork}s by replaying or sending additional packets. Will not modify or drop packets, but may send modified packets as additional packets. Attacks protection goal \ref{P2} (integrity).
 \end{description}
 
-Our attackers can also be seen in figure \ref{fig:attacker_model}.
+Our attackers can also be seen in Figure \ref{fig:attacker_model}.
 
 %\begin{landscape}
     \begin{figure}[h]

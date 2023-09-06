@@ -117,7 +117,7 @@ The latest developments in the field are part of the 5G standard, where applicat
 
 
 \section{Enabling technologies}
-In our concepts (section \ref{bg_concepts}) we stated that we want to isolate communication flows by performing network slicing. But in order to create network slices, we need technologies supporting us at this task. We will first focus on how we can orchestrate such a dynamic network, focusing on software defined networking (\acrshort{sdn}), network function virtualization (\acrshort{nfv}) and synchronization paradigms such as the two-phase commit protocol (\acrshort{2pcp}). Afterwards we will discuss some means to provide private and resource isolated communications through multiple networks in the form of virtual private networks (\acrshort{vpn}).
+In our concepts (Section \ref{bg_concepts}) we stated that we want to isolate communication flows by performing network slicing. But in order to create network slices, we need technologies supporting us at this task. We will first focus on how we can orchestrate such a dynamic network, focusing on software defined networking (\acrshort{sdn}), network function virtualization (\acrshort{nfv}) and synchronization paradigms such as the two-phase commit protocol (\acrshort{2pcp}). Afterwards we will discuss some means to provide private and resource isolated communications through multiple networks in the form of virtual private networks (\acrshort{vpn}).
 
 \subsection{Software Defined Networking (SDN)}
 When building network topologies, software defined networking \cite{sdn} has emerged as one of the most valuable tools to build networks dynamically and with lower cost.
@@ -144,7 +144,7 @@ A commonly used protocol and the defacto standard for this southbound \acrshort{
 
 \paragraph{Application plane} This plane is used to configure the \acrshort{sdn} controllers via a northbound \acrshort{api}. This can include end applications and users that want to manage and monitor the network.
 
-\paragraph{}These three planes can also be seen in figure \ref{fig:sdn}.
+\paragraph{}These three planes can also be seen in Figure \ref{fig:sdn}.
 
 \subsection{Network Function Virtualization (NFV)}
 Closely related to \acrshort{sdn} is the concept of network function virtualization \cite{nfv}. Network functions are components taking a specific role in a network, such as a switch which would forward or reshape traffic. Originally a lot of proprietary network functions were used to create larger networks. This resulted in a difficulty to manage the resulting networks. The proposed solution proposed for this is virtualization, so that individual network functions are decoupled from their hardware and executed in a virtual environment. The resulting network functions are called virtual network functions (\acrshort{vnf}s) and can be orchestrated with ease to build complex topologies and integrations on a network level. Virtual network functions can thus be used as building blocks for software defined networks.
@@ -172,7 +172,7 @@ The two-phase commit protocol can not recover from a failure of the coordinator 
 \subsection{Virtual Private Networks (VPN)}
 In order to isolate our communications and guarantee our network resources, we will use virtual private networks (\acrshort{vpn}s).
 
-A virtual private network \cite{vpn} is a virtual network overlayed on top of a real-world network providing private communication channels between their participants. With a lot of \acrshort{vpn} approaches and implementations in existence, they can still be distinguished by classifying them per network layer. For example there are optical \acrshort{vpn} on the physical network layer, tunnels like multi protocol label switching (\acrshort{mpls}, see section \ref{mpls}) on the ethernet layer and tunnels like \gls{wireguard} \cite{wireguard} on the IP layer. While some only participate in routing (e.g. \acrshort{mpls}), others may also encrypt traffic (e.g. \gls{wireguard}). Which \acrshort{vpn} is the correct choice thus heavily depends on the use case.
+A virtual private network \cite{vpn} is a virtual network overlayed on top of a real-world network providing private communication channels between their participants. With a lot of \acrshort{vpn} approaches and implementations in existence, they can still be distinguished by classifying them per network layer. For example there are optical \acrshort{vpn} on the physical network layer, tunnels like multi protocol label switching (\acrshort{mpls}, see Section \ref{mpls}) on the ethernet layer and tunnels like \gls{wireguard} \cite{wireguard} on the IP layer. While some only participate in routing (e.g. \acrshort{mpls}), others may also encrypt traffic (e.g. \gls{wireguard}). Which \acrshort{vpn} is the correct choice thus heavily depends on the use case.
 
 \paragraph{Wireguard} One of the most prominent \acrshort{vpn} solutions used today is \gls{wireguard} \cite{wireguard}. \Gls{wireguard} builds a tunnel between multiple participants which then form a new virtual network. The participants can then communicate via the encrypted channels established by \gls{wireguard}, which can thus traverse untrusted terrain without the fear of someone obtaining confidential information \cite{wireguard}.
 

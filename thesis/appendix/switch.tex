@@ -1,0 +1,202 @@
+\section{Switch QoS API}
+\label{spec_switch qos api}
+
+A simple API to manage QoS queues and traffic shaping on arbitrary OpenFlow switches. Does not support listing queues (GET) because this is already part of OpenFlow.
+
+\subsection{Authentication}
+\subsubsection{POST /auth}
+Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\multicolumn{4}{|p{11.34cm}|}{\centering{\textit{No parameters}}} \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The authentication token as string
+
+\paragraph{Data} string \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Wrong credentials were specified \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Queue Management}
+\subsubsection{PUT /queue}
+Creates a new queue
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\textbf{Content Type} & \textbf{Data Type} \\
+\hline
+application/json & \hyperref[switch_queue]{queue} \\
+ \hline
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The queue object
+
+\paragraph{Data} \hyperref[switch_queue]{queue} \\
+ \hline
+\endhead
+\centering{400} & \centering{text/plain} & No body provided. \\
+ \hline
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The switch port could not be found \\
+ \hline
+\centering{406} & \centering{text/plain} & A value exceeds the allowed range \\
+ \hline
+\centering{507} & \centering{text/plain} & Already too many queues in use \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /queue}
+Deletes a queue
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+queue\_id & \centering{QUERY} & The id of the queue to be deleted. & integer/int32 \\
+ \hline
+port & \centering{QUERY} & The switch port of the queue to be deleted. & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The queue was successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The queue could not be found. \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Traffic shaping}
+\subsubsection{PUT /policy}
+Sets the policies on the specified port
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+port & \centering{QUERY} & The switch port name to modify. & string \\
+ \hline
+ingress\_policing \_rate & \centering{QUERY} & The ingress policing rate to use in Bits/s. Set to 0 to reset/delete. & integer/int64 \\
+ \hline
+ingress\_policing \_burst & \centering{QUERY} & The ingress policing burst to use in Bits/s. Set to 0 to reset/delete. & integer/int64 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & Traffic policy updated \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{404} & \centering{text/plain} & The switch port could not be found \\
+ \hline
+\centering{406} & \centering{text/plain} & A value exceeds the allowed range \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Schemas}
+
+\subsubsection{Schema queue:}
+\label{switch_queue}
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "queue_id": "int",
+  "min_rate": "int",
+  "max_rate": "int",
+  "burst_rate": "int",
+  "priority": "int",
+  "port": "str"
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "queue_id": "0",
+  "min_rate": 100000,
+  "max_rate": 120000,
+  "burst_rate": 140000,
+  "priority": 300,
+  "port": "intf1"
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage

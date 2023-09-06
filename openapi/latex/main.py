@@ -44,15 +44,12 @@ def process(in_file: pathlib.Path):
             out.write("\\subsubsection{" + method.upper() + " " + escape(path) + "}\n")
 
             # Description
-            out.write("\\paragraph{Description} " + escape(endpoint["description"]) + "\n")
+            out.write(escape(endpoint["description"]) + "\n")
 
             # Parameters
             out.write(
-                "\\begin{longtable}{ |p{.15\\textwidth}|p{.12\\textwidth}|p{.13\\textwidth}|p{.27\\textwidth}|p{.19\\textwidth}| }\n\\hline\n")
-            out.write("\\multicolumn{5}{|c|}{\\textbf{Parameters}} \\\\\n \\hline \n")
-            out.write("\\textbf{Name} & \\textbf{Location} & \\textbf{Required} & \\textbf{Description} & "
-                      "\\textbf{Type} \\\\\n")
-            out.write("\\hline \n")
+                "\\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }\n\\hline\n")
+            out.write("\\multicolumn{4}{|c|}{\\textbf{Parameters}} \\\\\n \\hline \n")
 
             parameters = []
             if "parameters" in obj["paths"][path].keys():
@@ -63,14 +60,17 @@ def process(in_file: pathlib.Path):
                     parameters.append(param)
 
             if len(parameters) == 0:
-                out.write("\\multicolumn{5}{|c|}{\\textit{No parameters}} \\\\\n \\hline \n")
+                out.write("\\multicolumn{4}{|p{11.34cm}|}{\\centering{\\textit{No parameters}}} \\\\\n \\hline \n")
             else:
+                out.write("\\textbf{Name} & \\centering{\\textbf{Location}} & \\textbf{Description} & "
+                          "\\textbf{Type} \\\\\n")
+                out.write("\\hline \n")
                 # Print each parameter
                 for param in parameters:
-                    required = True if "required" not in param.keys() else param["required"]
+                    #required = True if "required" not in param.keys() else param["required"]
                     out.write(escape(param["name"]) + " & \\centering{" +
-                              escape(param["in"]).upper() + "} & \\centering{" +
-                              (checkmark if required else cross) + "} & " +
+                              escape(param["in"]).upper() + "} & " +
+                              #(checkmark if required else cross) + "} & " +
                               escape(param["description"]) + " & " +
                               get_data_type(name, obj, param["schema"]) +
                               ("" if "example" not in param.keys() else ", e.g. " + escape(param["example"])) +
@@ -78,17 +78,17 @@ def process(in_file: pathlib.Path):
 
             # End of parameters
             out.write("\\endhead \\end{longtable} \n")
-            out.write("\\paragraph{} \n")
+            out.write("\n")
 
             # Request body
-            out.write("\\begin{longtable}{ |p{.25\\textwidth}|p{.72\\textwidth}| }\n\\hline\n")
+            out.write("\\begin{longtable}{ |p{3cm}|p{7.88cm}| }\n\\hline\n")
             out.write("\\multicolumn{2}{|c|}{\\textbf{Request Body}} \\\\\n \\hline \n")
-            out.write("\\textbf{Content Type} & \\textbf{Data Type and Structure} \\\\\n")
-            out.write("\\hline \n")
 
             if "requestBody" not in endpoint.keys():
-                out.write("\\multicolumn{2}{|c|}{\\textit{No request body}} \\\\\n \\hline \\endhead \n")
+                out.write("\\multicolumn{2}{|p{11.34cm}|}{\\centering{\\textit{No request body}}} \\\\\n \\hline \\endhead \n")
             else:
+                out.write("\\textbf{Content Type} & \\textbf{Data Type} \\\\\n")
+                out.write("\\hline \n")
                 first = True
                 for t in endpoint["requestBody"]["content"].keys():
                     body = endpoint["requestBody"]["content"][t]
@@ -97,24 +97,25 @@ def process(in_file: pathlib.Path):
                         if first:
                             out.write(escape(t) + " & " +
                                       get_data_type(name, obj, body["schema"]) +
-                                      lst +
+                                      # lst +
                                       " \\\\\n \\hline \n")
                             first = False
                         else:
-                            out.write("\\pagebreak\n")
-                            out.write("\\hline\n")
-                            out.write("~ & " +
-                                      lst +
-                                      " \\\\\n \\hline \n")
+                            #out.write("\\pagebreak\n")
+                            #out.write("\\hline\n")
+                            #out.write("~ & " +
+                                      # lst +
+                            #          " \\\\\n \\hline \n")
+                            pass
             # End of request body
             out.write("\\end{longtable} \n")
             out.write("\n")
 
             # Responses
-            out.write("\\begin{longtable}{ |p{.10\\textwidth}|p{.25\\textwidth}|p{.58\\textwidth}| }\n\\hline\n")
+            out.write("\\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }\n\\hline\n")
             out.write("\\multicolumn{3}{|c|}{\\textbf{Responses}} \\\\\n \\hline \n")
             out.write(
-                "\\centering{\\textbf{Code}} & \\centering{\\textbf{Content Type}} & \\textbf{Description, Data Type and Structure} \\\\\n")
+                "\\centering{\\textbf{Code}} & \\centering{\\textbf{Content Type}} & \\textbf{Description, Data Type} \\\\\n")
             out.write("\\hline \n")
 
             if "responses" not in endpoint.keys():
@@ -134,13 +135,13 @@ def process(in_file: pathlib.Path):
                                       description + "\n\n" +
                                       "\\paragraph{Data} " +
                                       get_data_type(name, obj, body["schema"]) +
-                                      "\\begin{lstlisting}[language=bash]\n" +
-                                      get_data_type_structure_json(obj, body["schema"])
-                                      + "\n\\end{lstlisting}" +
+                                      #"\\begin{lstlisting}[language=bash]\n" +
+                                      #get_data_type_structure_json(obj, body["schema"])
+                                      #+ "\n\\end{lstlisting}" +
                                       " \\\\\n \\hline \n")
                     else:
-                        out.write(escape(code) + " & " +
-                                  "text/plain" + " & " +
+                        out.write("\\centering{"+escape(code) + "} & " +
+                                  "\\centering{text/plain}" + " & " +
                                   description +
                                   " \\\\\n \\hline \n")
                     if first:
@@ -155,21 +156,27 @@ def process(in_file: pathlib.Path):
     # Print schemas
     out.write("\\subsection{Schemas}\n\n")
 
+    keys = []
     for k in obj["components"]["schemas"].keys():
+        keys.append(k)
+    keys.sort()
+    for k in keys:
         schema = obj["components"]["schemas"][k]
-        out.write("\\subsubsection{" + escape(k) + "}\n\\label{" + name + "_" + k.lower() + "}\n")
-        out.write("\\begin{longtable}{ p{.15\\textwidth}p{.82\\textwidth} }\n")
+        out.write("\\subsubsection{Schema " + escape(k) + ":}\n\\label{" + name + "_" + k.lower() + "}\n")
         if "description" in schema.keys():
-            out.write("\\multicolumn{2}{l}{" + escape(schema["description"]) + "} \\\\[2ex]\n")
-        out.write("\\textbf{Structure} & \\begin{lstlisting}[language=bash]\n" +
+            #out.write("\\begin{codes} \n")
+            out.write(escape(schema["description"]) + "\n")
+            #out.write("\\end{codes} \n")
+        out.write("\\begin{codes}\n")
+        out.write("\\item[Structure] \\begin{lstlisting}[language=bash]\n" +
                   get_data_type_structure_json(obj, schema) +
-                  "\n\\end{lstlisting} \\\\[2ex]\n")
-        out.write("\\end{longtable} \n")
-        out.write("\\begin{longtable}{ p{.15\\textwidth}p{.82\\textwidth} }\n")
-        out.write("\\textbf{Example} & \\begin{lstlisting}[language=bash]\n" +
+                  "\n\\end{lstlisting} \n")
+        out.write("\\end{codes} \n")
+        out.write("\\begin{codes}\n")
+        out.write("\\item[Example] \\begin{lstlisting}[language=bash]\n" +
                   get_data_example_structure_json(obj, schema) +
-                  "\n\\end{lstlisting} \\\\\n")
-        out.write("\\end{longtable} \n")
+                  "\n\\end{lstlisting}\n")
+        out.write("\\end{codes} \n")
         out.write("\n")
         out.write("\\newpage\n")
 

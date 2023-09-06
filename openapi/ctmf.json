@@ -28,27 +28,32 @@
           "tunnel_id": {
             "type": "integer",
             "format": "int32",
-            "description": "The tunnel identifier"
+            "description": "The tunnel identifier",
+            "example": 1
           },
           "min_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The minimum transmission rate as bits/s"
+            "description": "The minimum transmission rate as bits/s",
+            "example": "100000"
           },
           "max_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The maximum transmission rate as bits/s"
+            "description": "The maximum transmission rate as bits/s",
+            "example": "120000"
           },
           "burst_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The burst transmission rate as bits/s"
+            "description": "The burst transmission rate as bits/s",
+            "example": "140000"
           },
           "latency": {
             "type": "integer",
             "format": "int16",
-            "description": "The required maximum latency"
+            "description": "The required maximum latency in ms",
+            "example": 3
           },
           "fr": {
             "$ref": "#/components/schemas/endpoint"
@@ -58,11 +63,13 @@
           },
           "private_key": {
             "type": "string",
-            "description": "The tunnel private key"
+            "description": "The tunnel private key",
+            "example": "SSBhbSBhIHZlcnkgc2VjcmV0IGtleQ=="
           },
           "public_key": {
             "type": "string",
-            "description": "The tunnel public key (of the other side)"
+            "description": "The tunnel public key (of the other side)",
+            "example": "SSBjb3VsZCBiZSBhIHB1YmxpYyBrZXk="
           }
         }
       },
@@ -73,23 +80,27 @@
           "ip": {
             "type": "string",
             "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
-            "default": null
+            "default": null,
+            "example": "192.168.178.1"
           },
           "port": {
             "type": "integer",
             "format": "i16",
             "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
-            "default": 0
+            "default": 0,
+            "example": 7543
           },
           "name": {
             "type": "string",
             "description": "Specifies the name of this entry to look up in our configuration.",
-            "default": null
+            "default": null,
+            "example": "host1"
           },
           "network": {
             "type": "string",
             "description": "Specifies the network name of this endpoint.",
-            "default": null
+            "default": null,
+            "example": "net1"
           }
         }
       },
@@ -103,11 +114,13 @@
               "ESMF",
               "CTMF"
             ],
-            "description": "The service type to be used"
+            "description": "The service type to be used",
+            "example": "ESMF"
           },
           "network": {
             "type": "string",
-            "description": "Our network name"
+            "description": "Our network name",
+            "example": "net1"
           },
           "vpn_gateways": {
             "type": "array",
@@ -137,7 +150,8 @@
             "type": "integer",
             "format": "i64",
             "description": "The bitrate that can be reserved by hosts on our network",
-            "default": 1000000000
+            "default": 1000000000,
+            "example": 1000000000
           },
           "slice_id_range": {
             "type": "object",
@@ -146,12 +160,14 @@
               "fr": {
                 "type": "integer",
                 "description": "Lower bound of this range (inclusive)",
-                "format": "i16"
+                "format": "i16",
+                "example": "30"
               },
               "to": {
                 "type": "integer",
                 "description": "Higher bound of this range (exclusive)",
-                "format": "i16"
+                "format": "i16",
+                "example": "35"
               }
             }
           }
@@ -164,13 +180,15 @@
           "ip": {
             "type": "string",
             "description": "The ip or name the device can be reached on",
-            "default": "localhost"
+            "default": "localhost",
+            "example": "localhost"
           },
           "port": {
             "type": "integer",
             "format": "i16",
             "description": "The port that the device REST API can be reached on",
-            "default": 8082
+            "default": 8082,
+            "example": 8082
           },
           "connections": {
             "type": "array",
@@ -181,11 +199,13 @@
           },
           "network": {
             "type": "string",
-            "description": "The network name this device is assigned to"
+            "description": "The network name this device is assigned to",
+            "example": "net1"
           },
           "name": {
             "type": "string",
-            "description": "The name of the device"
+            "description": "The name of the device",
+            "example": "host1"
           }
         }
       },
@@ -195,16 +215,19 @@
         "properties": {
           "intf_name": {
             "type": "string",
-            "description": "The name of the interface on a switch"
+            "description": "The name of the interface on a switch",
+            "example": "intf1"
           },
           "intf_id": {
             "type": "integer",
             "format": "i16",
-            "description": "The id of the interface"
+            "description": "The id of the interface",
+            "example": 1
           },
           "other_end": {
             "type": "string",
-            "description": "The name of the device on the other side"
+            "description": "The name of the device on the other side",
+            "example": "host2"
           }
         }
       },
@@ -214,25 +237,29 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "The name of the network"
+            "description": "The name of the network",
+            "example": "net1"
           },
           "reachable": {
             "type": "array",
             "description": "Networks reachable from this network",
             "items": {
               "type": "string"
-            }
+            },
+            "example": ["net2"]
           },
           "preferred_vpn": {
             "type": "array",
             "description": "VPN gateways to use (in order) to connect to this network",
             "items": {
               "type": "string"
-            }
+            },
+            "example": ["vpn1"]
           },
           "subnet": {
             "type": "string",
-            "description": "Subnet of this network"
+            "description": "Subnet of this network",
+            "example": "192.168.178.0/24"
           }
         }
       }

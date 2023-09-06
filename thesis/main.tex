@@ -55,6 +55,16 @@
 % Longtable
 \usepackage{longtable}
 
+% For the schema listings in our appendix
+% Source: https://tex.stackexchange.com/questions/163873/splitting-a-code-listing-inside-a-longtable
+\newenvironment{codes}
+      {\list{}{\labelwidth18pt
+       \leftmargin2cm
+        \itemindent-\leftmargin
+       \renewcommand\makelabel[1]{%
+            \makebox[0pt][r]{\textbf{##1} }}}}
+               {\endlist}
+
 % -- for comments
 \usepackage{xcolor}
 \usepackage{soul}
@@ -114,5 +124,9 @@
 \appendix
 
 \include{chapters/A_specifications}
+\include{appendix/esmf}
+\include{appendix/dsmf}
+\include{appendix/vpn_gateway}
+\include{appendix/switch}
 
 \end{document}

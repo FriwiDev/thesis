@@ -28,36 +28,44 @@
           "tunnel_entry_id": {
             "type": "integer",
             "format": "int32",
-            "description": "The tunnel identifier"
+            "description": "The tunnel identifier",
+            "example": 1
           },
           "inner_subnet": {
             "type": "string",
-            "description": "The subnet to route towards the inner interface (aka. the edge network/device)"
+            "description": "The subnet to route towards the inner interface (aka. the edge network/device)",
+            "example": "192.168.178.0/24"
           },
           "local_port": {
             "type": "integer",
             "format": "uint16",
-            "description": "The local port to use to bind the tunnel"
+            "description": "The local port to use to bind the tunnel",
+            "example": 7543
           },
           "remote_end": {
             "type": "string",
-            "description": "The remote address to contact as the other side of the tunnel"
+            "description": "The remote address to contact as the other side of the tunnel",
+            "example": "vpn2"
           },
           "private_key": {
             "type": "string",
-            "description": "The private key to use for authentication of the tunnel to the other side"
+            "description": "The private key to use for authentication of the tunnel to the other side",
+            "example": "SSBhbSBhIHZlcnkgc2VjcmV0IGtleQ=="
           },
           "public_key": {
             "type": "string",
-            "description": "The public key to use for authentication of the tunnel from the other side"
+            "description": "The public key to use for authentication of the tunnel from the other side",
+            "example": "SSBjb3VsZCBiZSBhIHB1YmxpYyBrZXk="
           },
           "local_tunnel_ip": {
             "type": "string",
-            "description": "The ip of the local wireguard tunnel end device"
+            "description": "The ip of the local wireguard tunnel end device",
+            "example": "10.0.1.3"
           },
           "remote_tunnel_ip": {
             "type": "string",
-            "description": "The ip of the remote wireguard tunnel end device"
+            "description": "The ip of the remote wireguard tunnel end device",
+            "example": "10.0.1.4"
           },
           "ingress_matches": {
             "type": "array",
@@ -68,11 +76,13 @@
               "properties": {
                 "intf_name": {
                   "type": "string",
-                  "description": "Specifies the ingress interface"
+                  "description": "Specifies the ingress interface",
+                  "example": "intf1"
                 },
                 "slice_id": {
                   "type": "integer",
-                  "description": "Specifies the expected mpls label"
+                  "description": "Specifies the expected mpls label",
+                  "example": 1
                 }
               }
             }
@@ -86,11 +96,13 @@
               "properties": {
                 "intf_name": {
                   "type": "string",
-                  "description": "Specifies the egress interface"
+                  "description": "Specifies the egress interface",
+                  "example": "intf1"
                 },
                 "slice_id": {
                   "type": "integer",
-                  "description": "Specifies the expected mpls label"
+                  "description": "Specifies the expected mpls label",
+                  "example": 2
                 }
               }
             }

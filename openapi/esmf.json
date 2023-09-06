@@ -28,32 +28,38 @@
           "slice_id": {
             "type": "integer",
             "format": "int32",
-            "description": "The slice identifier"
+            "description": "The slice identifier",
+            "example": 1
           },
           "min_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The minimum transmission rate as bits/s"
+            "description": "The minimum transmission rate as bits/s",
+            "example": 100000
           },
           "max_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The maximum transmission rate as bits/s"
+            "description": "The maximum transmission rate as bits/s",
+            "example": 120000
           },
           "burst_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The burst transmission rate as bits/s"
+            "description": "The burst transmission rate as bits/s",
+            "example": 140000
           },
           "latency": {
             "type": "integer",
             "format": "int16",
-            "description": "The required maximum latency"
+            "description": "The required maximum latency in ms",
+            "example": 3
           },
           "tunnel_id": {
             "type": "integer",
             "format": "int32",
-            "description": "The tunnel identifier"
+            "description": "The tunnel identifier",
+            "example": 1
           },
           "transport_protocol": {
             "type": "string",
@@ -61,7 +67,8 @@
               "UDP",
               "TCP"
             ],
-            "description": "The protocol to be expected"
+            "description": "The protocol to be expected",
+            "example": "UDP"
           },
           "fr": {
             "$ref": "#/components/schemas/endpoint"
@@ -77,27 +84,32 @@
           "tunnel_id": {
             "type": "integer",
             "format": "int32",
-            "description": "The tunnel identifier"
+            "description": "The tunnel identifier",
+            "example": 1
           },
           "min_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The minimum transmission rate as bits/s"
+            "description": "The minimum transmission rate as bits/s",
+            "example": "100000"
           },
           "max_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The maximum transmission rate as bits/s"
+            "description": "The maximum transmission rate as bits/s",
+            "example": "120000"
           },
           "burst_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The burst transmission rate as bits/s"
+            "description": "The burst transmission rate as bits/s",
+            "example": "140000"
           },
           "latency": {
             "type": "integer",
             "format": "int16",
-            "description": "The required maximum latency"
+            "description": "The required maximum latency in ms",
+            "example": 3
           },
           "fr": {
             "$ref": "#/components/schemas/endpoint"
@@ -107,11 +119,13 @@
           },
           "private_key": {
             "type": "string",
-            "description": "The tunnel private key"
+            "description": "The tunnel private key",
+            "example": "SSBhbSBhIHZlcnkgc2VjcmV0IGtleQ=="
           },
           "public_key": {
             "type": "string",
-            "description": "The tunnel public key (of the other side)"
+            "description": "The tunnel public key (of the other side)",
+            "example": "SSBjb3VsZCBiZSBhIHB1YmxpYyBrZXk="
           }
         }
       },
@@ -122,23 +136,27 @@
           "ip": {
             "type": "string",
             "description": "Specifies the source or target ip to be matched. Leave empty for no matching.",
-            "default": null
+            "default": null,
+            "example": "192.168.178.1"
           },
           "port": {
             "type": "integer",
             "format": "i16",
             "description": "Specifies the source or target port to be matched. Leave empty or on 0 for no matching.",
-            "default": 0
+            "default": 0,
+            "example": 7543
           },
           "name": {
             "type": "string",
             "description": "Specifies the name of this entry to look up in our configuration.",
-            "default": null
+            "default": null,
+            "example": "host1"
           },
           "network": {
             "type": "string",
             "description": "Specifies the network name of this endpoint.",
-            "default": null
+            "default": null,
+            "example": "net1"
           }
         }
       },
@@ -152,11 +170,13 @@
               "ESMF",
               "CTMF"
             ],
-            "description": "The service type to be used"
+            "description": "The service type to be used",
+            "example": "ESMF"
           },
           "network": {
             "type": "string",
-            "description": "Our network name"
+            "description": "Our network name",
+            "example": "net1"
           },
           "vpn_gateways": {
             "type": "array",
@@ -186,7 +206,8 @@
             "type": "integer",
             "format": "i64",
             "description": "The bitrate that can be reserved by hosts on our network",
-            "default": 1000000000
+            "default": 1000000000,
+            "example": 1000000000
           },
           "slice_id_range": {
             "type": "object",
@@ -195,28 +216,14 @@
               "fr": {
                 "type": "integer",
                 "description": "Lower bound of this range (inclusive)",
-                "format": "i16"
+                "format": "i16",
+                "example": "30"
               },
               "to": {
                 "type": "integer",
                 "description": "Higher bound of this range (exclusive)",
-                "format": "i16"
-              }
-            }
-          },
-          "tunnel_id_range": {
-            "type": "object",
-            "description": "The range of tunnel ids that are assigned by this service",
-            "properties": {
-              "fr": {
-                "type": "integer",
-                "description": "Lower bound of this range (inclusive)",
-                "format": "i16"
-              },
-              "to": {
-                "type": "integer",
-                "description": "Higher bound of this range (exclusive)",
-                "format": "i16"
+                "format": "i16",
+                "example": "35"
               }
             }
           }
@@ -229,13 +236,15 @@
           "ip": {
             "type": "string",
             "description": "The ip or name the device can be reached on",
-            "default": "localhost"
+            "default": "localhost",
+            "example": "localhost"
           },
           "port": {
             "type": "integer",
             "format": "i16",
             "description": "The port that the device REST API can be reached on",
-            "default": 8082
+            "default": 8082,
+            "example": 8082
           },
           "connections": {
             "type": "array",
@@ -246,11 +255,13 @@
           },
           "network": {
             "type": "string",
-            "description": "The network name this device is assigned to"
+            "description": "The network name this device is assigned to",
+            "example": "net1"
           },
           "name": {
             "type": "string",
-            "description": "The name of the device"
+            "description": "The name of the device",
+            "example": "host1"
           }
         }
       },
@@ -260,16 +271,19 @@
         "properties": {
           "intf_name": {
             "type": "string",
-            "description": "The name of the interface on a switch"
+            "description": "The name of the interface on a switch",
+            "example": "intf1"
           },
           "intf_id": {
             "type": "integer",
             "format": "i16",
-            "description": "The id of the interface"
+            "description": "The id of the interface",
+            "example": 1
           },
           "other_end": {
             "type": "string",
-            "description": "The name of the device on the other side"
+            "description": "The name of the device on the other side",
+            "example": "host2"
           }
         }
       },
@@ -279,25 +293,29 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "The name of the network"
+            "description": "The name of the network",
+            "example": "net1"
           },
           "reachable": {
             "type": "array",
             "description": "Networks reachable from this network",
             "items": {
               "type": "string"
-            }
+            },
+            "example": ["net2"]
           },
           "preferred_vpn": {
             "type": "array",
             "description": "VPN gateways to use (in order) to connect to this network",
             "items": {
               "type": "string"
-            }
+            },
+            "example": ["vpn1"]
           },
           "subnet": {
             "type": "string",
-            "description": "Subnet of this network"
+            "description": "Subnet of this network",
+            "example": "192.168.178.0/24"
           }
         }
       }
@@ -331,10 +349,10 @@
     },
     "/slice": {
       "summary": "Manages slices for requesters",
-      "description": "Endpoint to manage slices by requesters",
+      "description": "Endpoint to manage slices by requesters. This endpoint is only available on ESMFs.",
       "get": {
         "tags": ["Slice Management"],
-        "description": "Lists all current slices by this requester",
+        "description": "Lists all current slices by this requester. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -370,7 +388,7 @@
       },
       "put": {
         "tags": ["Slice Management"],
-        "description": "Creates one or multiple new slices from one host to another. Will either create all slices if feasible or none at all.",
+        "description": "Creates one or multiple new slices from one host to another. Will either create all slices if feasible or none at all. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -437,7 +455,7 @@
       },
       "delete": {
         "tags": ["Slice Management"],
-        "description": "Deletes one or multiple slices",
+        "description": "Deletes one or multiple slices. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -569,12 +587,12 @@
     },
     "/slice_reservation": {
       "summary": "Manages slice reservations on the current domain",
-      "description": "Endpoint to manage slice reservations",
+      "description": "Endpoint to manage slice reservations. This endpoint is only available on ESMFs.",
       "get": {
         "tags": [
           "Slice Synchronization"
         ],
-        "description": "Lists all current slice reservations",
+        "description": "Lists all current slice reservations. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -612,7 +630,7 @@
         "tags": [
           "Slice Synchronization"
         ],
-        "description": "Creates a new slice reservation",
+        "description": "Creates a new slice reservation. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -666,7 +684,7 @@
       },
       "delete": {
         "tags": ["Slice Synchronization"],
-        "description": "Deletes a slice reservation",
+        "description": "Deletes a slice reservation. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -709,12 +727,12 @@
     },
     "/slice_deployment": {
       "summary": "Manages slices on the current domain",
-      "description": "Endpoint to manage slices",
+      "description": "Endpoint to manage slices. This endpoint is only available on ESMFs.",
       "get": {
         "tags": [
           "Slice Synchronization"
         ],
-        "description": "Lists all current slices",
+        "description": "Lists all current slices. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -752,7 +770,7 @@
         "tags": [
           "Slice Synchronization"
         ],
-        "description": "Creates a new slice from a reservation",
+        "description": "Creates a new slice from a reservation. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",
@@ -799,7 +817,7 @@
         "tags": [
           "Slice Synchronization"
         ],
-        "description": "Deletes a slice",
+        "description": "Deletes a slice. This endpoint is only available on ESMFs.",
         "parameters": [
           {
             "name": "auth",

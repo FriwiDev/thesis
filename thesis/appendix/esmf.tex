@@ -1,0 +1,1125 @@
+\section{ESMF}
+\label{spec_esmf}
+
+A simple API to interact with the Edge Slice Management Function. Supports creating and removing slices across domains. Synchronises itself with other ESMFs to achieve a common goal. Please refer to the topology drawings for further information about the network structures.
+
+\subsection{Authentication}
+\subsubsection{POST /auth}
+Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\multicolumn{4}{|p{11.34cm}|}{\centering{\textit{No parameters}}} \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The authentication token as string
+
+\paragraph{Data} string \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Wrong credentials were specified \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Slice Management}
+\subsubsection{GET /slice}
+Lists all current slices by this requester. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current list of slices assigned to this requester
+
+\paragraph{Data} [\hyperref[esmf_slice]{slice}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /slice}
+Creates one or multiple new slices from one host to another. Will either create all slices if feasible or none at all. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\textbf{Content Type} & \textbf{Data Type} \\
+\hline
+application/json & [\hyperref[esmf_slice]{slice}] \\
+ \hline
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The slices have been deployed. Returns the parameters of the deployed slices, including the fresh ids.
+
+\paragraph{Data} [\hyperref[esmf_slice]{slice}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid or insufficient authentication provided \\
+ \hline
+\centering{404} & \centering{text/plain} & The input or output of one or multiple of the slices could not be found \\
+ \hline
+\centering{417} & \centering{text/plain} & No slices were requested \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\centering{422} & \centering{text/plain} & Can not handle slices not originating from or to our network \\
+ \hline
+\centering{429} & \centering{text/plain} & Please slow down. You may only use slice actions every couple of seconds. \\
+ \hline
+\centering{500} & \centering{text/plain} & Internal error \\
+ \hline
+\centering{507} & \centering{text/plain} & Insufficient resources by participating domain or requester \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /slice}
+Deletes one or multiple slices. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+slice\_ids & \centering{QUERY} & The ids of the slices to be deleted. & [integer/int32] \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The slices were successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid or insufficient authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & One or multiple of the slices could not be found. \\
+ \hline
+\centering{417} & \centering{text/plain} & No slice ids were provided. \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\centering{429} & \centering{text/plain} & Please slow down. You may only use slice actions every couple of seconds. \\
+ \hline
+\centering{500} & \centering{text/plain} & Internal error \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Configuration}
+\subsubsection{GET /configuration}
+Fetch the current configuration of this service
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current configuration
+
+\paragraph{Data} \hyperref[esmf_domain_configuration]{domain\_configuration} \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /configuration}
+Installs a new configuration for this service
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\textbf{Content Type} & \textbf{Data Type} \\
+\hline
+application/json & \hyperref[esmf_domain_configuration]{domain\_configuration} \\
+ \hline
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The configuration has been installed \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{406} & \centering{text/plain} & A value exceeds the allowed range \\
+ \hline
+\centering{409} & \centering{text/plain} & There are slices currently running. Reconfiguring is not supported while slices are open. \\
+ \hline
+\centering{412} & \centering{text/plain} & The provided configuration is invalid \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Slice Synchronization}
+\subsubsection{GET /slice\_reservation}
+Lists all current slice reservations. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current list of slice reservations
+
+\paragraph{Data} [\hyperref[esmf_slice]{slice}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /slice\_reservation}
+Creates a new slice reservation. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\textbf{Content Type} & \textbf{Data Type} \\
+\hline
+application/json & \hyperref[esmf_slice]{slice} \\
+ \hline
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The slice has been reserved \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{404} & \centering{text/plain} & The input or output could not be found \\
+ \hline
+\centering{406} & \centering{text/plain} & A value exceeds the allowed range \\
+ \hline
+\centering{409} & \centering{text/plain} & A slice with this id is already known \\
+ \hline
+\centering{412} & \centering{text/plain} & A value does not match the schema \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\centering{500} & \centering{text/plain} & Internal error \\
+ \hline
+\centering{507} & \centering{text/plain} & Insufficient resources \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /slice\_reservation}
+Deletes a slice reservation. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+slice\_id & \centering{QUERY} & The id of the slice reservation to be deleted. & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The slice reservation was successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The slice reservation could not be found. \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\centering{500} & \centering{text/plain} & Internal error \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{GET /slice\_deployment}
+Lists all current slices. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current list of slices
+
+\paragraph{Data} [\hyperref[esmf_slice]{slice}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /slice\_deployment}
+Creates a new slice from a reservation. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+slice\_id & \centering{QUERY} & The slice to create from the corresponding reservation id & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The slice has been created \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{404} & \centering{text/plain} & The slice reservation could not be found. \\
+ \hline
+\centering{412} & \centering{text/plain} & The tunnel referenced by this slice has not been deployed yet \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\centering{500} & \centering{text/plain} & The deployment to the network failed \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /slice\_deployment}
+Deletes a slice. This endpoint is only available on ESMFs.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+slice\_id & \centering{QUERY} & The id of the slice to be deleted. & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The slice was successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The slice could not be found. \\
+ \hline
+\centering{421} & \centering{text/plain} & Slice management is not supported by this service \\
+ \hline
+\centering{500} & \centering{text/plain} & The deployment to the network failed \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Tunnel Synchronization}
+\subsubsection{GET /tunnel\_reservation}
+Lists all current tunnel reservations
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current list of tunnel reservations
+
+\paragraph{Data} [\hyperref[esmf_tunnel]{tunnel}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /tunnel\_reservation}
+Creates a new tunnel reservation or stages changes to an existing deployed tunnel, as long as source and target of the tunnel match.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\textbf{Content Type} & \textbf{Data Type} \\
+\hline
+application/json & \hyperref[esmf_tunnel]{tunnel} \\
+ \hline
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The tunnel has been reserved \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{404} & \centering{text/plain} & The input or output could not be found \\
+ \hline
+\centering{406} & \centering{text/plain} & A value exceeds the allowed range \\
+ \hline
+\centering{409} & \centering{text/plain} & A tunnel with this id is already known and does not match current source and target \\
+ \hline
+\centering{412} & \centering{text/plain} & A value does not match the schema \\
+ \hline
+\centering{500} & \centering{text/plain} & Internal error \\
+ \hline
+\centering{507} & \centering{text/plain} & Insufficient resources \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /tunnel\_reservation}
+Deletes a tunnel reservation
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+tunnel\_id & \centering{QUERY} & The id of the tunnel reservation to be deleted. & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The tunnel reservation was successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The tunnel reservation could not be found. \\
+ \hline
+\centering{500} & \centering{text/plain} & Internal error \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{GET /tunnel\_deployment}
+Lists all current tunnels
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current list of tunnels
+
+\paragraph{Data} [\hyperref[esmf_tunnel]{tunnel}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /tunnel\_deployment}
+Creates a new tunnel or modifies a tunnel from a reservation
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+tunnel\_id & \centering{QUERY} & The tunnel to create from the corresponding reservation id & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The tunnel has been created \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\centering{404} & \centering{text/plain} & The tunnel reservation could not be found. \\
+ \hline
+\centering{500} & \centering{text/plain} & The deployment to the network failed \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /tunnel\_deployment}
+Deletes a tunnel
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+tunnel\_id & \centering{QUERY} & The id of the tunnel to be deleted. & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The tunnel was successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The tunnel could not be found. \\
+ \hline
+\centering{412} & \centering{text/plain} & The tunnel is still being referenced by a deployed slice \\
+ \hline
+\centering{500} & \centering{text/plain} & The deployment to the network failed \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Schemas}
+
+\subsubsection{Schema connection\_configuration:}
+\label{esmf_connection_configuration}
+A connection configuration element
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "intf_name": "str",
+  "intf_id": "int",
+  "other_end": "str"
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "intf_name": "intf1",
+  "intf_id": 1,
+  "other_end": "host2"
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage
+\subsubsection{Schema device\_configuration:}
+\label{esmf_device_configuration}
+A device/switch configuration element
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "ip": "str",
+  "port": "int",
+  "connections": [
+    {
+      "intf_name": "str",
+      "intf_id": "int",
+      "other_end": "str"
+    }
+  ],
+  "network": "str",
+  "name": "str"
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "ip": "localhost",
+  "port": 8082,
+  "connections": [
+    {
+      "intf_name": "intf1",
+      "intf_id": 1,
+      "other_end": "host2"
+    }
+  ],
+  "network": "net1",
+  "name": "host1"
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage
+\subsubsection{Schema domain\_configuration:}
+\label{esmf_domain_configuration}
+The configuration for this service
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "type": "str",
+  "network": "str",
+  "vpn_gateways": [
+    {
+      "ip": "str",
+      "port": "int",
+      "connections": [
+        {
+          "intf_name": "str",
+          "intf_id": "int",
+          "other_end": "str"
+        }
+      ],
+      "network": "str",
+      "name": "str"
+    }
+  ],
+  "networks": [
+    {
+      "name": "str",
+      "reachable": [
+        "str"
+      ],
+      "preferred_vpn": [
+        "str"
+      ],
+      "subnet": "str"
+    }
+  ],
+  "coordinators": [
+    {
+      "ip": "str",
+      "port": "int",
+      "connections": [
+        {
+          "intf_name": "str",
+          "intf_id": "int",
+          "other_end": "str"
+        }
+      ],
+      "network": "str",
+      "name": "str"
+    }
+  ],
+  "domain_controller": {
+    "ip": "str",
+    "port": "int",
+    "connections": [
+      {
+        "intf_name": "str",
+        "intf_id": "int",
+        "other_end": "str"
+      }
+    ],
+    "network": "str",
+    "name": "str"
+  },
+  "reservable_bitrate": "int",
+  "slice_id_range": {
+    "fr": "int",
+    "to": "int"
+  }
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "type": "ESMF",
+  "network": "net1",
+  "vpn_gateways": [
+    {
+      "ip": "localhost",
+      "port": 8082,
+      "connections": [
+        {
+          "intf_name": "intf1",
+          "intf_id": 1,
+          "other_end": "host2"
+        }
+      ],
+      "network": "net1",
+      "name": "host1"
+    }
+  ],
+  "networks": [
+    {
+      "name": "net1",
+      "reachable": [
+        "net2"
+      ],
+      "preferred_vpn": [
+        "vpn1"
+      ],
+      "subnet": "192.168.178.0/24"
+    }
+  ],
+  "coordinators": [
+    {
+      "ip": "localhost",
+      "port": 8082,
+      "connections": [
+        {
+          "intf_name": "intf1",
+          "intf_id": 1,
+          "other_end": "host2"
+        }
+      ],
+      "network": "net1",
+      "name": "host1"
+    }
+  ],
+  "domain_controller": {
+    "ip": "localhost",
+    "port": 8082,
+    "connections": [
+      {
+        "intf_name": "intf1",
+        "intf_id": 1,
+        "other_end": "host2"
+      }
+    ],
+    "network": "net1",
+    "name": "host1"
+  },
+  "reservable_bitrate": 1000000000,
+  "slice_id_range": {
+    "fr": "30",
+    "to": "35"
+  }
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage
+\subsubsection{Schema endpoint:}
+\label{esmf_endpoint}
+Specifying an endpoint to be matched for source or target
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "ip": "str",
+  "port": "int",
+  "name": "str",
+  "network": "str"
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "ip": "192.168.178.1",
+  "port": 7543,
+  "name": "host1",
+  "network": "net1"
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage
+\subsubsection{Schema network\_configuration:}
+\label{esmf_network_configuration}
+A network configuration element
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "name": "str",
+  "reachable": [
+    "str"
+  ],
+  "preferred_vpn": [
+    "str"
+  ],
+  "subnet": "str"
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "name": "net1",
+  "reachable": [
+    "net2"
+  ],
+  "preferred_vpn": [
+    "vpn1"
+  ],
+  "subnet": "192.168.178.0/24"
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage
+\subsubsection{Schema slice:}
+\label{esmf_slice}
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "slice_id": "int",
+  "min_rate": "int",
+  "max_rate": "int",
+  "burst_rate": "int",
+  "latency": "int",
+  "tunnel_id": "int",
+  "transport_protocol": "str",
+  "fr": {
+    "ip": "str",
+    "port": "int",
+    "name": "str",
+    "network": "str"
+  },
+  "to": {
+    "ip": "str",
+    "port": "int",
+    "name": "str",
+    "network": "str"
+  }
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "slice_id": 1,
+  "min_rate": 100000,
+  "max_rate": 120000,
+  "burst_rate": 140000,
+  "latency": 3,
+  "tunnel_id": 1,
+  "transport_protocol": "UDP",
+  "fr": {
+    "ip": "192.168.178.1",
+    "port": 7543,
+    "name": "host1",
+    "network": "net1"
+  },
+  "to": {
+    "ip": "192.168.178.1",
+    "port": 7543,
+    "name": "host1",
+    "network": "net1"
+  }
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage
+\subsubsection{Schema tunnel:}
+\label{esmf_tunnel}
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "tunnel_id": "int",
+  "min_rate": "int",
+  "max_rate": "int",
+  "burst_rate": "int",
+  "latency": "int",
+  "fr": {
+    "ip": "str",
+    "port": "int",
+    "name": "str",
+    "network": "str"
+  },
+  "to": {
+    "ip": "str",
+    "port": "int",
+    "name": "str",
+    "network": "str"
+  },
+  "private_key": "str",
+  "public_key": "str"
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "tunnel_id": 1,
+  "min_rate": "100000",
+  "max_rate": "120000",
+  "burst_rate": "140000",
+  "latency": 3,
+  "fr": {
+    "ip": "192.168.178.1",
+    "port": 7543,
+    "name": "host1",
+    "network": "net1"
+  },
+  "to": {
+    "ip": "192.168.178.1",
+    "port": 7543,
+    "name": "host1",
+    "network": "net1"
+  },
+  "private_key": "SSBhbSBhIHZlcnkgc2VjcmV0IGtleQ==",
+  "public_key": "SSBjb3VsZCBiZSBhIHB1YmxpYyBrZXk="
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage

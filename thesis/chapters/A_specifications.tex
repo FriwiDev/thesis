@@ -1,26 +1,21 @@
 \chapter{Specifications}
 \label{specifications}
 
-In this appendix, we are going to present our \acrshort{rest} \acrshort{api} specifications. All specifications can also be viewed in \Gls{openapi} format in the accompanying sources.
+In this appendix, we are going to present our \acrshort{rest} \acrshort{api} specifications. All specifications can also be viewed in \Gls{openapi} or HTML format in the accompanying sources.\\
+
+Each component specification will feature a set of endpoints grouped in categories and a list of schemata used by the individual endpoint. The schemata are referenced by name throughout the descriptions and sorted in alphabetical order.\\
 
 We will provide the specifications for the individual components in the following order:
 
 \begin{itemize}
     \item \acrshort{esmf}
     \item \acrshort{dsmf}
-    \item \acrshort{ctmf}
-    \item \acrshort{dtmf}
-    \item Controller
     \item \acrshort{vpn} gateway
     \item Switch
 \end{itemize}
 
-At the end we will also specify all schemata that were used throughout the specification.
+As \acrshort{ctmf} and \acrshort{dtmf} are only a subset of \acrshort{esmf} and \acrshort{dsmf}, we only provide the latter as a specification here. The description of the endpoints will state where they are available. Generally speaking, everything concerning slices will be not available on \acrshort{ctmf} and \acrshort{dtmf}.\\
 
-%\include{../appendix/esmf}
-%\include{../appendix/dsmf}
-%\include{../appendix/ctmf}
-%\include{../appendix/dtmf}
-%\include{../appendix/controller}
-%\include{../appendix/vpn_gateway}
-%\include{../appendix/switch}
+The specification for the controller is not included in this document and can be viewed online:
+\href{https://ryu.readthedocs.io/en/latest/app/ofctl\_rest.html}{https://ryu.readthedocs.io/en/latest/app/ofctl\_rest.html}
+

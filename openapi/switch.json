@@ -28,31 +28,37 @@
           "queue_id": {
             "type": "integer",
             "format": "int32",
-            "description": "The queue identifier used by OpenFlow"
+            "description": "The queue identifier used by OpenFlow",
+            "example": "0"
           },
           "min_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The minimum queue rate in Bits/s"
+            "description": "The minimum queue rate in Bits/s",
+            "example": 100000
           },
           "max_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The maximum queue rate in Bits/s"
+            "description": "The maximum queue rate in Bits/s",
+            "example": 120000
           },
           "burst_rate": {
             "type": "integer",
             "format": "int64",
-            "description": "The burst queue rate in Bits/s"
+            "description": "The burst queue rate in Bits/s",
+            "example": 140000
           },
           "priority": {
             "type": "integer",
             "format": "int32",
-            "description": "The queue priority"
+            "description": "The queue priority",
+            "example": 300
           },
           "port": {
             "type": "string",
-            "description": "The name of the output port on the switch"
+            "description": "The name of the output port on the switch",
+            "example": "intf1"
           }
         }
       }

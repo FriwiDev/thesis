@@ -1,0 +1,223 @@
+\section{VPN Gateway API}
+\label{spec_vpn gateway api}
+
+A simple API to manage tunnel entries on a dedicated host within the edges. The VPN Gateway is used to encrypt traffic before it enters the first black network.
+
+\subsection{Authentication}
+\subsubsection{POST /auth}
+Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\multicolumn{4}{|p{11.34cm}|}{\centering{\textit{No parameters}}} \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The authentication token as string
+
+\paragraph{Data} string \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Wrong credentials were specified \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Tunnel Entry Management}
+\subsubsection{GET /tunnel\_entry}
+Lists all current tunnel entries
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{application/json} & The current list of tunnel entries
+
+\paragraph{Data} [\hyperref[vpn_gateway_tunnel_entry]{tunnel\_entry}] \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{PUT /tunnel\_entry}
+Creates a new tunnel entry or updates one. Only updating of match entries is allowed - not the rest of the tunnel parameters.
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\textbf{Content Type} & \textbf{Data Type} \\
+\hline
+application/json & \hyperref[vpn_gateway_tunnel_entry]{tunnel\_entry} \\
+ \hline
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{201} & \centering{text/plain} & The tunnel entry has been created \\
+ \hline
+\endhead
+\centering{202} & \centering{text/plain} & The tunnel entry has been updated \\
+ \hline
+\centering{400} & \centering{text/plain} & No body provided. \\
+ \hline
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & A specified interface could not be found \\
+ \hline
+\centering{406} & \centering{text/plain} & A value exceeds the allowed range \\
+ \hline
+\centering{409} & \centering{text/plain} & A tunnel entry with this id already exists and information apart from match entries was changed. \\
+ \hline
+\centering{412} & \centering{text/plain} & A value does not match the schema \\
+ \hline
+\centering{507} & \centering{text/plain} & Already too many tunnel entries in use \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsubsection{DELETE /tunnel\_entry}
+Deletes a tunnel entry
+\begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{\textbf{Parameters}} \\
+ \hline
+\textbf{Name} & \centering{\textbf{Location}} & \textbf{Description} & \textbf{Type} \\
+\hline
+auth & \centering{QUERY} & The authentication token issued by prior login & string \\
+ \hline
+tunnel\_entry\_id & \centering{QUERY} & The id of the tunnel entry to be deleted. & integer/int32 \\
+ \hline
+\endhead \end{longtable}
+
+\begin{longtable}{ |p{3cm}|p{7.88cm}| }
+\hline
+\multicolumn{2}{|c|}{\textbf{Request Body}} \\
+ \hline
+\multicolumn{2}{|p{11.34cm}|}{\centering{\textit{No request body}}} \\
+ \hline \endhead
+\end{longtable}
+
+\begin{longtable}{ |p{1.0cm}|p{3cm}|p{6.44cm}| }
+\hline
+\multicolumn{3}{|c|}{\textbf{Responses}} \\
+ \hline
+\centering{\textbf{Code}} & \centering{\textbf{Content Type}} & \textbf{Description, Data Type} \\
+\hline
+\centering{200} & \centering{text/plain} & The tunnel entry was successfully deleted. \\
+ \hline
+\endhead
+\centering{403} & \centering{text/plain} & Invalid authentication provided. \\
+ \hline
+\centering{404} & \centering{text/plain} & The tunnel entry could not be found. \\
+ \hline
+\end{longtable}
+
+\newpage
+\subsection{Schemas}
+
+\subsubsection{Schema tunnel\_entry:}
+\label{vpn_gateway_tunnel_entry}
+\begin{codes}
+\item[Structure] \begin{lstlisting}[language=bash]
+{
+  "tunnel_entry_id": "int",
+  "inner_subnet": "str",
+  "local_port": "int",
+  "remote_end": "str",
+  "private_key": "str",
+  "public_key": "str",
+  "local_tunnel_ip": "str",
+  "remote_tunnel_ip": "str",
+  "ingress_matches": [
+    {
+      "intf_name": "str",
+      "slice_id": "int"
+    }
+  ],
+  "egress_matches": [
+    {
+      "intf_name": "str",
+      "slice_id": "int"
+    }
+  ]
+}
+\end{lstlisting}
+\end{codes}
+\begin{codes}
+\item[Example] \begin{lstlisting}[language=bash]
+{
+  "tunnel_entry_id": 1,
+  "inner_subnet": "192.168.178.0/24",
+  "local_port": 7543,
+  "remote_end": "vpn2",
+  "private_key": "SSBhbSBhIHZlcnkgc2VjcmV0IGtleQ==",
+  "public_key": "SSBjb3VsZCBiZSBhIHB1YmxpYyBrZXk=",
+  "local_tunnel_ip": "10.0.1.3",
+  "remote_tunnel_ip": "10.0.1.4",
+  "ingress_matches": [
+    {
+      "intf_name": "intf1",
+      "slice_id": 1
+    }
+  ],
+  "egress_matches": [
+    {
+      "intf_name": "intf1",
+      "slice_id": 2
+    }
+  ]
+}
+\end{lstlisting}
+\end{codes}
+
+\newpage

@@ -11,7 +11,7 @@ In this section we will build our validation methodology by choosing an accurate
 \subsection{Test environment}
 As a test environment we want to use a network emulator to be able to easily bootstrap our solution. For this, multiple emulators are available, including mininet \cite{mininet}, distrinet \cite{distrinet1, distrinet2}, maxinet \cite{maxinet}, ComNetsEmu \cite{comnetsemu} or our own testbed solution \cite{owntb}.
 
-\paragraph{Mininet and ComNetsEmu} emulate network topologies on a single machine, but do not scale to multiple machines. As we want to test in a distributed setting, they are sadly out of the equation.
+\paragraph{Mininet and ComNetsEmu} emulate network topologies on a single machine, but do not scale to multiple machines. As we want to test in a distributed setting, they are unfortunately out of the equation.
 
 \paragraph{Distrinet and maxinet} would both allow us to scale mininet topologies to multiple machines. As we want to be able to deploy our topologies to real-world devices in the future though and integrate real-world hardware (requirement R3), we would need to invest additional effort in deploying to real-world hardware in the future when using them.
 
@@ -27,21 +27,21 @@ We will test three scenarios in total. The first scenario will provide a base ca
     \item[\namedlabel{S1}{S1}] \textbf{Reference scenario} The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. This scenario can be seen in figure \ref{fig:scenario_1}.
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=12cm]{images/chapter_7/scenario_1.png}
+        \includegraphics[width=6cm]{images/chapter_7/scenario_1.png}
         \caption[Validation Scenario 1]{Our first scenario \ref{S1} without network slicing.}
         \label{fig:scenario_1}
     \end{figure}
     \item[\namedlabel{S2}{S2}] \textbf{Local slicing scenario} For our first slicing scenario we will deploy our slicing solution emulating three domains with two \gls{edgenetwork}s and one black (semi-trusted) network between them. Each domain will have two slicing switches which the traffic of the slices has to pass. One of the simulated hosts will be created on each edge. This scenario can be seen in figure \ref{fig:scenario_2}.
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=\textwidth]{images/chapter_7/scenario_2.png}
+        \includegraphics[width=8cm]{images/chapter_7/scenario_2.png}
         \caption[Validation Scenario 2]{Our second scenario \ref{S2} with network slicing across three domains running on a local test setup (one machine).}
         \label{fig:scenario_2}
     \end{figure}
     \item[\namedlabel{S3}{S3}] \textbf{Remote slicing scenario} As the last scenario we will deploy the previous scenario to three different servers that are connected via 10G links to an Aruba 2930F switch. Each server will contain one entire simulated domain. We hope that by this scenario we can observe some real-world performance characteristics when utilizing real links in our test environment. This scenario can be seen in figure \ref{fig:scenario_3}.
     \begin{figure}[ht]
         \centering
-        \includegraphics[width=\textwidth]{images/chapter_7/scenario_3.png}
+        \includegraphics[width=8cm]{images/chapter_7/scenario_3.png}
         \caption[Validation Scenario 3]{Our last scenario \ref{S3} with network slicing across three domains, deploying one domain per server each. The three servers are connected via a switch.}
         \label{fig:scenario_3}
     \end{figure}
@@ -55,7 +55,7 @@ We will test three scenarios in total. The first scenario will provide a base ca
 
 For each scenario we will try to establish two network slices in total. As an example, we want to control a robot on the other side by receiving a video stream and maintaining a bidirectional control and feedback stream, as in our use case for the surgery.
 
-One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small \gls{lossrate} for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not be too much of an issue. \Gls{jitter} may occur as we can buffer our video stream data for short amounts of time, however we want our \gls{latency} to be low so our frames appear in almost real time.
+One slice will thus be unidirectional and streaming media content. We will allocate 8Mbit/s to this slice, because this encompasses streaming of HD video (according to the FCC \cite{fcc}). We require a relatively small \gls{lossrate} for this to not skip frames on the video stream, but loosing single packets and skipping a frame will not provide an essential problem. \Gls{jitter} may occur as we can buffer our video stream data for short amounts of time, however we want our \gls{latency} to be low so our frames appear in almost real time.
 
 For the bidirectional control and feedback slice, we need far less \gls{bandwidth}. The \gls{lossrate} needs to be lower than with the video stream to be in control at all times. Also we require a low \gls{latency} and low \gls{jitter} to be able to react in real time and without any inaccurate movements. We will thus apply the resource guarantees in table \ref{table:slices} to all of our scenarios.
 
@@ -79,7 +79,7 @@ The robot example including the \gls{bandwidth} requirements is taken from Fuhrb
 
 \subsection{Measurements}
 \label{measurements}
-Measurements on the resources of a slice will be performed by sending continuous traffic according to the slice specifications through the slice. By sending the traffic and observing the packets reaching the other and, we can obtain measurements on whether the slices upheld their guarantees in this specific situation or not.
+Measurements on the resources of a slice will be performed by sending continuous traffic according to the slice specifications through the slice. By sending the traffic and observing the packets reaching the other end, we can obtain measurements on whether the slices upheld their guarantees in this specific situation or not.
 
 To send the traffic and observe their result, we will use three different tools:
 
@@ -125,14 +125,14 @@ For each experiment
 $\Rightarrow$ Outcome and expectation validation in validation chapter later
 \fi
 
-In this section we are now going to state the experiments that we are going to perform. We will perform one experiment for each attacker, apart from the integrity attacker (see below for more info on this). The experiments are numbered the same as the attackers.
+In this section we are now going to state the experiments that we are going to perform. We will perform one experiment for each attacker, apart from the integrity attacker (see below for more information on this). The experiments are numbered the same as the attackers.
 
 \begin{description}[style=multiline, labelwidth=0.7cm]
-    \item[\namedlabel{E1}{E1}] \textbf{Slice availability and resilience} In this experiment we want to test whether the slice isolation is working as expected. For this, we will place one attacking host on each of the edges, which send traffic along the same path that our slice is taking by using \textit{hping3} \cite{hping3}. Hping3 is a tool to spam traffic on network interfaces.
+    \item[\namedlabel{E1}{E1}] \textbf{Slice availability and resilience} In this experiment we want to test whether the slice isolation is working as expected. For this, we will place one attacking host on each of the edges, which send traffic along the same path that our slice is taking by using \textit{hping3} \cite{hping3}. Hping3 is a tool to spam traffic on network interfaces. We only investigate flooding traffic parallel to a slice originating from the edge networks, as the technical implementation and components are the same throughout the network and flooding on different switches should never achieve different results. By flooding from one edge network to the other, we will maximize the path shared by our clean and adversary traffic.
 
     We will establish our test slices specified in section \ref{scenarios} and obtain base measurements using the three tools mentioned in section \ref{measurements} without activating the attackers yet. For scenario \ref{S1} where no slicing setup is available, we will perform all measurements without setting up slices in advance. Afterwards we will activate the attackers and increase the traffic produced by hping3 while continuing our measurements until either the isolation fails or the attackers have reached their maximum possible capacity. The maximum possible computational power the attackers get in a simulated environment is 30 out of 32 in our local environments \ref{S1} and \ref{S2}, and 3 out of 4 per server in our remote slicing environment \ref{S3}, so there is still some computational capacity available for the scenarios, which is more than generous to the attackers.
 
-    We will also install a large number of flow entries with higher priority on the switches subsequently to test whether a large number of flows (number of attacker threads mentioned above) compromises our isolation efforts. The maximum number of flows uses the same reasoning as above. In a real-world network we can also decide how many local participants may route their traffic via our switches, where we need to scale our infrastructure according to the number of participants. It thus makes sense to determine attacker capacity by our own capacity, apart from the fact that we are locked to it anyways by sheer capacity we possess in our simulated environments.
+    We will also install a large number of flow entries with higher priority on the switches subsequently to test whether a large number of flows (number of attacker threads mentioned above) compromises our isolation efforts. The maximum number of flows uses the same reasoning as above. In a real-world network we can also decide how many local participants may route their traffic via our switches, where we need to scale our infrastructure according to the number of participants. It thus makes sense to determine attacker capacity by our own capacity, apart from the fact that we are locked to it by the sheer capacity we possess in our simulated environments.
 
     If the isolation fails, then we have not reached our isolation requirement \ref{R1}. If on the other hand the attackers reach their capacity limit, spam flows have been installed and there is still no violation of isolation, the experiment has succeeded, due to the isolation being better than the traffic generation capacity of the system. This would validate our protection goals of availability (\ref{P3}) and resilience (\ref{P4}).
 
@@ -142,7 +142,7 @@ In this section we are now going to state the experiments that we are going to p
 
     For reproducing purposes, we will measure our achieved request rate by examining the output from our script.
 
-    We expect the coordinator to go down, because we have not protected it against http spam yet. We will validate this by starting the spam on the coordinator and then performing a slice request a couple of seconds later. We expect our request to not be replied to.
+    We expect the coordinator to go down, because we have not protected it against http spam yet. We will validate this by starting the spam on the coordinator and then performing a slice request several seconds later. We expect our request to not be replied to.
 
     \item[\namedlabel{E3}{E3}] \textbf{Application plane availability and resilience (2)} In this experiment we will use the same approach as in experiment \ref{E2}, but will rather spam authenticated requests. We will send the requests at a lower rate, because we want the coordinator to have to work on them. For authentication we will use a separate authentication token that is assigned to the attacker first and afterwards we will use the token from our slice requesting host to determine what happens when a token is stolen from a host.
 
@@ -152,7 +152,7 @@ In this section we are now going to state the experiments that we are going to p
 
     \item[\namedlabel{E4}{E4}] \textbf{Slice confidentiality} In this experiment we try to break confidentiality by eavesdropping on the switches of the \gls{blacknetwork} (protection goal \ref{P1}). To achieve this, we are going to use a tool called \textit{tcpdump} \cite{tcpdump} to dump packets passing a \gls{blacknetwork} switch. Tcpdump is a traffic sniffer that will collect packets passing on an interface either to console or to a file.
 
-    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the implementation can be seen below) on the slice initiator that is sending \acrshort{udp} traffic to the remote host. We will then start sniffing on an appropriate switch port of the \gls{blacknetwork}.
+    For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the implementation can be seen below) on the slice initiator that is sending \acrshort{udp} traffic to the remote host. We will then start listening on an appropriate switch port of the \gls{blacknetwork}.
 
     \begin{lstlisting}[language=python]
 import socket
@@ -180,7 +180,7 @@ while True:
 
 \end{description}
 
-We do not conduct a fifth experiment for the fifth attacker, because we already check with experiment \ref{E4} that our traffic is passing the \gls{blacknetwork} through our \gls{wireguard} tunnel. Apart from provably encrypting traffic, \gls{wireguard} tunnels also protect data integrity according to their whitepaper \cite{wireguard}. As there is formal proof for this we can be sure that conducting an arbitrary attack on integrity will not lead to a violation of integrity. Experiment \ref{E4} thus also covers integrity, which is our protection goal \ref{P2}.
+We do not conduct a fifth experiment for the fifth attacker, because we already check with experiment \ref{E4} that our traffic is passing the \gls{blacknetwork} through our \gls{wireguard} tunnel. Apart from encrypting traffic sufficiently, \gls{wireguard} tunnels also protect data integrity according to their whitepaper \cite{wireguard}. As there is formal proof for this we can be sure that conducting an arbitrary attack on integrity will not lead to a violation of integrity. Experiment \ref{E4} thus also covers integrity, which is our protection goal \ref{P2}.
 
 \newcolumntype{P}{>{\centering\arraybackslash}p{.19\textwidth}}
 \begin{table}[ht]
@@ -238,13 +238,13 @@ We will perform the experiments in their numerical ordering.
         \label{table:validation_qos_results}
     \end{table}
 
-    \paragraph{\ref{S1}} In the scenario without our slicing solution, the outcome for our communications was catastrophic under attack. Without active adversaries, we observed 0\% packet loss with a \gls{latency} well below 0.5ms (0.17ms average).
+    \paragraph{\ref{S1}} In the scenario without our slicing solution, the outcome for our communications was catastrophically under attack. Without active adversaries, we observed 0\% packet loss with a \gls{latency} well below 0.5ms (0.17ms average).
 
     With just 2Gbit/s of traffic from the adversaries (overpowering the 1Gbit/s capacity of the scenario), packets on our 8Mbit/s media stream were dropped about 80\% of times, peaking at 84\% in the observed interval. \Gls{latency} increased to a point, where the measurements got capped to 2000ms by the output of the ping tool. It is thus safe to say that without protections our communications are critically endangered, even with just two attackers on our network.
 
     \paragraph{\ref{S2}} In our local edgeslicing scenario we also observed a packet loss of 0\%, \gls{latency} of about 0.23ms and \gls{jitter} of about 0.224ms when not under attack. The \gls{bandwidth}s of all slices were consistent with their specification.
 
-    When starting the attack, a drop in \gls{latency} to an average of about 0.15ms as well as a decrease in \gls{jitter} to about 0.18ms can be observed, which we found interesting. This can possibly be explained by the tickless design of the linux networking stack, resulting in shorter wait times when data is processed more frequently, as long as the system is not overwhelmed.
+    When starting the attack, a drop in \gls{latency} to an average of about 0.15ms as well as a decrease in \gls{jitter} to about 0.18ms can be observed, which caught our interest. This can possibly be explained by the tickless design of the linux networking stack, resulting in shorter wait times when data is processed more frequently, as long as the system is not overwhelmed.
 
     As per experiment design, we then increased the traffic subsequently to 30Gbit/s with attackers occupying 30 out of 32 threads of the host machine. We even removed the ingress policy on the switches and link capacity restrictions in our testbed while under full load. Still, we were not able to observe any changes apart from the initial drop in \gls{latency}.
     The \gls{bandwidth}s never went below their specified value (apart from beginning and ending of the communication due to connection establishment and teardown). We still observed an unchanged 0\% packet loss, an average of 0.15ms in \gls{latency} and \gls{jitter} of about 0.18ms, meeting our thresholds.
@@ -253,7 +253,7 @@ We will perform the experiments in their numerical ordering.
 
     In our remote example we are limited a bit more resource-wise. We can only assign attackers 3 out of 4 threads of a 3GHz Intel Core i5-7400 CPU per server. Our traffic generation is thus limited. Per server we reached speeds of up to about 4.5Gbit/s.
 
-    Under this maximum possible load, we still observe stable results. Packet loss is at 0\%, \gls{latency} is unchanged at 0.68ms average and \gls{jitter} is increasing to 0.088ms. Even though the \gls{jitter} has increased, \gls{jitter} is still way below the threshold of 0.5ms for the control slice. The same characteristic can be observed on the control slice. The \gls{bandwidth}s are still met with the same characteristics as in the local slicing scenario. We thus also pass with success in our remote slicing scenario.
+    Under this maximum possible load, we still observe stable results. Packet loss is at 0\%, \gls{latency} is unchanged at 0.68ms average and \gls{jitter} is increasing to 0.088ms. Even though the \gls{jitter} has increased, \gls{jitter} is still significantly below the threshold of 0.5ms for the control slice. The same characteristic can be observed on the control slice. The \gls{bandwidth}s are still met with the same characteristics as in the local slicing scenario. We thus also pass with success in our remote slicing scenario.
 
     \paragraph{} Another interesting observation on all network slicing scenarios is that the first packet delivered through a tunnel takes additional time, most probably due to the \gls{wireguard} handshake taking place. The initial ping in scenario \ref{S2} can thus take up to about 1ms and for \ref{S3} can take up to 1.5ms. Higher values were not observed thus also not breaking our limits. This behaviour could also be mitigated in the future by sending an initial packet before the first slice of a tunnel is handed over to the tenants.
 
@@ -261,7 +261,7 @@ We will perform the experiments in their numerical ordering.
 
     \paragraph{} Interestingly, these results differ in all slicing scenarios from the results that Fuhrberg et al. \cite{SE4} obtained in their architecture. Even when adding more flows to the switches or removing ingress limits for the attackers our isolation does not seem to break, while their architecture broke isolation significantly with only 10Gbit/s of traffic. In this case their solution remained at 4.5Mbit/s media slice throughput and 0.1Mbit/s control slice throughput (their scenario 4.2). It thus remains an open challenge to figure out why their results differ from ours even when removing our additional protections. One possible explanation could be that their default slice does not appear to be limited in \gls{bandwidth} as opposed to ours. This would still require some further investigation though.
 
-    \cfw{Is this comparison sufficient?}
+%    \cfw{Is this comparison sufficient?}
 
     \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our \acrshort{esmf} \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against \acrshort{dos} are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the \acrshort{dos} attack, the system quickly recovers and requests for slices go through again.
 
@@ -272,7 +272,7 @@ We will perform the experiments in their numerical ordering.
     \item[\ref{E4}] \textbf{Slice confidentiality} After creating a slice and starting to send traffic, we attempted to eavesdrop on the tunnel connection by using \textit{tcpdump} on an interface of the first \gls{blacknetwork} switch. We only observed encrypted traffic from one tunnel endpoint to the other tunnel endpoint. We thus conclude that this experiment has been passed as well.
 \end{description}
 
-We thus passed all experiments that we concluded. Of course experiment \ref{E2} has been a planned failure, but confirms our suspicion that additional measures are needed here. Nonetheless \ref{A2} (and thus \ref{E2}) only affect slice creation and removal and can not affect already established slices.
+We thus passed all experiments that we concluded. Of course experiment \ref{E2} has been a planned failure, but confirms our suspicion that additional measures are needed here. Nonetheless \ref{A2} (and thus \ref{E2}) only affects slice creation and removal and can not affect already established slices.
 
 We thus conclude that our protection goal of availability (\ref{P3}) has been met, excluding slice creation and removal availability jeopardized by attacker \ref{A2}. The same applies to our protection goal of resilience (\ref{P4}), even though the recovery from \acrshort{dos} by attacker \ref{A2} is quick.
 
@@ -280,20 +280,20 @@ Our protection goals of confidentiality (\ref{P1}) and integrity (\ref{P2}) were
 
 Due to our protection goals not being broken, we subsequently pass requirement \ref{R1} for the isolation of our slices, with the slight exclusion mentioned above which does not affect established slices.
 
-\begin{landscape}
+%\begin{landscape}
     \begin{figure}[ht]
         \centering
         \includegraphics[width=\linewidth]{images/chapter_7/attackers_topo.png}
         \caption[Placement of attackers in scenario S2 and S3]{This figure shows the placement of all attackers in our network slicing scenarios \ref{S2} and \ref{S3}. The red lines show links used by the attackers. The dotted links are bypass links for the attackers around the \acrshort{vpn} gateways.}
         \label{fig:attackers_topo}
     \end{figure}
-\end{landscape}
+%\end{landscape}
 
 \subsection{Distributed coordination}
 In our design we feature an approach of distributed coordination, where each network domain performs its own decisions concerning resources and deployment of infrastructure. We thus feature a decentralized approach that only requires trust in other entities that they are going to behave according to protocol and honor their service level agreement (\acrshort{sla}). This matches the specification of requirement \ref{R2} which we subsequently pass.
 
 \subsection{Compatibility}
-In our design and implementation we worked on the creation of \acrshort{vnf}s separated by \acrshort{sdn} planes. Due to the creation of many separate \acrshort{vnf}s, porting one \acrshort{vnf} (for example a switch implementation) to another vendor requires relatively few effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using \Gls{openapi}, which will lower the effort for new implementations even more. By using common protocols like \Gls{openflow} where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
+In our design and implementation we worked on the creation of \acrshort{vnf}s separated by \acrshort{sdn} planes. Due to the creation of many separate \acrshort{vnf}s, porting one \acrshort{vnf} (for example a switch implementation) to another vendor requires relatively little effort. This includes integrating real-world devices such as a hardware switch. Furthermore we specified our own protocols using \Gls{openapi}, which will lower the effort for new implementations even more. By using common protocols like \Gls{openflow} where possible, we also achieve partial compatibility with many already existing hardware devices. We thus conclude that requirement \ref{R3} has been met by our design and implementation.
 
 \subsection{Flexibility}
 As our domain coordinators can coordinate slices to any target network that is reachable, we can also request slices to any host residing in such a network as long as we are permitted to do so. As we can request as many slices as the domain coordinator and other parties allow us, we can theoretically communicate via multiple slices to multiple destinations at the same time. Requirement \ref{R4} is thus passed by our solution.

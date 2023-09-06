@@ -80,14 +80,13 @@
 \cleardoublepage
 \pagenumbering{arabic}
 
+%\cts{Is it "Distributed Isolated Network Slicing or is it Distributed Testbed for Isolation by Network Slicing in Edge-Computing (I don't even know about edge computing, we're also investigating isolation all the way between two campus networks, right? :-)}
+%\cfw{Maybe we can add something further to indicate our goal of security evaluation? I suggested "in mission-critical contexts", which would make sense concerning the surgery example - I would only need to mention "mission-critical" in abstract and introduction}
+%\cfw{I've been to the examination office today and they say that there is no official way to change the title of the thesis after one signed up for the thesis. So we might need to stick to "Distributed isolated micro-segmentation in edge-computing domains". I wanted to change the title to contain network slicing instead of micro-segmentation, because I do not introduce micro-segmentation more than necessary (maybe like 3 sentences in the entire thesis are allocated to micro-segmentation). Maybe the original title - although not ideal - could still be fitting the thesis in a sense, because we already argue that network slicing is one way to implement the necessary micro-segmentation needed for a zero-trust approach, and edge-computing is our domain due to the network functions running on the edge networks and thus providing local services. Even though we also investigate the isolation on the transit networks which exceeds the domain of edge-computing. I would find "Distributed isolated network slicing in mission-critical contexts" more fitting as a title, but maybe we can just make the examination office happy *shrug*. I'm rather surprised that we seem to not be allowed to change the title, as I think this commonly occurs in student works.}
+%\cts{quick general comment: when you refer to the name of structural elements ('Section X', 'Figure Y', ...) then they are capitalized. Only if you refer to the fact that they are structural elements are the  written with a lower case character (In this section, a later figure, ...) }
 \include{chapters/0_abstract}
 \include{chapters/0_statement_of_authorship}
 \include{chapters/0_acknowledgements}
-
-% Print glossaries and acronyms
-\clearpage
-\printglossary[type=main, title={Glossary}]
-\printglossary[type=\acronymtype, title=Acronyms]
 
 \tableofcontents
 
@@ -106,6 +105,11 @@
 \printbibliography[heading=bibintoc, notkeyword={usedtools}]
 
 \printbibliography[heading=bibintoc, keyword={usedtools}, title={Tool references}]
+
+% Print glossaries and acronyms
+\clearpage
+\printglossary[type=main, title={Glossary}]
+\printglossary[type=\acronymtype, title=Acronyms]
 
 \appendix
 

@@ -13,7 +13,7 @@ In the context of our networks, we will establish two different kinds of network
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{images/chapter_4/network_model.png}
+    \includegraphics[width=8cm]{images/chapter_4/network_model.png}
     \caption[Network model]{Our network model showing the separation of trusted \gls{edgenetwork}s and semi-trusted \gls{blacknetwork}s. While \gls{edgenetwork}s are the source and target of our network slice traffic, \gls{blacknetwork}s act as transit networks. There can be multiple \gls{blacknetwork}s between our \gls{edgenetwork}s, but for simplicity reasons only one of them is indicated in the figure.}
     \label{fig:network_model}
 \end{figure}
@@ -24,14 +24,14 @@ are the origin and target of one specific network slice. Each \gls{edgenetwork} 
 \paragraph{Black networks}
 lie between the \gls{edgenetwork}s and are operating under a service level agreement (\acrshort{sla}). There may be any number of \gls{blacknetwork}s between two edges, including none. A \gls{blacknetwork} acts as a transit network to us and is semi-trusted because the infrastructure is not operated by us. We do trust that the \gls{blacknetwork} will act according to protocol, but it might be interested in breaking confidentiality or even integrity. As with our \gls{edgenetwork}s, we expect attackers to be established outside of the switching and slicing architecture following a \gls{zerotrust} approach, apart from potential eavesdropping or integrity violation attempts by the transport infrastructure of the \gls{blacknetwork}.
 
-Please note that that one specific network may play different roles for different network slices. One slice may pass through a \gls{blacknetwork} that is also the origin (and thus \gls{edgenetwork}) of another slice.
+Please note that one specific network may play different roles for different network slices. One slice may pass through a \gls{blacknetwork} that is also the origin (and thus \gls{edgenetwork}) of another slice.
 
 Our network model can also be seen in figure \ref{fig:network_model}.
 
 
 \section{Protection Goals}
 \label{protection_goals}
-The next question we posed was what we actually want to protect from our attackers. In general we want to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include \gls{bandwidth}, \gls{latency}, \gls{jitter}, \gls{lossrate} and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our \gls{edgenetwork}s. We do not require this protection on our \gls{edgenetwork}s, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
+The next question we posed was what we actually desire to protect from our attackers. In general we strive to protect the communication from one host to another and provide certain guarantees to the hosts. These guarantees include \gls{bandwidth}, \gls{latency}, \gls{jitter}, \gls{lossrate} and of course availability. Furthermore we want to protect traffic from modification or information disclosure in networks between our \gls{edgenetwork}s. We do not require this protection on our \gls{edgenetwork}s, since we trust our self-managed infrastructure to a certain degree. Our protection goals are thus:
 \begin{description}[style=multiline, labelwidth=0.7cm]
     \item[\namedlabel{P1}{P1}] \textbf{Confidentiality} Traffic needs to be protected from disclosure outside of the \gls{edgenetwork}s.
     \item[\namedlabel{P2}{P2}] \textbf{Integrity} Traffic needs to be protected from modification by attackers outside of our path on the \gls{edgenetwork}s and from attackers on the \gls{blacknetwork}.
@@ -69,11 +69,11 @@ There are also no attackers on our control plane, because all control plane comp
 
 Our attackers can also be seen in figure \ref{fig:attacker_model}.
 
-\begin{landscape}
+%\begin{landscape}
     \begin{figure}[h]
         \centering
         \includegraphics[width=\linewidth]{images/chapter_4/attacker_model.png}
         \caption[Attacker model]{Our attacker model indicating their location per domain and \acrshort{sdn} plane.}
         \label{fig:attacker_model}
     \end{figure}
-\end{landscape}
+%\end{landscape}

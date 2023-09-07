@@ -46,16 +46,8 @@ jobs:
         with:
           output: pages/controller
           spec-file: openapi/controller.json
-      - name: Render .drawio files
-        uses: docker://ghcr.io/racklet/render-drawio-action:v1
-        with:
-          formats: 'svg'
-          sub-dirs: '.'
-          skip-dirs: '.git'
-          log-level: 'info'
-        id: render
-      - name: Copy rendered diagrams to pages distribution
-        run: 'mkdir -p pages/diagrams && cp ${{ steps.render.outputs.rendered-files }} pages/diagrams'
+      - name: Copy diagrams to pages distribution
+        run: 'mkdir -p pages/diagrams && cp diagrams pages/diagrams'
       - name: Render thesis
         run: 'sudo apt-get update && sudo apt-get install -y texlive-full latexmk && bash thesis/compile.sh'
       - name: Copy thesis to pages distribution

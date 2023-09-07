@@ -1,3 +1,5 @@
+This file contains some useful commands for testing things out :)
+
 DSMF:
 
 sudo lxc exec DSMF1 -- curl -X 'PUT' \

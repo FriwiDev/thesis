@@ -10,7 +10,10 @@ About the structure of this repository (or archive):
 + `notes`: Contains some notes that were made during the implementation
 + `openapi`: Contains our REST API definitions and generator scripts
 + `pages`: Contains content for our pages deployment
-+ `scenarios`: Contains some of the obtained results obtained on our scenarios
++ `scenarios`: Contains some of the results obtained on our scenarios
 + `src`: Contains the implementation of our individual components
 + `testbed`: Contains the version of the testbed used, including the scenario implementations
 + `thesis`: Contains the latex sources of the thesis itself
+
+A digital copy of the thesis can be found on our pages deployment above or has been shipped with this archive
+as a signed final version.

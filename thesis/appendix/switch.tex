@@ -4,7 +4,7 @@
 A simple API to manage QoS queues and traffic shaping on arbitrary OpenFlow switches. Does not support listing queues (GET) because this is already part of OpenFlow.
 
 \subsection{Authentication}
-\subsubsection{POST /auth}
+\subsubsection{POST /v1/auth}
 Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -39,7 +39,7 @@ Issues a new authentication token in exchange for credentials. Currently require
 
 \newpage
 \subsection{Queue Management}
-\subsubsection{PUT /queue}
+\subsubsection{PUT /v1/queue}
 Creates a new queue
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -85,7 +85,7 @@ application/json & \hyperref[switch_queue]{queue} \\
 \end{longtable}
 
 \newpage
-\subsubsection{DELETE /queue}
+\subsubsection{DELETE /v1/queue}
 Deletes a queue
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -126,7 +126,7 @@ port & \centering{QUERY} & The switch port of the queue to be deleted. & string 
 
 \newpage
 \subsection{Traffic shaping}
-\subsubsection{PUT /policy}
+\subsubsection{PUT /v1/policy}
 Sets the policies on the specified port
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline

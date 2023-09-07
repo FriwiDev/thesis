@@ -41,7 +41,7 @@ def process(in_file: pathlib.Path):
             endpoint = obj["paths"][path][method]
 
             # Title
-            out.write("\\subsubsection{" + method.upper() + " " + escape(path) + "}\n")
+            out.write("\\subsubsection{" + method.upper() + " /v1" + escape(path) + "}\n")
 
             # Description
             out.write(escape(endpoint["description"]) + "\n")

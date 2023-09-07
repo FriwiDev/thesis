@@ -47,6 +47,8 @@ We will test three scenarios in total. The first scenario will provide a base ca
     \end{figure}
 \end{description}
 
+In each of our scenarios, all links will be limited to 1Gbit/s throughput by utilizing a token-bucket filter. In the local scenario \ref{S1}, the links attached to the attackers were limited to 2Gbit/s. The latter restriction was lifted in the other two scenarios to be able to attack with more traffic.
+
 %The base solution will consist of two simulated hosts, two attackers and two switches. Each switch is connected to one of the hosts, one of the attackers and to the other switch. The attackers share the link between the switches with the normal host. The attacker \ref{A1} will then become active and attempt to disrupt the communication between the hosts. Furthermore we will employ attacker \ref{A4} to eavesdrop traffic between the switches. \ref{A2} and \ref{A3} do not apply since there is no slicing infrastructure.
 
 %For our first slicing scenario we will deploy our slicing solution emulating 3 domains with two \gls{edgenetwork}s and one black (semi-trusted) network between them. We will place one attacker each in the edges to spam a slice between them as attacker \ref{A1}. We will deploy \ref{A4} on a link in the \gls{blacknetwork} and deploy \ref{A2} and \ref{A3} to the application plane.
@@ -137,7 +139,7 @@ In this section we are now going to state the experiments that we are going to p
     If the isolation fails, then we have not reached our isolation requirement \ref{R1}. If on the other hand the attackers reach their capacity limit, spam flows have been installed and there is still no violation of isolation, the experiment has succeeded, due to the isolation being better than the traffic generation capacity of the system. This would validate our protection goals of availability (\ref{P3}) and resilience (\ref{P4}).
 
     We would expect that our slice is isolated from this other traffic and no effects can be seen on the slice concerning the additional traffic in the system.
-
+\newpage
     \item[\namedlabel{E2}{E2}] \textbf{Application plane availability and resilience (1)} In this experiment we will try to perform \acrshort{dos} on the application plane by spamming unauthenticated requests on the domain coordinator. We will spam the domain coordinator by using a python script that has been self developed and can be found in the sources. It uses multiple threads to spam http requests.
 
     For reproducing purposes, we will measure our achieved request rate by examining the output from our script.
@@ -153,11 +155,11 @@ In this section we are now going to state the experiments that we are going to p
     \item[\namedlabel{E4}{E4}] \textbf{Slice confidentiality} In this experiment we try to break confidentiality by eavesdropping on the switches of the \gls{blacknetwork} (protection goal \ref{P1}). To achieve this, we are going to use a tool called \textit{tcpdump} \cite{tcpdump} to dump packets passing a \gls{blacknetwork} switch. Tcpdump is a traffic sniffer that will collect packets passing on an interface either to console or to a file.
 
     For this, we will establish slices (apart from scenario \ref{S1} where no slicing is available) according to our scenario section (\ref{scenarios}). We will then send secret traffic along the slice using a simple python while loop (the implementation can be seen below) on the slice initiator that is sending \acrshort{udp} traffic to the remote host. We will then start listening on an appropriate switch port of the \gls{blacknetwork}.
-
+\newpage
     \begin{lstlisting}[language=python]
 import socket
 
-# Create a \acrshort{udp} socket
+# Create a UDP socket
 socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 while True:
@@ -180,7 +182,7 @@ while True:
 
 \end{description}
 
-We do not conduct a fifth experiment for the fifth attacker, because we already check with experiment \ref{E4} that our traffic is passing the \gls{blacknetwork} through our \gls{wireguard} tunnel. Apart from encrypting traffic sufficiently, \gls{wireguard} tunnels also protect data integrity according to their whitepaper \cite{wireguard}. As there is formal proof for this we can be sure that conducting an arbitrary attack on integrity will not lead to a violation of integrity. Experiment \ref{E4} thus also covers integrity, which is our protection goal \ref{P2}.
+We do not conduct a fifth experiment for the fifth attacker (the integrity attacker), because we already check with experiment \ref{E4} that our traffic is passing the \gls{blacknetwork} through our \gls{wireguard} tunnel. Apart from encrypting traffic sufficiently, \gls{wireguard} tunnels also protect data integrity according to their whitepaper \cite{wireguard}. As there is formal proof for this we can be sure that conducting an arbitrary attack on integrity will not lead to a violation of integrity. Experiment \ref{E4} thus also covers integrity, which is our protection goal \ref{P2}.
 
 \newcolumntype{P}{>{\centering\arraybackslash}p{.19\textwidth}}
 \begin{table}[ht]
@@ -244,10 +246,10 @@ We will perform the experiments in their numerical ordering.
 
     \paragraph{\ref{S2}} In our local edgeslicing scenario we also observed a packet loss of 0\%, \gls{latency} of about 0.23ms and \gls{jitter} of about 0.224ms when not under attack. The \gls{bandwidth}s of all slices were consistent with their specification.
 
-    When starting the attack, a drop in \gls{latency} to an average of about 0.15ms as well as a decrease in \gls{jitter} to about 0.18ms can be observed, which caught our interest. This can possibly be explained by the tickless design of the linux networking stack, resulting in shorter wait times when data is processed more frequently, as long as the system is not overwhelmed.
+    When starting the attack, a drop in \gls{latency} to an average of about 0.15ms as well as a decrease in \gls{jitter} to about 0.015ms can be observed, which caught our interest. This can possibly be explained by the tickless design of the linux networking stack, resulting in shorter wait times when data is processed more frequently, as long as the system is not overwhelmed.
 
-    As per experiment design, we then increased the traffic subsequently to 30Gbit/s with attackers occupying 30 out of 32 threads of the host machine. We even removed the ingress policy on the switches and link capacity restrictions in our testbed while under full load. Still, we were not able to observe any changes apart from the initial drop in \gls{latency}.
-    The \gls{bandwidth}s never went below their specified value (apart from beginning and ending of the communication due to connection establishment and teardown). We still observed an unchanged 0\% packet loss, an average of 0.15ms in \gls{latency} and \gls{jitter} of about 0.18ms, meeting our thresholds.
+    As per experiment design, we then increased the traffic subsequently to 30Gbit/s with attackers occupying 30 out of 32 threads of the host machine. We even removed the ingress policy on the switches and link capacity restrictions for the adversaries in our testbed while under full load. Still, we were not able to observe any changes apart from the initial drop in \gls{latency}.
+    The \gls{bandwidth}s never went below their specified value (apart from beginning and ending of the communication due to connection establishment and teardown). We still observed an unchanged 0\% packet loss, an average of 0.15ms in \gls{latency} and \gls{jitter} of about 0.015ms, meeting our thresholds.
 
     \paragraph{\ref{S3}} In our remote scenario we measure slightly different values while not under attack, with about 0.68ms \gls{latency} between our hosts. The packet loss remains at 0\% though and the \gls{bandwidth}s are according to specification. \Gls{jitter} is at about 0.037ms as determined by the ping tool. It is interesting that the transmission in the remote scenario seems to have less \gls{jitter} than in our local environment.
 
@@ -263,7 +265,7 @@ We will perform the experiments in their numerical ordering.
 
 %    \cfw{Is this comparison sufficient?}
 
-    \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our \acrshort{esmf} \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against \acrshort{dos} are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the \acrshort{dos} attack, the system quickly recovers and requests for slices go through again.
+    \item[\ref{E2}] \textbf{Application plane availability and resilience (1)} To conclude experiment E2, we spammed about 30.000 requests per second on our \acrshort{esmf} \textit{/v1/slice} endpoint. As expected in the methodology, our subsequent slice request was not replied to. Additional protective measures against \acrshort{dos} are thus required to secure the reachability of the slicing coordinator to the network tenants. After stopping the \acrshort{dos} attack, the system quickly recovered and requests for slices went through again.
 
     \item[\ref{E3}] \textbf{Application plane availability and resilience (2)} In this experiment we only sent about 3.000 requests per second to the \acrshort{esmf} \textit{/v1/slice} endpoint, requesting the creation and removal of slices. As expected, our requests apart from the first request got denied due to rate limiting. When attempting to request large quantities of resources we got denied due to resource limitations of our own identity.
 

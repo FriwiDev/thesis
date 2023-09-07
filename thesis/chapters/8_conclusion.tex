@@ -1,7 +1,7 @@
 \chapter{Conclusion}
 \label{conclusion}
 
-Isolation of tenants is one of the key requirements for building a network based on the \gls{zerotrust} approach \cite{zerotrust}, which has become more and more relevant due to the increase of devices in \acrshort{iot} \cite{iotincrease} and the subsequently increasing threats to network architectures \cite{iotthreats}. Network slicing can be used to isolate certain devices on a network which has gained additional popularity since the advent of 5G \cite{5G1, 5G2, 5G3}, of which network slicing is an integral part.
+Isolation of tenants by performing micro-segmentation is one of the key requirements for building a network based on the \gls{zerotrust} approach \cite{zerotrust}, which has become more and more relevant due to the increase of devices in \acrshort{iot} \cite{iotincrease} and the subsequently increasing threats to network architectures \cite{iotthreats}. Network slicing can be used to isolate certain devices on a network which has gained additional popularity since the advent of 5G \cite{5G1, 5G2, 5G3}.
 
 In this thesis we designed and implemented a solution to create isolated network slices across multiple domains and evaluated it for our protection goals of confidentiality, integrity, availability and resilience. This has been performed by conducting carefully designed experiments against multiple different scenarios that resemble real-world network architectures. Part of these scenarios is also one distributed scenario, where individual domains are separated on individual network nodes, integrating a hardware switch for some performance measurements that are closer to the real-world behaviour of switches.
 
@@ -19,11 +19,11 @@ A bigger limitation is currently, that we do not pass protection goals for avail
 
 
 \section{Future work}
-Many different things would come to mind when thinking about potential future work. One direction would be progressing the implementation further to production readiness. Requirements for this would be resilience against \acrshort{dos} on the coordinators, a proper authentication scheme and implementation of our \acrshort{vnf}s for vendor specific hardware. Furthermore our \acrshort{api}s would need to be protected for attacks on confidentiality and integrity, for example by deploying TLS to all services. Also more validation on \acrshort{api} endpoints could be performed in advance, so that requests can be rejected earlier before even asking other services to perform changes or running into errors.
+Many different things would come to mind when thinking about potential future work. One direction would be progressing the implementation further to production readiness. Requirements for this would be resilience against \acrshort{dos} on the coordinators, a proper authentication scheme and implementation of our \acrshort{vnf}s for vendor specific hardware. Furthermore our \acrshort{api}s would need to be protected from attacks on confidentiality and integrity, for example by deploying TLS to all services. Also more validation on \acrshort{api} endpoints could be performed in advance, so that requests can be rejected earlier before even asking other services to perform changes or running into errors.
 
 Furthermore our implementation currently does not validate the successful creation and deletion of flows on the switches. This would need to be confirmed by a production-ready solution. While we were confident that \Gls{openflow} (\acrshort{udp}) messages would not get lost on their way from the controllers to the switches in our test scenarios, this may not hold true in reality.
 
-The tunnel allocation logic could also be adapted to match the needs of the individual networks more closely. This could also incorporate sending a single packet on allocation to force the tunnel handshake so the initial packets of a tunnel get delivered faster.
+The tunnel allocation logic could also be adapted to match the needs of the individual networks more closely. This could also incorporate sending a single packet on allocation to force the tunnel handshake so the initial packets of a tunnel get delivered faster.\\
 
 The second direction would be progressing more on features. One feature could be accounting, where tenants would invest a currency to establish and keep a slice. This could either be used for billing these tenants or to allocate communication contingents to them apart from the already implemented parallel resource allocation limits. This is for example already common practice in mobile broadband.
 

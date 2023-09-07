@@ -340,7 +340,7 @@ ethtool --offload $INTF_NAME tx off
 More information on this can be found in the linux kernel documentation \cite{txoffload}.
 
 \subsection{Write queue overflow}
-While testing our slicing architecture locally, we noticed that packets were being dropped on the \acrshort{vpn} gateway. We decided to investigate this in more detail, because traffic from the adversaries was not even flowing through the \acrshort{vpn} gateways, but would rather flow around them (as described in Section \ref{impl_tunnel_config}). This was very unexpected for us in the beginning. We noticed that packets were received by the \acrshort{vpn} gateway, but were dropped on the tunnel interface before entering the \gls{wireguard} tunnel.
+While testing our slicing architecture under a flooding attack locally, we noticed that packets were being dropped on the \acrshort{vpn} gateway. We decided to investigate this in more detail, because traffic from the adversaries was not even flowing through the \acrshort{vpn} gateways, but would rather flow around them (as described in Section \ref{impl_tunnel_config}). This was very unexpected for us in the beginning. We noticed that packets were received by the \acrshort{vpn} gateway, but were dropped on the tunnel interface before entering the \gls{wireguard} tunnel.
 
 Our first measure was to increase the \acrshort{tx} (write) queue size, which improved the result but still saw dropped packets. After trying some other approaches which all failed to solve the problem, we finally found the solution.
 

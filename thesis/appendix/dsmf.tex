@@ -4,7 +4,7 @@
 A simple API to interact with the Domain Slice Management Function. Supports reserving, creating and removing slices and tunnels from one external domain to another external domain or host. Please refer to the topology drawings for further information about the network structures.
 
 \subsection{Authentication}
-\subsubsection{POST /auth}
+\subsubsection{POST /v1/auth}
 Issues a new authentication token in exchange for credentials. Currently requires no credentials, this is up to future implementations.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -39,7 +39,7 @@ Issues a new authentication token in exchange for credentials. Currently require
 
 \newpage
 \subsection{Configuration}
-\subsubsection{GET /configuration}
+\subsubsection{GET /v1/configuration}
 Fetch the current configuration of this service
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -75,7 +75,7 @@ auth & \centering{QUERY} & The authentication token issued by prior login & stri
 \end{longtable}
 
 \newpage
-\subsubsection{PUT /configuration}
+\subsubsection{PUT /v1/configuration}
 Installs a new configuration for this service
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -118,7 +118,7 @@ application/json & \hyperref[dsmf_domain_configuration]{domain\_configuration} \
 
 \newpage
 \subsection{Slice Reservation}
-\subsubsection{GET /slice\_reservation}
+\subsubsection{GET /v1/slice\_reservation}
 Lists all current slice reservations. This endpoint is only available on DSMFs.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -156,7 +156,7 @@ auth & \centering{QUERY} & The authentication token issued by prior login & stri
 \end{longtable}
 
 \newpage
-\subsubsection{PUT /slice\_reservation}
+\subsubsection{PUT /v1/slice\_reservation}
 Creates a new slice reservation. This endpoint is only available on DSMFs.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -204,7 +204,7 @@ application/json & \hyperref[dsmf_slice]{slice} \\
 \end{longtable}
 
 \newpage
-\subsubsection{DELETE /slice\_reservation}
+\subsubsection{DELETE /v1/slice\_reservation}
 Deletes a slice reservation. This endpoint is only available on DSMFs.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -245,7 +245,7 @@ slice\_id & \centering{QUERY} & The id of the slice reservation to be deleted. &
 
 \newpage
 \subsection{Slice Management}
-\subsubsection{GET /slice\_deployment}
+\subsubsection{GET /v1/slice\_deployment}
 Lists all current slices. This endpoint is only available on DSMFs.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -283,7 +283,7 @@ auth & \centering{QUERY} & The authentication token issued by prior login & stri
 \end{longtable}
 
 \newpage
-\subsubsection{PUT /slice\_deployment}
+\subsubsection{PUT /v1/slice\_deployment}
 Creates a new slice from a reservation. This endpoint is only available on DSMFs.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -327,7 +327,7 @@ slice\_id & \centering{QUERY} & The slice to create from the corresponding reser
 \end{longtable}
 
 \newpage
-\subsubsection{DELETE /slice\_deployment}
+\subsubsection{DELETE /v1/slice\_deployment}
 Deletes a slice. This endpoint is only available on DSMFs.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -370,7 +370,7 @@ slice\_id & \centering{QUERY} & The id of the slice to be deleted. & integer/int
 
 \newpage
 \subsection{Tunnel Reservation}
-\subsubsection{GET /tunnel\_reservation}
+\subsubsection{GET /v1/tunnel\_reservation}
 Lists all current tunnel reservations
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -406,7 +406,7 @@ auth & \centering{QUERY} & The authentication token issued by prior login & stri
 \end{longtable}
 
 \newpage
-\subsubsection{PUT /tunnel\_reservation}
+\subsubsection{PUT /v1/tunnel\_reservation}
 Creates a new tunnel reservation or stages changes to an existing deployed tunnel, as long as source and target of the tunnel match.
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -452,7 +452,7 @@ application/json & \hyperref[dsmf_tunnel]{tunnel} \\
 \end{longtable}
 
 \newpage
-\subsubsection{DELETE /tunnel\_reservation}
+\subsubsection{DELETE /v1/tunnel\_reservation}
 Deletes a tunnel reservation
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -491,7 +491,7 @@ tunnel\_id & \centering{QUERY} & The id of the tunnel reservation to be deleted.
 
 \newpage
 \subsection{Tunnel Management}
-\subsubsection{GET /tunnel\_deployment}
+\subsubsection{GET /v1/tunnel\_deployment}
 Lists all current tunnels
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -527,7 +527,7 @@ auth & \centering{QUERY} & The authentication token issued by prior login & stri
 \end{longtable}
 
 \newpage
-\subsubsection{PUT /tunnel\_deployment}
+\subsubsection{PUT /v1/tunnel\_deployment}
 Creates a new tunnel or modifies a tunnel from a reservation
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline
@@ -567,7 +567,7 @@ tunnel\_id & \centering{QUERY} & The tunnel to create from the corresponding res
 \end{longtable}
 
 \newpage
-\subsubsection{DELETE /tunnel\_deployment}
+\subsubsection{DELETE /v1/tunnel\_deployment}
 Deletes a tunnel
 \begin{longtable}{ |p{2.5cm}|p{1.5cm}|p{4cm}|p{2cm}| }
 \hline

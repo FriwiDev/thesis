@@ -16,7 +16,7 @@ VERSION = "1.0.0"
 REQUIRES = [
     "connexion==2.14.2",
     "swagger-ui-bundle==0.0.9",
-    "aiohttp_jinja2==1.5.1",
+    "aiohttp_jinja2==1.6",
     "flask==2.3.3",
     "aiohttp_cors>=0.7.0",
     "werkzeug>=2.2.3"

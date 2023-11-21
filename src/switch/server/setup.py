@@ -14,7 +14,7 @@ VERSION = "1.0.0"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    "connexion==2.14.2",
+    "connexion==3.0.2",
     "swagger-ui-bundle==0.0.9",
     "aiohttp_jinja2==1.5.1",
     "flask==2.3.3",
